@@ -71,7 +71,7 @@ if(!token){
 }
 
 // 🔥 IMPORTANT: Send token correctly
-fetch("http://localhost:5000/api/auth/me",{
+fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/me",{
   headers:{
     Authorization: "Bearer " + token
   }
@@ -85,7 +85,7 @@ fetch("http://localhost:5000/api/auth/me",{
 .then(data => {
 
   const imageUrl = data.profilePicture
-  ? `http://localhost:5000/uploads/${data.profilePicture}`
+  ? `https://skillbridge-production-e1cb.up.railway.app/uploads/${data.profilePicture}`
   : "https://via.placeholder.com/120";
 
 document.getElementById("profile").innerHTML = `
