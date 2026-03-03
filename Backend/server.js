@@ -20,11 +20,7 @@ const app = express();
 /* ------------ MIDDLEWARE ------------ */
 
 app.use(cors({
-  origin: [
-    "http://localhost:3000",
-    "http://localhost:5500",
-    "https://skillbridge-smoky.vercel.app/"
-  ],
+  origin: process.env.CLIENT_URL,
   credentials: true
 }));
 
