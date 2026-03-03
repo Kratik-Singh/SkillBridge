@@ -664,7 +664,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
 
     try {
 
-      const res = await fetch("http://localhost:5000/api/auth/login", {
+      const res = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -682,7 +682,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
       localStorage.setItem("token", data.token);
 
       // Get user role
-      const userRes = await fetch("http://localhost:5000/api/auth/me",{
+      const userRes = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/me",{
         headers:{
           Authorization: "Bearer " + data.token
         }
@@ -711,7 +711,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
 
   /* Google */
   document.getElementById('gBtn').addEventListener('click', function () {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = "https://skillbridge-production-e1cb.up.railway.app/api/auth/google";
 });
 })();
 </script>
