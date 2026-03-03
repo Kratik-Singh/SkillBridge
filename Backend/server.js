@@ -23,7 +23,7 @@ app.use(cors({
   origin: [
     "http://localhost:3000",
     "http://localhost:5500",
-    "https://your-frontend-domain.vercel.app" // we will update later
+    "https://skillbridge-smoky.vercel.app/"
   ],
   credentials: true
 }));
