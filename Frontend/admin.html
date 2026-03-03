@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Panel</title>
+</head>
+<body>
+
+<h1>Admin Panel</h1>
+<h3>All Registered Users</h3>
+
+<div id="users"></div>
+
+<button onclick="logout()">Logout</button>
+
+<script>
+const token = localStorage.getItem("token");
+
+if(!token){
+  window.location.href="login.html";
+}
+
+fetch("http://localhost:5000/api/admin/users",{
+  headers:{ authorization: token }
+})
+.then(res=>res.json())
+.then(data=>{
+
+  if(data.message){
+    alert("Access denied");
+    window.location.href="dashboard.html";
+  }
+
+  let output = "<ul>";
+
+  data.forEach(user=>{
+    output += `
+      <li>
+        ${user.name} |
+        ${user.email} |
+        ${user.role}
+      </li>
+    `;
+  });
+
+  output += "</ul>";
+
+  document.getElementById("users").innerHTML = output;
+});
+
+function logout(){
+  localStorage.removeItem("token");
+  window.location.href="login.html";
+}
+</script>
+
+</body>
+</html>

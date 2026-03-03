@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>SkillGap Dashboard</title>
+  <style>
+    body{
+      font-family: Arial, sans-serif;
+      background:#0f172a;
+      color:white;
+      padding:40px;
+    }
+
+    .card{
+      background:#1e293b;
+      padding:30px;
+      border-radius:12px;
+      max-width:600px;
+      margin:auto;
+      box-shadow:0 0 20px rgba(0,0,0,0.5);
+    }
+
+    .profile-img{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      object-fit:cover;
+      border:3px solid #6366f1;
+      margin-bottom:20px;
+    }
+
+    button{
+      margin-top:20px;
+      padding:10px 20px;
+      background:#6366f1;
+      border:none;
+      color:white;
+      border-radius:6px;
+      cursor:pointer;
+    }
+
+    button:hover{
+      background:#4f46e5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Student Dashboard</h1>
+
+  <div id="profile"></div>
+
+  <button onclick="logout()">Logout</button>
+</div>
+
+<script>
+let token = localStorage.getItem("token");
+
+// Handle Google redirect token
+const params = new URLSearchParams(window.location.search);
+const tokenFromURL = params.get("token");
+
+if(tokenFromURL){
+  localStorage.setItem("token", tokenFromURL);
+  window.history.replaceState({}, document.title, "dashboard.html");
+  token = tokenFromURL;
+}
+
+if(!token){
+  window.location.href = "login.html";
+}
+
+// 🔥 IMPORTANT: Send token correctly
+fetch("http://localhost:5000/api/auth/me",{
+  headers:{
+    Authorization: "Bearer " + token
+  }
+})
+.then(res => {
+  if(!res.ok){
+    throw new Error("Unauthorized");
+  }
+  return res.json();
+})
+.then(data => {
+
+  const imageUrl = data.profilePicture
+  ? `http://localhost:5000/uploads/${data.profilePicture}`
+  : "https://via.placeholder.com/120";
+
+document.getElementById("profile").innerHTML = `
+  <div style="display:flex;gap:30px;align-items:center">
+    <img src="${imageUrl}"
+         style="width:120px;height:120px;border-radius:50%;object-fit:cover;border:3px solid #6c63ff;" />
+
+    <div>
+      <p><b>Name:</b> ${data.name}</p>
+      <p><b>Email:</b> ${data.email}</p>
+      <p><b>Scholar No:</b> ${data.scholarNumber}</p>
+      <p><b>Semester:</b> ${data.semester}</p>
+      <p><b>Role:</b> ${data.role}</p>
+    </div>
+  </div>
+`;
+
+})
+.catch(err=>{
+  alert("Session expired. Please login again.");
+  localStorage.removeItem("token");
+  window.location.href="login.html";
+});
+
+function logout(){
+  localStorage.removeItem("token");
+  window.location.href="login.html";
+}
+</script>
+
+</body>
+</html>
