@@ -717,7 +717,7 @@ body {
       formData.append("profilePicture", fileInput.files[0]);
     }
 
-    const res = await fetch("http://localhost:5000/api/auth/signup", {
+    const res = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/signup", {
       method: "POST",
       body: formData
     });
@@ -746,7 +746,7 @@ body {
 
   /* Google */
   document.getElementById('gBtn').addEventListener('click', function () {
-    window.location.href = "http://localhost:5000/api/auth/google";
+    window.location.href = "https://skillbridge-production-e1cb.up.railway.app/api/auth/google";
 });
 })();
 </script>
