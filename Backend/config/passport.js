@@ -7,24 +7,29 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https://skillbridge-production-e1cb.up.railway.app/api/auth/google/callback"
+      callbackURL:
+        "https://skillbridge-production-e1cb.up.railway.app/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        let user = await User.findOne({ googleId: profile.id });
+        const email = profile.emails[0].value;
+
+        // check if user exists
+        let user = await User.findOne({ email });
 
         if (!user) {
           user = await User.create({
-            googleId: profile.id,
             name: profile.displayName,
-            email: profile.emails[0].value,
-            role: "student"
+            email: email,
+            googleId: profile.id,
+            profilePicture: profile.photos?.[0]?.value || "",
+            role: "student",
           });
         }
 
-        done(null, user);
+        return done(null, user);
       } catch (err) {
-        done(err, null);
+        return done(err, null);
       }
     }
   )
