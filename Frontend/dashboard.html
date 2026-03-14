@@ -840,6 +840,7 @@ const BACKEND_URL = "https://skillbridge-production-e1cb.up.railway.app";
 let token = localStorage.getItem("token");
 
 /* Handle Google redirect token */
+
 const params = new URLSearchParams(window.location.search);
 const tokenFromURL = params.get("token");
 
@@ -849,12 +850,13 @@ if(tokenFromURL){
   token = tokenFromURL;
 }
 
-/* If no token redirect */
 if(!token){
   window.location.href = "login.html";
 }
 
-/* Fetch user data */
+
+/* ---------------- USER PROFILE ---------------- */
+
 fetch(`${BACKEND_URL}/api/auth/me`,{
   headers:{
     Authorization:"Bearer "+token
@@ -884,60 +886,8 @@ fetch(`${BACKEND_URL}/api/auth/me`,{
   window.location.href="login.html";
 });
 
-/* Logout */
-function logout(){
-  localStorage.removeItem("token");
-  window.location.href="login.html";
-}
 
-
-/* Chart script (your existing chart code) */
-
-(function(){
-  var days = ['S','M','T','W','T','F','S'];
-  var hrs  = [1.5, 3.2, 4.8, 2.1, 5.5, 3.9, 0.8];
-  var colors = ['default','default','accent','default','accent','pink','default'];
-  var max = Math.max(...hrs);
-  var chart = document.getElementById('barChart');
-
-  days.forEach(function(d, i){
-    var wrap = document.createElement('div');
-    wrap.className = 'bar-wrap';
-
-    var outer = document.createElement('div');
-    outer.className = 'bar-outer';
-    outer.style.height = '90px';
-
-    var inner = document.createElement('div');
-    inner.className = 'bar-inner' + (colors[i]==='accent'?' accent':colors[i]==='pink'?' pink':'');
-    var h = Math.round((hrs[i]/max)*90);
-    inner.style.height = h+'px';
-    inner.style.animationDelay = (0.5+i*.08)+'s';
-
-    var pct = document.createElement('div');
-    pct.className = 'bar-pct';
-    pct.textContent = hrs[i]+'h';
-
-    inner.appendChild(pct);
-    outer.appendChild(inner);
-
-    var lbl = document.createElement('div');
-    lbl.className = 'bar-lbl';
-    lbl.textContent = d;
-
-    wrap.appendChild(outer);
-    wrap.appendChild(lbl);
-    chart.appendChild(wrap);
-  });
-
-  document.querySelectorAll('.tab').forEach(function(t){
-    t.addEventListener('click',function(){
-      t.closest('.tabs').querySelectorAll('.tab').forEach(function(x){x.classList.remove('active')});
-      t.classList.add('active');
-    });
-  });
-
-  /* ---------------- XP SYSTEM ---------------- */
+/* ---------------- XP SYSTEM ---------------- */
 
 async function loadXP(){
 
@@ -955,48 +905,37 @@ async function loadXP(){
     const streak = data.streak || 0;
     const maxXP = 5000;
 
-    document.getElementById("xpValue").innerText =
-      xp + " / " + maxXP;
-
-    document.getElementById("streak").innerText =
-      streak + " Days";
+    document.getElementById("xpValue").innerText = xp + " / " + maxXP;
+    document.getElementById("streak").innerText = streak + " Days";
 
     const percent = Math.min((xp/maxXP)*100,100);
 
-    document.getElementById("xpBar").style.width =
-      percent + "%";
+    document.getElementById("xpBar").style.width = percent + "%";
 
   }catch(err){
-    console.log("XP load error:",err);
+    console.log("XP error:",err);
   }
 
 }
 
 
-/* Send visit XP (daily streak) */
+/* Visit XP */
 
 async function sendVisitXP(){
 
-  try{
+  await fetch(`${BACKEND_URL}/api/xp/visit`,{
+    method:"POST",
+    headers:{
+      Authorization:"Bearer "+token
+    }
+  });
 
-    await fetch(`${BACKEND_URL}/api/xp/visit`,{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        Authorization:"Bearer "+token
-      }
-    });
-
-    loadXP();
-
-  }catch(err){
-    console.log("Visit XP error:",err);
-  }
+  loadXP();
 
 }
 
 
-/* Track active learning time */
+/* Active XP per minute */
 
 function startActiveTracking(){
 
@@ -1004,33 +943,71 @@ function startActiveTracking(){
 
     if(document.visibilityState === "visible"){
 
-      try{
+      await fetch(`${BACKEND_URL}/api/xp/active`,{
+        method:"POST",
+        headers:{
+          Authorization:"Bearer "+token
+        }
+      });
 
-        await fetch(`${BACKEND_URL}/api/xp/active`,{
-          method:"POST",
-          headers:{
-            Authorization:"Bearer "+token
-          }
-        });
-
-        loadXP();
-
-      }catch(err){
-        console.log("Active XP error:",err);
-      }
+      loadXP();
 
     }
 
-  },60000); // every 1 minute
+  },60000);
 
 }
 
 
-/* Initialize XP system */
+/* Initialize */
 
 loadXP();
 sendVisitXP();
 startActiveTracking();
+
+
+/* ---------------- CHART ---------------- */
+
+(function(){
+
+  var days = ['S','M','T','W','T','F','S'];
+  var hrs  = [1.5, 3.2, 4.8, 2.1, 5.5, 3.9, 0.8];
+  var max = Math.max(...hrs);
+
+  var chart = document.getElementById('barChart');
+
+  days.forEach(function(d,i){
+
+    var wrap = document.createElement('div');
+    wrap.className = 'bar-wrap';
+
+    var outer = document.createElement('div');
+    outer.className = 'bar-outer';
+    outer.style.height = '90px';
+
+    var inner = document.createElement('div');
+    inner.className = 'bar-inner';
+
+    var h = Math.round((hrs[i]/max)*90);
+    inner.style.height = h+'px';
+
+    var pct = document.createElement('div');
+    pct.className = 'bar-pct';
+    pct.textContent = hrs[i]+'h';
+
+    inner.appendChild(pct);
+    outer.appendChild(inner);
+
+    var lbl = document.createElement('div');
+    lbl.className = 'bar-lbl';
+    lbl.textContent = d;
+
+    wrap.appendChild(outer);
+    wrap.appendChild(lbl);
+
+    chart.appendChild(wrap);
+
+  });
 
 })();
 </script>
