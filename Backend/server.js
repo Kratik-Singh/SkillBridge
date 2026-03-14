@@ -5,6 +5,9 @@ const appl = express();
 appl.use(express.json());
 appl.use("/uploads", express.static("uploads"));
 
+const xpRoutes = require("./routes/xpRoutes");
+app.use("/api/xp", xpRoutes);
+
 const mongoose = require("mongoose");
 const cors = require("cors");
 const passport = require("passport");

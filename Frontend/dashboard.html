@@ -880,6 +880,31 @@ function logout(){
       t.classList.add('active');
     });
   });
+
+  /* streak visit */
+
+fetch(`${BACKEND_URL}/api/xp/visit`,{
+  method:"POST",
+  headers:{
+    "Content-Type":"application/json",
+    Authorization:"Bearer "+token
+  }
+});
+
+
+/* active time tracking */
+
+setInterval(()=>{
+
+  fetch(`${BACKEND_URL}/api/xp/active`,{
+    method:"POST",
+    headers:{
+      Authorization:"Bearer "+token
+    }
+  });
+
+},60000);
+
 })();
 </script>
 </body>

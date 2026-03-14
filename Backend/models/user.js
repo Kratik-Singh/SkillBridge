@@ -38,6 +38,25 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ["student", "admin"],
     default: "student"
+  },
+
+  xp: {
+  type: Number,
+  default: 0
+  },
+
+  streak: {
+  type: Number,
+  default: 0
+  },
+
+  lastVisit: {
+  type: Date
+  },
+
+  totalMinutes: {
+  type: Number,
+  default: 0
   }
 
 }, { timestamps: true });
