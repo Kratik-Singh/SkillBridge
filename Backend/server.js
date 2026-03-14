@@ -1,12 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
-const appl = express();
-appl.use(express.json());
-appl.use("/uploads", express.static("uploads"));
-
-const xpRoutes = require("./routes/xpRoutes");
-app.use("/api/xp", xpRoutes);
+const app = express();
 
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -15,10 +10,10 @@ const session = require("express-session");
 
 require("./config/passport");
 
+/* ROUTES */
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
-
-const app = express();
+const xpRoutes = require("./routes/xpRoutes");
 
 /* ------------ MIDDLEWARE ------------ */
 
@@ -41,7 +36,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 /* ------------ DATABASE ------------ */
+
 console.log("MONGO_URI VALUE ->", process.env.MONGO_URI);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ MongoDB Connected"))
   .catch(err => console.log("❌ DB Error:", err));
@@ -50,6 +47,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/xp", xpRoutes);
 
 /* ------------ SERVER ------------ */
 
