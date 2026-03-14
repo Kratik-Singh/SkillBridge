@@ -135,7 +135,7 @@ body {
 .xp-label{font-size:.72rem;font-weight:600;color:var(--t2);}
 .xp-val{font-size:.72rem;font-weight:700;color:var(--acc);font-family:'JetBrains Mono',monospace;}
 .xp-bar{height:6px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;}
-.xp-fill{height:100%;width:72%;background:linear-gradient(90deg,var(--pri),var(--acc));border-radius:4px;position:relative;animation:xpgrow 1.8s 1s cubic-bezier(.22,1,.36,1) both;}
+.xp-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--pri),var(--acc));border-radius:4px;position:relative;animation:xpgrow 1.8s 1s cubic-bezier(.22,1,.36,1) both;}
 @keyframes xpgrow{from{width:0}to{width:72%}}
 .xp-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:20px;background:rgba(255,255,255,.3);filter:blur(4px);animation:xpshine 2.5s 2.5s ease-in-out infinite;}
 @keyframes xpshine{0%,100%{opacity:0}50%{opacity:1}}
@@ -422,15 +422,15 @@ body {
     <div class="xp-card">
       <div class="xp-top">
         <span class="xp-label">⚡ XP Progress</span>
-        <span class="xp-val">3,600 / 5,000</span>
+        <span class="xp-val" id="xpValue">0 / 5000</span>
       </div>
-      <div class="xp-bar"><div class="xp-fill"></div></div>
+      <div class="xp-bar"><div class="xp-fill" id="xpBar"></div></div>
     </div>
 
     <div class="streak-card">
       <div class="streak-ico">🔥</div>
       <div class="streak-info">
-        <div class="streak-num">21 Days</div>
+        <div class="streak-num" id="streak">0 Days</div>
         <div class="streak-lbl">Learning streak — Keep going!</div>
       </div>
     </div>
@@ -764,7 +764,7 @@ body {
             <div class="card-title">Badges Earned</div>
           </div>
           <div class="badge-grid">
-            <div class="badge-item"><div class="badge-ico">🔥</div><div class="badge-name">21-Day Streak</div></div>
+            <div class="badge-item"><div class="badge-ico">🔥</div><div class="badge-name">Streak Badge</div></div>
             <div class="badge-item"><div class="badge-ico">⚡</div><div class="badge-name">Fast Learner</div></div>
             <div class="badge-item"><div class="badge-ico">🎯</div><div class="badge-name">Top Score</div></div>
             <div class="badge-item"><div class="badge-ico">☁️</div><div class="badge-name">AWS Certified</div></div>
@@ -881,29 +881,100 @@ function logout(){
     });
   });
 
-  /* streak visit */
+  /* ---------------- XP SYSTEM ---------------- */
 
-fetch(`${BACKEND_URL}/api/xp/visit`,{
-  method:"POST",
-  headers:{
-    "Content-Type":"application/json",
-    Authorization:"Bearer "+token
+async function loadXP(){
+
+  try{
+
+    const res = await fetch(`${BACKEND_URL}/api/xp/me`,{
+      headers:{
+        Authorization:"Bearer "+token
+      }
+    });
+
+    const data = await res.json();
+
+    const xp = data.xp || 0;
+    const streak = data.streak || 0;
+    const maxXP = 5000;
+
+    document.getElementById("xpValue").innerText =
+      xp + " / " + maxXP;
+
+    document.getElementById("streak").innerText =
+      streak + " Days";
+
+    const percent = Math.min((xp/maxXP)*100,100);
+
+    document.getElementById("xpBar").style.width =
+      percent + "%";
+
+  }catch(err){
+    console.log("XP load error:",err);
   }
-});
+
+}
 
 
-/* active time tracking */
+/* Send visit XP (daily streak) */
 
-setInterval(()=>{
+async function sendVisitXP(){
 
-  fetch(`${BACKEND_URL}/api/xp/active`,{
-    method:"POST",
-    headers:{
-      Authorization:"Bearer "+token
+  try{
+
+    await fetch(`${BACKEND_URL}/api/xp/visit`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:"Bearer "+token
+      }
+    });
+
+    loadXP();
+
+  }catch(err){
+    console.log("Visit XP error:",err);
+  }
+
+}
+
+
+/* Track active learning time */
+
+function startActiveTracking(){
+
+  setInterval(async ()=>{
+
+    if(document.visibilityState === "visible"){
+
+      try{
+
+        await fetch(`${BACKEND_URL}/api/xp/active`,{
+          method:"POST",
+          headers:{
+            Authorization:"Bearer "+token
+          }
+        });
+
+        loadXP();
+
+      }catch(err){
+        console.log("Active XP error:",err);
+      }
+
     }
-  });
 
-},60000);
+  },60000); // every 1 minute
+
+}
+
+
+/* Initialize XP system */
+
+loadXP();
+sendVisitXP();
+startActiveTracking();
 
 })();
 </script>
