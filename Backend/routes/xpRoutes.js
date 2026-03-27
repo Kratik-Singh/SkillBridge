@@ -108,5 +108,38 @@ router.get("/me", auth, async (req,res)=>{
 
 });
 
+/* -------- LEADERBOARD -------- */
+
+router.get("/leaderboard", auth, async (req,res)=>{
+
+  try{
+
+    // Get top 10 users sorted by XP
+    const users = await User.find()
+      .sort({ xp: -1 })
+      .limit(10)
+      .select("name xp profilePicture");
+
+    // Get current user rank
+    const allUsers = await User.find()
+      .sort({ xp: -1 })
+      .select("_id");
+
+    const rank =
+      allUsers.findIndex(
+        u => u._id.toString() === req.user.id
+      ) + 1;
+
+    res.json({
+      leaderboard: users,
+      myRank: rank
+    });
+
+  }catch(err){
+    res.status(500).json({error:err.message});
+  }
+
+});
+
 
 module.exports = router;

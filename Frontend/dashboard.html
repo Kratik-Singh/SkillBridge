@@ -645,33 +645,8 @@ animation:xpshine 2.5s ease-in-out infinite;
             <div class="card-sub">Batch rankings</div>
           </div>
         </div>
-        <div class="lb-list">
-          <div class="lb-row">
-            <div class="lb-rank gold">1</div>
-            <div class="lb-av" style="background:linear-gradient(135deg,#f5c942,#e09800)">PS</div>
-            <div class="lb-details"><div class="lb-name">Priya Sharma</div><div class="lb-pts">5,420 XP</div></div>
-            <div class="lb-badge top">👑 Top</div>
-          </div>
-          <div class="lb-row">
-            <div class="lb-rank silver">2</div>
-            <div class="lb-av" style="background:linear-gradient(135deg,#7B6FF0,#5a4fd4)">RV</div>
-            <div class="lb-details"><div class="lb-name">Rohan Verma</div><div class="lb-pts">4,980 XP</div></div>
-          </div>
-          <div class="lb-row">
-            <div class="lb-rank bronze">3</div>
-            <div class="lb-av" style="background:linear-gradient(135deg,#00e5ff,#0090a8)">AM</div>
-            <div class="lb-details"><div class="lb-name">Ananya Mehta</div><div class="lb-pts">4,710 XP</div></div>
-          </div>
-          <div class="lb-row" style="border:1px solid rgba(123,111,240,.25);background:rgba(123,111,240,.07)">
-            <div class="lb-rank" style="color:var(--pri-l)">12</div>
-            <div class="lb-av" style="background:linear-gradient(135deg,#ff6fd8,#c040a0)">AK</div>
-            <div class="lb-details"><div class="lb-name">Arjun Kumar</div><div class="lb-pts">3,600 XP</div></div>
-            <div class="lb-badge you">You</div>
-          </div>
-          <div class="lb-row">
-            <div class="lb-rank">13</div>
-            <div class="lb-av" style="background:linear-gradient(135deg,#3ecf6e,#1a8040)">SS</div>
-            <div class="lb-details"><div class="lb-name">Sneha Singh</div><div class="lb-pts">3,540 XP</div></div>
+          <div class="lb-list" id="leaderboardList">
+            Loading leaderboard...
           </div>
         </div>
       </div>
@@ -958,12 +933,91 @@ function startActiveTracking(){
 
 }
 
+/* ---------------- LEADERBOARD ---------------- */
+
+async function loadLeaderboard(){
+
+  try{
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/xp/leaderboard`,
+      {
+        headers:{
+          Authorization:"Bearer "+token
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    const list =
+      document.getElementById("leaderboardList");
+
+    list.innerHTML = "";
+
+    data.leaderboard.forEach((user,index)=>{
+
+      const rank = index + 1;
+
+      const initials =
+        user.name
+          .split(" ")
+          .map(n=>n[0])
+          .join("")
+          .toUpperCase();
+
+      const avatar =
+        user.profilePicture
+        ? `${BACKEND_URL}/uploads/${user.profilePicture}`
+        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`;
+
+      const row = document.createElement("div");
+
+      row.className = "lb-row";
+
+      if(rank === data.myRank){
+        row.style.border =
+          "1px solid rgba(123,111,240,.25)";
+        row.style.background =
+          "rgba(123,111,240,.07)";
+      }
+
+      row.innerHTML = `
+        <div class="lb-rank">${rank}</div>
+
+        <img
+          src="${avatar}"
+          class="lb-av"
+          style="width:30px;height:30px;border-radius:50%"
+        />
+
+        <div class="lb-details">
+          <div class="lb-name">
+            ${user.name}
+          </div>
+          <div class="lb-pts">
+            ${user.xp} XP
+          </div>
+        </div>
+      `;
+
+      list.appendChild(row);
+
+    });
+
+  }catch(err){
+    console.log("Leaderboard error:",err);
+  }
+
+}
+
 
 /* Initialize */
 
 loadXP();
 sendVisitXP();
 startActiveTracking();
+loadLeaderboard();
 
 
 /* ---------------- CHART ---------------- */
