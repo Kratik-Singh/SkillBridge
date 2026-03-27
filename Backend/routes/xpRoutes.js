@@ -87,4 +87,26 @@ router.post("/active", auth, async (req,res)=>{
 
 });
 
+
+/* -------- GET CURRENT XP -------- */
+
+router.get("/me", auth, async (req,res)=>{
+
+  try{
+
+    const user = await User.findById(req.user.id);
+
+    res.json({
+      xp: user.xp || 0,
+      streak: user.streak || 0,
+      totalMinutes: user.totalMinutes || 0
+    });
+
+  }catch(err){
+    res.status(500).json({error:err.message});
+  }
+
+});
+
+
 module.exports = router;
