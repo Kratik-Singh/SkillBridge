@@ -848,10 +848,24 @@ fetch(`${BACKEND_URL}/api/auth/me`,{
 
   const avatar = document.getElementById("avatar");
 
-  if(data.profilePicture){
-    avatar.src = `${BACKEND_URL}/uploads/${data.profilePicture}`;
-  }else{
-    avatar.src = "https://ui-avatars.com/api/?name="+encodeURIComponent(data.name);
+    if(data.profilePicture &&
+    data.profilePicture.startsWith("http")){
+
+    avatar.src = data.profilePicture;
+
+  }
+  else if(data.profilePicture){
+
+    avatar.src =
+    `${BACKEND_URL}/uploads/${data.profilePicture}`;
+
+  }
+  else{
+
+    avatar.src =
+    "https://ui-avatars.com/api/?name="+
+    encodeURIComponent(data.name);
+
   }
 
 })
@@ -966,10 +980,29 @@ async function loadLeaderboard(){
           .join("")
           .toUpperCase();
 
-      const avatar =
-        user.profilePicture
-        ? `${BACKEND_URL}/uploads/${user.profilePicture}`
-        : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`;
+      let avatar;
+
+      // If Google image (starts with http)
+      if(user.profilePicture &&
+        user.profilePicture.startsWith("http")){
+
+        avatar = user.profilePicture;
+
+      }
+      // If uploaded image
+      else if(user.profilePicture){
+
+        avatar =
+        `${BACKEND_URL}/uploads/${user.profilePicture}`;
+
+      }
+      // Default avatar
+      else{
+
+        avatar =
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}`;
+
+      }
 
       const row = document.createElement("div");
 
