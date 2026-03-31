@@ -1,17 +1,15 @@
-const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const cloudinary = require("../config/cloudinary");
+const multer = require('multer');
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
+const cloudinary = require('../config/cloudinary'); // your config file
 
 const storage = new CloudinaryStorage({
   cloudinary: cloudinary,
   params: {
-    folder: "skillbridge_profiles",
-    allowed_formats: ["jpg", "png", "jpeg", "HEIC", "heic"]
-  }
+    folder: 'uploads',
+    allowed_formats: ['jpg', 'png', 'jpeg'],
+  },
 });
 
-const upload = multer({
-  storage: storage
-});
+const upload = multer({ storage });
 
 module.exports = upload;
