@@ -8,6 +8,7 @@
 <style>
 :root {
   --base: #04060f;
+  --surf: #0a1128;
   --pri: #7B6FF0;
   --pri-d: #5a4fd4;
   --pri-l: #a99bf7;
@@ -23,13 +24,13 @@
 }
 
 *,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
-html { height:100%; }
+html { height:100%; overflow:hidden; }
 body {
   font-family: 'Outfit', sans-serif;
   background: var(--base);
   color: var(--t1);
-  min-height: 100%;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
 }
 
 /* ─── BACKGROUND ─── */
@@ -64,7 +65,7 @@ body {
   66%     { transform:translate(-30px,35px) scale(.95); }
 }
 
-/* ─── PAGE SYSTEM ─── */
+/* ─── SCREEN SYSTEM ─── */
 .screen {
   position: fixed; inset: 0; z-index: 10;
   overflow-y: auto; overflow-x: hidden;
@@ -73,145 +74,219 @@ body {
   transition: opacity .45s cubic-bezier(.4,0,.2,1), transform .45s cubic-bezier(.4,0,.2,1);
   transform: translateY(28px);
 }
-.screen.active {
-  opacity: 1; pointer-events: all; transform: translateY(0);
-}
-.screen.exit-up {
-  opacity: 0; transform: translateY(-28px); pointer-events: none;
-}
+.screen.active { opacity:1; pointer-events:all; transform:translateY(0); }
+.screen.exit-up { opacity:0; transform:translateY(-28px); pointer-events:none; }
 
 /* ─── SHARED TOPBAR ─── */
 .topbar {
-  width: 100%; max-width: 980px;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 1.8rem 2rem 0;
+  width:100%; max-width:980px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.8rem 2rem 0;
 }
 .logo-row { display:flex; align-items:center; gap:.65rem; }
 .licon {
   width:38px; height:38px;
-  background: linear-gradient(135deg, var(--pri), var(--acc));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 1rem;
-  box-shadow: 0 4px 18px rgba(123,111,240,.5);
-  animation: icon-pulse 4s ease-in-out infinite;
+  background:linear-gradient(135deg,var(--pri),var(--acc));
+  border-radius:10px; display:flex; align-items:center; justify-content:center;
+  font-size:1rem; box-shadow:0 4px 18px rgba(123,111,240,.5);
+  animation:icon-pulse 4s ease-in-out infinite;
 }
 @keyframes icon-pulse {
   0%,100% { box-shadow:0 4px 18px rgba(123,111,240,.5); }
   50%     { box-shadow:0 4px 28px rgba(0,229,255,.6); }
 }
 .logo-text {
-  font-size: 1.35rem; font-weight: 900; letter-spacing: -.03em;
-  background: linear-gradient(135deg, #c4bbff, var(--acc));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  font-size:1.35rem; font-weight:900; letter-spacing:-.03em;
+  background:linear-gradient(135deg,#c4bbff,var(--acc));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
 .back-btn {
-  display: flex; align-items: center; gap: .45rem;
-  padding: .45rem .95rem; border-radius: 10px;
-  background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.09);
-  font-size: .75rem; font-weight: 600; color: var(--t2);
-  cursor: pointer; transition: all .25s;
-  font-family: 'Outfit', sans-serif; border: none; outline: none;
+  display:flex; align-items:center; gap:.45rem;
+  padding:.45rem .95rem; border-radius:10px;
+  background:rgba(255,255,255,.05);
+  font-size:.75rem; font-weight:600; color:var(--t2);
+  cursor:pointer; transition:all .25s;
+  font-family:'Outfit',sans-serif; border:none; outline:none;
 }
-.back-btn:hover { background: rgba(123,111,240,.12); color: var(--pri-l); }
+.back-btn:hover { background:rgba(123,111,240,.12); color:var(--pri-l); }
 .back-btn svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
 
-/* shimmer */
+/* ─── SHARED UTILITIES ─── */
 .shim {
   position:absolute; inset:0; pointer-events:none;
-  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.022) 50%,transparent 70%);
+  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.025) 50%,transparent 70%);
   background-size:200% 100%; animation:shim 3.5s ease-in-out infinite;
 }
 @keyframes shim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-@keyframes fadein { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadein { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
 
 /* ══════════════════════════════
    SCREEN 1 — ROLE SELECTION
+   (matches reference design)
 ══════════════════════════════ */
-#s1 { justify-content: center; }
+#s1 { justify-content:center; }
+
 .s1-inner {
-  display: flex; flex-direction: column; align-items: center; gap: 2rem;
-  padding: 2rem; width: 100%;
+  position:relative; z-index:10;
+  display:flex; flex-direction:column;
+  align-items:center; gap:2.2rem;
+  width:100%; padding:2rem;
+  animation:fadein .7s both;
 }
+
+/* logo */
 .logo-area {
-  display: flex; flex-direction: column; align-items: center; gap: .65rem;
-  animation: fadein .6s .05s both;
+  display:flex; flex-direction:column; align-items:center; gap:.65rem;
+  animation:fadein .6s .05s both;
 }
-.logo-area .logo-row { justify-content: center; }
-.logo-sub { font-size: .78rem; color: var(--t2); }
+.logo-area .logo-row { justify-content:center; }
+.s1-licon {
+  width:42px; height:42px;
+  background:linear-gradient(135deg,var(--pri),var(--acc));
+  border-radius:12px; display:flex; align-items:center; justify-content:center;
+  font-size:1.2rem; box-shadow:0 4px 22px rgba(123,111,240,.55);
+  animation:icon-pulse-lg 4s ease-in-out infinite;
+}
+@keyframes icon-pulse-lg {
+  0%,100% { box-shadow:0 4px 18px rgba(123,111,240,.5); }
+  50%     { box-shadow:0 4px 32px rgba(0,229,255,.65); }
+}
+.s1-logo-text {
+  font-size:1.55rem; font-weight:900; letter-spacing:-.03em;
+  background:linear-gradient(135deg,#c4bbff,var(--acc));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.logo-sub { font-size:.78rem; color:var(--t2); }
 
-.heading-block { text-align: center; animation: fadein .6s .15s both; }
-.step-pill {
-  display: inline-flex; align-items: center; gap: .4rem;
-  background: rgba(123,111,240,.12); border: 1px solid rgba(123,111,240,.25);
-  border-radius: 20px; padding: .28rem .8rem;
-  font-size: .65rem; font-weight: 700; color: var(--pri-l);
-  letter-spacing: .08em; text-transform: uppercase; margin-bottom: .7rem;
-}
-.step-dot { width:6px;height:6px;border-radius:50%;background:var(--pri);animation:pulse-dot 2s ease-in-out infinite; }
-@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+/* heading */
+.heading-block { text-align:center; animation:fadein .6s .15s both; }
 .heading-block h1 {
-  font-size: 2.2rem; font-weight: 900; letter-spacing: -.04em; line-height: 1.1;
-  background: linear-gradient(135deg, var(--t1) 40%, var(--pri-l));
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+  font-size:2.2rem; font-weight:900; letter-spacing:-.04em; line-height:1.1;
+  background:linear-gradient(135deg,var(--t1) 40%,var(--pri-l));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
 }
+.heading-block p { margin-top:.45rem; font-size:.85rem; color:var(--t2); }
 
-.cards-row { display: flex; gap: 1.2rem; align-items: stretch; animation: fadein .6s .25s both; }
+/* cards row */
+.cards-row { display:flex; gap:1.2rem; align-items:stretch; animation:fadein .6s .25s both; }
 
 .role-card {
-  position: relative; width: 290px; border-radius: 22px; padding: 2rem 1.7rem 1.6rem;
-  background: var(--card-bg); border: 1.5px solid var(--card-border);
-  cursor: pointer; overflow: hidden;
-  transition: transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s, border-color .35s;
-  display: flex; flex-direction: column; gap: 1.2rem;
-  backdrop-filter: blur(14px);
+  position:relative; width:290px;
+  border-radius:22px; padding:2rem 1.7rem 1.6rem;
+  background:var(--card-bg); border:1.5px solid var(--card-border);
+  cursor:pointer; overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s, border-color .35s;
+  display:flex; flex-direction:column; gap:1.2rem;
+  backdrop-filter:blur(14px);
 }
 .role-card::before {
-  content:''; position:absolute; inset:0; opacity:0; transition:opacity .35s; pointer-events:none;
+  content:''; position:absolute; inset:0; opacity:0;
+  transition:opacity .35s; pointer-events:none;
 }
-.role-card.st::before { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(123,111,240,.28) 0%, transparent 65%); }
-.role-card.st:hover { border-color:rgba(123,111,240,.5); box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 50px rgba(123,111,240,.2); transform:translateY(-6px) scale(1.013); }
-.role-card.st:hover::before { opacity:1; }
-.role-card.mt::before { background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,.22) 0%, transparent 65%); }
-.role-card.mt:hover { border-color:rgba(0,229,255,.45); box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 50px rgba(0,229,255,.18); transform:translateY(-6px) scale(1.013); }
-.role-card.mt:hover::before { opacity:1; }
 
+/* ST card */
+.role-card.st::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(123,111,240,.28) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(0,229,255,.1) 0%, transparent 55%);
+}
+.role-card.st:hover {
+  border-color:rgba(123,111,240,.5);
+  box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 50px rgba(123,111,240,.2),inset 0 1px 0 rgba(123,111,240,.2);
+  transform:translateY(-6px) scale(1.013);
+}
+.role-card.st:hover::before { opacity:1; }
+.role-card.st.selected { border-color:var(--pri); animation:pulse-st 2.5s ease-in-out infinite; }
+.role-card.st.selected::before { opacity:1; }
+@keyframes pulse-st {
+  0%,100% { box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(123,111,240,.25); }
+  50%     { box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 70px rgba(123,111,240,.45); }
+}
+
+/* MT card */
+.role-card.mt::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,.22) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(255,111,216,.1) 0%, transparent 55%);
+}
+.role-card.mt:hover {
+  border-color:rgba(0,229,255,.45);
+  box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 50px rgba(0,229,255,.18),inset 0 1px 0 rgba(0,229,255,.15);
+  transform:translateY(-6px) scale(1.013);
+}
+.role-card.mt:hover::before { opacity:1; }
+.role-card.mt.selected { border-color:var(--acc); animation:pulse-mt 2.5s ease-in-out infinite; }
+.role-card.mt.selected::before { opacity:1; }
+@keyframes pulse-mt {
+  0%,100% { box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 40px rgba(0,229,255,.2); }
+  50%     { box-shadow:0 20px 60px rgba(0,0,0,.5),0 0 70px rgba(0,229,255,.4); }
+}
+
+/* selected check */
+.selected-check {
+  position:absolute; top:1.05rem; left:1.05rem;
+  width:22px; height:22px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  opacity:0; transform:scale(.3);
+  transition:all .35s cubic-bezier(.34,1.56,.64,1);
+}
+.st .selected-check { background:var(--pri); box-shadow:0 0 14px rgba(123,111,240,.7); }
+.mt .selected-check { background:var(--acc); box-shadow:0 0 14px rgba(0,229,255,.6); }
+.selected-check svg { width:11px;height:11px;stroke:#fff;fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round; }
+.role-card.selected .selected-check { opacity:1; transform:scale(1); }
+
+/* card badge */
 .card-badge {
   position:absolute; top:1.05rem; right:1.05rem;
   font-size:.6rem; font-weight:800; letter-spacing:.14em; text-transform:uppercase;
   padding:.22rem .6rem; border-radius:20px;
 }
-.st .card-badge { background:rgba(123,111,240,.2); color:var(--pri-l); border:1px solid rgba(123,111,240,.3); }
-.mt .card-badge { background:rgba(0,229,255,.12); color:var(--acc); border:1px solid rgba(0,229,255,.25); }
+.st .card-badge { background:rgba(123,111,240,.2);color:var(--pri-l);border:1px solid rgba(123,111,240,.3); }
+.mt .card-badge { background:rgba(0,229,255,.12);color:var(--acc);border:1px solid rgba(0,229,255,.25); }
 
+/* icon wrap + spinning ring */
 .card-icon-wrap {
   width:68px; height:68px; border-radius:17px;
-  display:flex; align-items:center; justify-content:center; font-size:1.9rem;
-  position:relative; transition:transform .3s cubic-bezier(.22,1,.36,1);
+  display:flex; align-items:center; justify-content:center;
+  font-size:1.9rem; position:relative;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
 }
 .role-card:hover .card-icon-wrap { transform:scale(1.1) rotate(-3deg); }
-.st .card-icon-wrap { background:linear-gradient(135deg,rgba(123,111,240,.25),rgba(123,111,240,.07)); border:1px solid rgba(123,111,240,.3); box-shadow:0 8px 28px rgba(123,111,240,.22); }
-.mt .card-icon-wrap { background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(0,229,255,.04)); border:1px solid rgba(0,229,255,.25); box-shadow:0 8px 28px rgba(0,229,255,.16); }
+.st .card-icon-wrap { background:linear-gradient(135deg,rgba(123,111,240,.25),rgba(123,111,240,.07));border:1px solid rgba(123,111,240,.3);box-shadow:0 8px 28px rgba(123,111,240,.22); }
+.mt .card-icon-wrap { background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(0,229,255,.04));border:1px solid rgba(0,229,255,.25);box-shadow:0 8px 28px rgba(0,229,255,.16); }
 
-.card-abbr { font-size:2.6rem; font-weight:900; letter-spacing:-.06em; line-height:1; margin-bottom:.3rem; }
-.st .card-abbr { background:linear-gradient(135deg,#c4bbff,var(--pri-l)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.mt .card-abbr { background:linear-gradient(135deg,var(--acc),#80f3ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
-.card-title-text { font-size:1rem; font-weight:700; color:var(--t1); margin-bottom:.45rem; }
-.card-desc-s1 { font-size:.78rem; color:var(--t2); line-height:1.6; }
+.icon-ring {
+  position:absolute; inset:-7px; border-radius:23px;
+  opacity:0; transition:opacity .3s;
+  animation:ring-spin 6s linear infinite;
+}
+.role-card:hover .icon-ring { opacity:1; }
+.st .icon-ring { border:1.5px dashed rgba(123,111,240,.35); }
+.mt .icon-ring { border:1.5px dashed rgba(0,229,255,.3); }
+@keyframes ring-spin { to { transform:rotate(360deg); } }
 
-.feature-list { display:flex; flex-direction:column; gap:.4rem; padding-top:.9rem; border-top:1px solid rgba(255,255,255,.06); flex:1; }
-.feature-item { display:flex; align-items:center; gap:.5rem; font-size:.75rem; color:var(--t2); }
-.feature-dot { width:5px; height:5px; border-radius:50%; flex-shrink:0; }
+/* card text */
+.card-abbr { font-size:2.6rem;font-weight:900;letter-spacing:-.06em;line-height:1;margin-bottom:.3rem; }
+.st .card-abbr { background:linear-gradient(135deg,#c4bbff,var(--pri-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.mt .card-abbr { background:linear-gradient(135deg,var(--acc),#80f3ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.card-title-text { font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.45rem; }
+
+/* feature list */
+.feature-list { display:flex;flex-direction:column;gap:.4rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06);flex:1; }
+.feature-item { display:flex;align-items:center;gap:.5rem;font-size:.75rem;color:var(--t2); }
+.feature-dot { width:5px;height:5px;border-radius:50%;flex-shrink:0; }
 .st .feature-dot { background:var(--pri-l); }
 .mt .feature-dot { background:var(--acc); }
+.feature-item strong { color:var(--t1);font-weight:600; }
 
+/* card cta */
 .card-cta {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:.65rem .9rem; border-radius:11px; font-size:.8rem; font-weight:700;
-  transition:filter .3s;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.65rem .9rem;border-radius:11px;font-size:.8rem;font-weight:700;
+  transition:filter .3s;margin-top:.1rem;
 }
-.st .card-cta { background:linear-gradient(135deg,rgba(123,111,240,.25),rgba(91,79,220,.12)); border:1px solid rgba(123,111,240,.3); color:var(--pri-l); }
-.mt .card-cta { background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(0,180,210,.06)); border:1px solid rgba(0,229,255,.25); color:var(--acc); }
+.st .card-cta { background:linear-gradient(135deg,rgba(123,111,240,.25),rgba(91,79,220,.12));border:1px solid rgba(123,111,240,.3);color:var(--pri-l); }
+.mt .card-cta { background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(0,180,210,.06));border:1px solid rgba(0,229,255,.25);color:var(--acc); }
 .role-card:hover .card-cta { filter:brightness(1.25); }
 .cta-arrow { width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;transition:transform .3s; }
 .st .cta-arrow { background:rgba(123,111,240,.2); }
@@ -219,236 +294,159 @@ body {
 .role-card:hover .cta-arrow { transform:translateX(4px); }
 .cta-arrow svg { width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
 
+/* OR divider */
 .or-divider { display:flex;flex-direction:column;align-items:center;gap:.45rem;color:var(--t3);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;align-self:center; }
 .or-line { width:1px;height:55px;background:linear-gradient(180deg,transparent,var(--t3),transparent); }
 
-.footer-strip-s1 {
-  position:fixed; bottom:1.2rem; right:2rem;
-  display:flex; align-items:center; gap:1.4rem; z-index:20; animation: fadein .6s .5s both;
+/* proceed button */
+.proceed-wrap { display:flex;flex-direction:column;align-items:center;gap:.6rem;animation:fadein .6s .35s both; }
+.proceed-btn {
+  display:flex; align-items:center; gap:.65rem;
+  padding:.8rem 2.2rem; border-radius:13px;
+  font-size:.92rem; font-weight:800; font-family:'Outfit',sans-serif;
+  cursor:pointer; border:none; outline:none;
+  position:relative; overflow:hidden;
+  transition:all .35s cubic-bezier(.22,1,.36,1);
+  background:linear-gradient(135deg,var(--pri),var(--pri-d));
+  color:#fff; letter-spacing:-.01em;
+  box-shadow:0 8px 32px rgba(123,111,240,.38);
+  opacity:.35; pointer-events:none;
 }
-.footer-item { display:flex; align-items:center; gap:.38rem; font-size:.66rem; color:var(--t3); }
+.proceed-btn.active { opacity:1; pointer-events:all; }
+.proceed-btn.active:hover { transform:translateY(-3px) scale(1.025);box-shadow:0 18px 50px rgba(123,111,240,.55);filter:brightness(1.1); }
+.proceed-btn.active.mt-mode { background:linear-gradient(135deg,#00c4e0,#0090a8);box-shadow:0 8px 32px rgba(0,229,255,.32); }
+.proceed-btn.active.mt-mode:hover { box-shadow:0 18px 50px rgba(0,229,255,.5); }
+.proceed-btn svg { width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+.btn-shim {
+  position:absolute; inset:0;
+  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.12) 50%,transparent 70%);
+  background-size:200% 100%; animation:shim 2s ease-in-out infinite;
+}
+.proceed-hint { font-size:.7rem;color:var(--t3);font-family:'JetBrains Mono',monospace;transition:color .3s; }
+
+/* S1 footer */
+.footer-strip {
+  position:fixed; bottom:1.2rem; right:2rem;
+  display:flex; align-items:center; gap:1.4rem;
+  z-index:20; animation:fadein .6s .5s both;
+}
+.footer-item { display:flex;align-items:center;gap:.38rem;font-size:.66rem;color:var(--t3); }
 .footer-item svg { width:11px;height:11px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
 .footer-sep { width:3px;height:3px;border-radius:50%;background:var(--t3);opacity:.4; }
 
 /* ══════════════════════════════
    SCREEN 2 — SUBJECT SELECTION
 ══════════════════════════════ */
-#s2 .topbar { animation: fadein .5s both; }
-.s2-body {
-  width: 100%; max-width: 980px;
-  padding: 1.8rem 2rem 6rem;
-  display: flex; flex-direction: column; gap: 1.8rem;
-}
-
-/* hero */
-.s2-hero { display:flex; flex-direction:column; gap:.85rem; animation: fadein .5s .06s both; }
-.breadcrumb { display:flex; align-items:center; gap:.45rem; font-size:.68rem; color:var(--t3); font-family:'JetBrains Mono',monospace; }
+#s2 .topbar { animation:fadein .5s both; }
+.s2-body { width:100%;max-width:980px;padding:1.8rem 2rem 6rem;display:flex;flex-direction:column;gap:1.8rem; }
+.s2-hero { display:flex;flex-direction:column;gap:.85rem;animation:fadein .5s .06s both; }
+.breadcrumb { display:flex;align-items:center;gap:.45rem;font-size:.68rem;color:var(--t3);font-family:'JetBrains Mono',monospace; }
 .breadcrumb .bc-sep { color:var(--t3); }
 .breadcrumb .bc-active { color:var(--pri-l); }
-.hero-row { display:flex; align-items:flex-end; justify-content:space-between; gap:1rem; flex-wrap:wrap; }
-.hero-left { display:flex; flex-direction:column; gap:.5rem; }
+.hero-row { display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;flex-wrap:wrap; }
+.hero-left { display:flex;flex-direction:column;gap:.5rem; }
 .s2-step-pill {
   display:inline-flex; align-items:center; gap:.4rem;
   background:rgba(123,111,240,.12); border:1px solid rgba(123,111,240,.25);
   border-radius:20px; padding:.28rem .8rem;
   font-size:.62rem; font-weight:700; color:var(--pri-l); letter-spacing:.08em; text-transform:uppercase; width:fit-content;
 }
+.step-dot { width:6px;height:6px;border-radius:50%;background:var(--pri);animation:pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
 .s2-hero h1 {
-  font-size:1.9rem; font-weight:900; letter-spacing:-.04em; line-height:1.1;
+  font-size:1.9rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;
   background:linear-gradient(135deg,var(--t1) 40%,var(--pri-l));
-  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
 }
-.s2-hero p { font-size:.82rem; color:var(--t2); line-height:1.6; max-width:440px; }
-.group-badge {
-  display:flex; align-items:center; gap:.5rem;
-  padding:.55rem 1rem; border-radius:12px;
-  background:rgba(123,111,240,.1); border:1px solid rgba(123,111,240,.2);
-  font-size:.75rem; color:var(--pri-l); font-weight:600; white-space:nowrap;
-}
-
-/* hint bar */
-.hint-bar {
-  display:flex; align-items:center; gap:.75rem;
-  padding:.8rem 1.1rem; border-radius:13px;
-  background:rgba(123,111,240,.07); border:1px solid rgba(123,111,240,.18);
-  font-size:.76rem; color:var(--t2); line-height:1.5;
-  animation: fadein .5s .12s both;
-}
+.s2-hero p { font-size:.82rem;color:var(--t2);line-height:1.6;max-width:440px; }
+.group-badge { display:flex;align-items:center;gap:.5rem;padding:.55rem 1rem;border-radius:12px;font-size:.75rem;font-weight:600;white-space:nowrap; }
+.group-badge.st-badge { background:rgba(123,111,240,.1);border:1px solid rgba(123,111,240,.2);color:var(--pri-l); }
+.group-badge.mt-badge { background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);color:var(--acc); }
+.hint-bar { display:flex;align-items:center;gap:.75rem;padding:.8rem 1.1rem;border-radius:13px;background:rgba(123,111,240,.07);border:1px solid rgba(123,111,240,.18);font-size:.76rem;color:var(--t2);line-height:1.5;animation:fadein .5s .12s both; }
 .hint-bar svg { width:16px;height:16px;stroke:var(--pri-l);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
 .hint-bar strong { color:var(--pri-l); }
+.section-label { font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);margin-bottom:-.6rem;animation:fadein .5s .16s both; }
+.subjects-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:1rem; }
 
-/* section label */
-.section-label {
-  font-size:.65rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase;
-  color:var(--t3); margin-bottom:-.6rem; animation: fadein .5s .16s both;
-}
-
-/* subjects grid */
-.subjects-grid {
-  display:grid; grid-template-columns:repeat(auto-fill, minmax(275px, 1fr)); gap:1rem;
-}
-
-/* subject card — ONE CLICK NAVIGATE */
 .sub-card {
   position:relative; border-radius:18px; padding:1.3rem 1.25rem 1.1rem;
   background:var(--card-bg); border:1.5px solid var(--card-border);
   cursor:pointer; overflow:hidden;
-  transition:transform .28s cubic-bezier(.22,1,.36,1), box-shadow .28s, border-color .28s;
-  backdrop-filter:blur(14px);
-  display:flex; flex-direction:column; gap:.75rem;
-  animation: fadein .45s both;
+  transition:transform .28s cubic-bezier(.22,1,.36,1),box-shadow .28s,border-color .28s;
+  backdrop-filter:blur(14px); display:flex;flex-direction:column;gap:.75rem;
+  animation:fadein .45s both;
 }
-.sub-card::before {
-  content:''; position:absolute; inset:0; opacity:0; transition:opacity .28s; pointer-events:none;
-  background:radial-gradient(ellipse 80% 60% at 50% -10%, rgba(123,111,240,.22) 0%, transparent 65%);
-}
-.sub-card:hover {
-  border-color:rgba(123,111,240,.55);
-  transform:translateY(-5px) scale(1.015);
-  box-shadow:0 20px 52px rgba(0,0,0,.5), 0 0 44px rgba(123,111,240,.22), inset 0 1px 0 rgba(123,111,240,.18);
-}
+.sub-card::before { content:'';position:absolute;inset:0;opacity:0;transition:opacity .28s;pointer-events:none;background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(123,111,240,.22) 0%,transparent 65%); }
+.sub-card:hover { border-color:rgba(123,111,240,.55);transform:translateY(-5px) scale(1.015);box-shadow:0 20px 52px rgba(0,0,0,.5),0 0 44px rgba(123,111,240,.22),inset 0 1px 0 rgba(123,111,240,.18); }
 .sub-card:hover::before { opacity:1; }
-
-/* click flash */
 .sub-card:active { transform:scale(.97); }
+.sub-card.mt-card::before { background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(0,229,255,.18) 0%,transparent 65%); }
+.sub-card.mt-card:hover { border-color:rgba(0,229,255,.5);box-shadow:0 20px 52px rgba(0,0,0,.5),0 0 44px rgba(0,229,255,.18),inset 0 1px 0 rgba(0,229,255,.15); }
+.sub-card.mt-card .sub-icon-wrap { background:linear-gradient(135deg,rgba(0,229,255,.18),rgba(0,229,255,.04));border:1px solid rgba(0,229,255,.25);box-shadow:0 6px 20px rgba(0,229,255,.15); }
+.sub-card.mt-card .sub-code { color:var(--acc); }
+.sub-card.mt-card .sub-go { background:linear-gradient(135deg,rgba(0,229,255,.14),rgba(0,180,210,.06));border:1px solid rgba(0,229,255,.22);color:var(--acc); }
+.sub-card.mt-card:hover .sub-go { background:linear-gradient(135deg,rgba(0,229,255,.28),rgba(0,180,210,.14)); }
+.sub-card.mt-card .go-arr svg { stroke:var(--acc); }
+.sub-card.mt-card .tag { background:rgba(0,229,255,.08);border-color:rgba(0,229,255,.2);color:var(--acc); }
 
-/* icon */
-.sub-icon-wrap {
-  width:48px; height:48px; border-radius:13px;
-  display:flex; align-items:center; justify-content:center; font-size:1.4rem;
-  background:linear-gradient(135deg,rgba(123,111,240,.2),rgba(123,111,240,.05));
-  border:1px solid rgba(123,111,240,.25); box-shadow:0 6px 20px rgba(123,111,240,.18);
-  transition:transform .26s cubic-bezier(.22,1,.36,1); flex-shrink:0;
-}
+.sub-icon-wrap { width:48px;height:48px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:linear-gradient(135deg,rgba(123,111,240,.2),rgba(123,111,240,.05));border:1px solid rgba(123,111,240,.25);box-shadow:0 6px 20px rgba(123,111,240,.18);transition:transform .26s cubic-bezier(.22,1,.36,1);flex-shrink:0; }
 .sub-card:hover .sub-icon-wrap { transform:scale(1.12) rotate(-5deg); }
-
-.sub-header { display:flex; align-items:center; gap:.75rem; }
-.sub-info { display:flex; flex-direction:column; gap:.18rem; }
+.sub-header { display:flex;align-items:center;gap:.75rem; }
+.sub-info { display:flex;flex-direction:column;gap:.18rem; }
 .sub-code { font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--pri-l);font-family:'JetBrains Mono',monospace; }
 .sub-name { font-size:.87rem;font-weight:700;color:var(--t1);line-height:1.25; }
 .sub-desc { font-size:.71rem;color:var(--t2);line-height:1.55; }
-
 .sub-tags { display:flex;flex-wrap:wrap;gap:.32rem; }
 .tag { font-size:.58rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .5rem;border-radius:20px;background:rgba(123,111,240,.1);border:1px solid rgba(123,111,240,.2);color:var(--pri-l); }
 .tag.ok { background:rgba(62,207,110,.1);border-color:rgba(62,207,110,.22);color:#6be898; }
 .tag.warn { background:rgba(255,181,71,.1);border-color:rgba(255,181,71,.2);color:var(--warn); }
-
-/* go cta inside card */
-.sub-go {
-  display:flex; align-items:center; justify-content:space-between;
-  padding:.5rem .75rem; border-radius:9px;
-  font-size:.76rem; font-weight:700; color:var(--pri-l);
-  background:linear-gradient(135deg,rgba(123,111,240,.18),rgba(91,79,220,.07));
-  border:1px solid rgba(123,111,240,.22); transition:filter .26s, background .26s;
-}
-.sub-card:hover .sub-go {
-  filter:brightness(1.3);
-  background:linear-gradient(135deg,rgba(123,111,240,.32),rgba(91,79,220,.15));
-}
+.sub-go { display:flex;align-items:center;justify-content:space-between;padding:.5rem .75rem;border-radius:9px;font-size:.76rem;font-weight:700;color:var(--pri-l);background:linear-gradient(135deg,rgba(123,111,240,.18),rgba(91,79,220,.07));border:1px solid rgba(123,111,240,.22);transition:filter .26s,background .26s; }
+.sub-card:hover .sub-go { filter:brightness(1.3);background:linear-gradient(135deg,rgba(123,111,240,.32),rgba(91,79,220,.15)); }
 .go-arr svg { width:13px;height:13px;stroke:var(--pri-l);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;transition:transform .26s; }
 .sub-card:hover .go-arr svg { transform:translateX(4px); }
 
 /* ══════════════════════════════
    SCREEN 3 — SUBJECT DASHBOARD
 ══════════════════════════════ */
-#s3 .topbar { animation: fadein .4s both; }
-.s3-body {
-  width:100%; max-width:980px;
-  padding:1.8rem 2rem 4rem;
-  display:flex; flex-direction:column; gap:2rem;
-}
-
-/* subject hero */
-.s3-hero {
-  display:flex; flex-direction:column; gap:.9rem;
-  animation: fadein .45s .04s both;
-}
-.s3-subject-header {
-  display:flex; align-items:center; gap:1.2rem; flex-wrap:wrap;
-}
-.s3-big-icon {
-  width:72px; height:72px; border-radius:18px;
-  display:flex; align-items:center; justify-content:center; font-size:2rem;
-  background:linear-gradient(135deg,rgba(123,111,240,.28),rgba(123,111,240,.07));
-  border:1px solid rgba(123,111,240,.35); box-shadow:0 10px 34px rgba(123,111,240,.25);
-  flex-shrink:0;
-}
+#s3 .topbar { animation:fadein .4s both; }
+.s3-body { width:100%;max-width:980px;padding:1.8rem 2rem 4rem;display:flex;flex-direction:column;gap:2rem; }
+.s3-hero { display:flex;flex-direction:column;gap:.9rem;animation:fadein .45s .04s both; }
+.s3-subject-header { display:flex;align-items:center;gap:1.2rem;flex-wrap:wrap; }
+.s3-big-icon { width:72px;height:72px;border-radius:18px;display:flex;align-items:center;justify-content:center;font-size:2rem;background:linear-gradient(135deg,rgba(123,111,240,.28),rgba(123,111,240,.07));border:1px solid rgba(123,111,240,.35);box-shadow:0 10px 34px rgba(123,111,240,.25);flex-shrink:0; }
+.s3-big-icon.mt-icon { background:linear-gradient(135deg,rgba(0,229,255,.22),rgba(0,229,255,.06));border-color:rgba(0,229,255,.3);box-shadow:0 10px 34px rgba(0,229,255,.2); }
 .s3-title-block { display:flex;flex-direction:column;gap:.35rem; }
 .s3-code { font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--pri-l);font-family:'JetBrains Mono',monospace; }
-.s3-title { font-size:1.8rem;font-weight:900;letter-spacing:-.04em;line-height:1.1; background:linear-gradient(135deg,var(--t1) 50%,var(--pri-l)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.s3-code.mt-code { color:var(--acc); }
+.s3-title { font-size:1.8rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;background:linear-gradient(135deg,var(--t1) 50%,var(--pri-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
 .s3-subtitle { font-size:.82rem;color:var(--t2);line-height:1.55;max-width:560px; }
-
-/* stat row */
-.stat-row {
-  display:flex; gap:1rem; flex-wrap:wrap;
-  animation: fadein .45s .1s both;
-}
-.stat-card {
-  flex:1; min-width:140px; border-radius:16px; padding:1.1rem 1.2rem;
-  background:var(--card-bg); border:1px solid var(--card-border);
-  backdrop-filter:blur(14px); display:flex; flex-direction:column; gap:.4rem;
-}
+.stat-row { display:flex;gap:1rem;flex-wrap:wrap;animation:fadein .45s .1s both; }
+.stat-card { flex:1;min-width:140px;border-radius:16px;padding:1.1rem 1.2rem;background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:.4rem; }
 .stat-label { font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3); }
-.stat-value { font-size:1.6rem;font-weight:900;letter-spacing:-.04em; background:linear-gradient(135deg,var(--t1),var(--pri-l)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.stat-value { font-size:1.6rem;font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--t1),var(--pri-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
 .stat-hint { font-size:.68rem;color:var(--t2); }
-
-/* content grid */
-.content-grid {
-  display:grid; grid-template-columns:1fr 1fr; gap:1rem;
-  animation: fadein .45s .16s both;
-}
-.content-panel {
-  border-radius:18px; padding:1.4rem 1.3rem;
-  background:var(--card-bg); border:1px solid var(--card-border); backdrop-filter:blur(14px);
-  display:flex; flex-direction:column; gap:1rem;
-}
+.content-grid { display:grid;grid-template-columns:1fr 1fr;gap:1rem;animation:fadein .45s .16s both; }
+.content-panel { border-radius:18px;padding:1.4rem 1.3rem;background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:1rem; }
 .panel-head { display:flex;align-items:center;justify-content:space-between; }
 .panel-title { font-size:.78rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--t2); }
 .panel-badge { font-size:.58rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;background:rgba(123,111,240,.15);border:1px solid rgba(123,111,240,.25);color:var(--pri-l); }
-
-/* topic list */
-.topic-item {
-  display:flex; align-items:center; gap:.75rem;
-  padding:.6rem .75rem; border-radius:10px;
-  background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.055);
-  transition:border-color .22s, background .22s; cursor:pointer;
-}
+.topic-item { display:flex;align-items:center;gap:.75rem;padding:.6rem .75rem;border-radius:10px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.055);transition:border-color .22s,background .22s;cursor:pointer; }
 .topic-item:hover { background:rgba(123,111,240,.08);border-color:rgba(123,111,240,.2); }
 .topic-num { font-size:.6rem;font-weight:700;width:20px;height:20px;border-radius:6px;background:rgba(123,111,240,.15);border:1px solid rgba(123,111,240,.25);display:flex;align-items:center;justify-content:center;color:var(--pri-l);font-family:'JetBrains Mono',monospace;flex-shrink:0; }
 .topic-text { font-size:.76rem;font-weight:600;color:var(--t1);flex:1; }
 .topic-status { font-size:.58rem;padding:.15rem .45rem;border-radius:20px; }
 .ts-new { background:rgba(62,207,110,.1);border:1px solid rgba(62,207,110,.2);color:#6be898; }
 .ts-lock { background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);color:var(--t3); }
-
-/* quick actions */
-.action-btn {
-  display:flex; align-items:center; gap:.65rem;
-  padding:.75rem 1rem; border-radius:12px;
-  background:linear-gradient(135deg,rgba(123,111,240,.18),rgba(91,79,220,.07));
-  border:1px solid rgba(123,111,240,.25); cursor:pointer;
-  transition:filter .25s, transform .25s;
-}
-.action-btn:hover { filter:brightness(1.2); transform:translateX(3px); }
+.action-btn { display:flex;align-items:center;gap:.65rem;padding:.75rem 1rem;border-radius:12px;background:linear-gradient(135deg,rgba(123,111,240,.18),rgba(91,79,220,.07));border:1px solid rgba(123,111,240,.25);cursor:pointer;transition:filter .25s,transform .25s; }
+.action-btn:hover { filter:brightness(1.2);transform:translateX(3px); }
 .action-icon { width:32px;height:32px;border-radius:9px;background:rgba(123,111,240,.2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0; }
 .action-label { display:flex;flex-direction:column;gap:.12rem; }
 .action-title { font-size:.78rem;font-weight:700;color:var(--t1); }
 .action-sub { font-size:.65rem;color:var(--t2); }
 .action-arr svg { width:13px;height:13px;stroke:var(--pri-l);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;margin-left:auto; }
-
-/* start btn */
-.start-btn-wrap { animation: fadein .45s .22s both; }
-.start-btn {
-  width:100%; display:flex; align-items:center; justify-content:center; gap:.75rem;
-  padding:1rem 2rem; border-radius:16px;
-  background:linear-gradient(135deg,var(--pri),var(--pri-d));
-  color:#fff; font-size:1rem;font-weight:800;font-family:'Outfit',sans-serif;
-  cursor:pointer; border:none; outline:none; position:relative; overflow:hidden;
-  box-shadow:0 10px 34px rgba(123,111,240,.4);
-  transition:all .32s cubic-bezier(.22,1,.36,1);
-}
-.start-btn:hover { transform:translateY(-3px) scale(1.015); box-shadow:0 20px 50px rgba(123,111,240,.55); filter:brightness(1.1); }
+.start-btn-wrap { animation:fadein .45s .22s both; }
+.start-btn { width:100%;display:flex;align-items:center;justify-content:center;gap:.75rem;padding:1rem 2rem;border-radius:16px;background:linear-gradient(135deg,var(--pri),var(--pri-d));color:#fff;font-size:1rem;font-weight:800;font-family:'Outfit',sans-serif;cursor:pointer;border:none;outline:none;position:relative;overflow:hidden;box-shadow:0 10px 34px rgba(123,111,240,.4);transition:all .32s cubic-bezier(.22,1,.36,1); }
+.start-btn:hover { transform:translateY(-3px) scale(1.015);box-shadow:0 20px 50px rgba(123,111,240,.55);filter:brightness(1.1); }
 .start-btn svg { width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
-.btn-shim { position:absolute;inset:0;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.1) 50%,transparent 70%);background-size:200% 100%;animation:shim 2s ease-in-out infinite; }
 </style>
 </head>
 <body>
@@ -465,37 +463,46 @@ body {
 <div class="screen active" id="s1">
   <div class="s1-inner">
 
+    <!-- Logo -->
     <div class="logo-area">
       <div class="logo-row">
-        <div class="licon">⚡</div>
-        <div class="logo-text">SkillBridge</div>
+        <div class="s1-licon">⚡</div>
+        <div class="s1-logo-text">SkillBridge</div>
       </div>
       <div class="logo-sub">Bridge your skill gaps · Grow without limits</div>
     </div>
 
+    <!-- Heading -->
     <div class="heading-block">
-      <div class="step-pill"><div class="step-dot"></div> Step 1 of 3</div>
       <h1>Select your Technology Group</h1>
     </div>
 
+    <!-- Cards -->
     <div class="cards-row">
 
       <!-- ST -->
-      <div class="role-card st" onclick="goToSubjects()">
+      <div class="role-card st" id="card-st" onclick="selectRole('st')">
         <div class="shim"></div>
+        <div class="selected-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
         <div class="card-badge">ST</div>
-        <div class="card-icon-wrap">☀︎</div>
+        <div class="card-icon-wrap">
+          <div class="icon-ring"></div>
+          ☀︎
+        </div>
         <div>
           <div class="card-abbr">ST</div>
           <div class="card-title-text">Science and Technology Group</div>
         </div>
         <div class="feature-list">
-          <div class="feature-item"><div class="feature-dot"></div><span>Basic Electrical &amp; Electronics Engineering</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Basic Electrical &amp; Electronics Eng.</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Biology</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Engineering Chemistry</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Environmental Science</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Manufacturing Sciences</span></div>
-          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics I &amp; II</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics 1</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics 2</span></div>
         </div>
         <div class="card-cta">
           <span>Continue as ST</span>
@@ -503,13 +510,23 @@ body {
         </div>
       </div>
 
-      <div class="or-divider"><div class="or-line"></div>OR<div class="or-line"></div></div>
+      <div class="or-divider">
+        <div class="or-line"></div>
+        OR
+        <div class="or-line"></div>
+      </div>
 
       <!-- MT -->
-      <div class="role-card mt" onclick="alert('MT flow coming soon!')">
+      <div class="role-card mt" id="card-mt" onclick="selectRole('mt')">
         <div class="shim"></div>
+        <div class="selected-check">
+          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
         <div class="card-badge">MT</div>
-        <div class="card-icon-wrap">𖤓</div>
+        <div class="card-icon-wrap">
+          <div class="icon-ring"></div>
+          𖤓
+        </div>
         <div>
           <div class="card-abbr">MT</div>
           <div class="card-title-text">Management and Technology Group</div>
@@ -520,7 +537,9 @@ body {
           <div class="feature-item"><div class="feature-dot"></div><span>Engineering Graphics</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Engineering Mechanics</span></div>
           <div class="feature-item"><div class="feature-dot"></div><span>Life Skill Management</span></div>
-          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics I &amp; II · Physics</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics 1</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Mathematics 2</span></div>
+          <div class="feature-item"><div class="feature-dot"></div><span>Physics Theory</span></div>
         </div>
         <div class="card-cta">
           <span>Continue as MT</span>
@@ -529,24 +548,41 @@ body {
       </div>
 
     </div>
+
+    <!-- Proceed -->
+    <div class="proceed-wrap">
+      <button class="proceed-btn" id="proceedBtn" onclick="proceed()">
+        <div class="btn-shim"></div>
+        <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        Go to Subjects
+        <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <div class="proceed-hint" id="proceedHint">← Select a group to continue</div>
+    </div>
+
   </div>
 
-  <div class="footer-strip-s1">
+  <!-- Footer -->
+  <div class="footer-strip">
     <div class="footer-item">
       <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
       Secure &amp; encrypted
     </div>
     <div class="footer-sep"></div>
     <div class="footer-item">
-      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
-      12,400+ learners
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Group can be changed later
+    </div>
+    <div class="footer-sep"></div>
+    <div class="footer-item">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      12,400+ learners on SkillBridge
     </div>
   </div>
 </div>
 
 <!-- ══ SCREEN 2 : SUBJECT SELECTION ══ -->
 <div class="screen" id="s2">
-
   <div class="topbar">
     <div class="logo-row">
       <div class="licon">⚡</div>
@@ -557,16 +593,14 @@ body {
       Change Group
     </button>
   </div>
-
   <div class="s2-body">
-
     <div class="s2-hero">
       <div class="breadcrumb">
         <span>SkillBridge</span>
         <span class="bc-sep">›</span>
         <span>Group Selection</span>
         <span class="bc-sep">›</span>
-        <span class="bc-active">ST · Choose Subject</span>
+        <span class="bc-active" id="s2Breadcrumb">ST · Choose Subject</span>
       </div>
       <div class="hero-row">
         <div class="hero-left">
@@ -574,25 +608,20 @@ body {
           <h1>What do you want to study?</h1>
           <p>Tap any subject to jump straight into its dashboard. No confirmation needed.</p>
         </div>
-        <div class="group-badge">☀︎ &nbsp; ST · Science &amp; Technology</div>
+        <div class="group-badge st-badge" id="s2GroupBadge">☀︎ &nbsp; ST · Science &amp; Technology</div>
       </div>
     </div>
-
     <div class="hint-bar">
       <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
       <span><strong>One click, instant access.</strong> Tap the subject you want — you'll land directly on its study dashboard.</span>
     </div>
-
-    <div class="section-label">ST Group — 7 Subjects</div>
-
+    <div class="section-label" id="s2SectionLabel">ST Group — 7 Subjects</div>
     <div class="subjects-grid" id="subjectsGrid"></div>
-
   </div>
 </div>
 
 <!-- ══ SCREEN 3 : SUBJECT DASHBOARD ══ -->
 <div class="screen" id="s3">
-
   <div class="topbar">
     <div class="logo-row">
       <div class="licon">⚡</div>
@@ -603,15 +632,10 @@ body {
       All Subjects
     </button>
   </div>
-
   <div class="s3-body">
-
     <div class="s3-hero" id="s3Hero"></div>
-
     <div class="stat-row" id="s3Stats"></div>
-
     <div class="content-grid" id="s3Content"></div>
-
     <div class="start-btn-wrap">
       <button class="start-btn" id="s3StartBtn">
         <div class="btn-shim"></div>
@@ -620,121 +644,90 @@ body {
         <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </button>
     </div>
-
   </div>
 </div>
 
 <script>
 /* ─── DATA ─── */
-const SUBJECTS = [
-  {
-    id:'beee', icon:'⚡', code:'ST-101',
-    name:'Basic Electrical & Electronics Engineering',
-    desc:'Fundamentals of circuits, components, and electronic systems for engineering applications.',
-    tags:['Core','Lab Included'], tagTypes:['','ok'],
-    topics:['Electric Circuits & Ohm\'s Law','Kirchhoff\'s Laws','AC & DC Analysis','Semiconductor Devices','Operational Amplifiers','Digital Logic Gates','Transformers & Motors'],
-    credits:4, duration:'48 hrs', enrolled:3820,
-    actions:[
-      { icon:'📖', title:'Lecture Notes', sub:'14 PDFs available' },
-      { icon:'🧪', title:'Lab Experiments', sub:'8 practicals' },
-      { icon:'📝', title:'Practice Questions', sub:'120 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'22 videos · 6.5 hrs' },
-    ]
-  },
-  {
-    id:'bio', icon:'🧬', code:'ST-102',
-    name:'Biology',
-    desc:'Study of life sciences covering cell biology, genetics, ecology, and living systems.',
-    tags:['Core','Theory'], tagTypes:['',''],
-    topics:['Cell Structure & Function','Genetics & Heredity','Plant Physiology','Human Anatomy','Ecology & Environment','Evolution','Biotechnology Basics'],
-    credits:3, duration:'36 hrs', enrolled:2940,
-    actions:[
-      { icon:'📖', title:'Textbook Chapters', sub:'12 chapters' },
-      { icon:'🖼️', title:'Diagrams & Charts', sub:'80+ illustrations' },
-      { icon:'📝', title:'Practice Questions', sub:'90 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'18 videos · 5 hrs' },
-    ]
-  },
-  {
-    id:'echem', icon:'⚗️', code:'ST-103',
-    name:'Engineering Chemistry',
-    desc:'Applied chemistry principles relevant to industrial processes, materials, and corrosion.',
-    tags:['Core','Lab Included'], tagTypes:['','ok'],
-    topics:['Atomic Structure & Bonding','Thermodynamics','Electrochemistry','Corrosion & Prevention','Polymers','Water Treatment','Fuels & Combustion'],
-    credits:4, duration:'44 hrs', enrolled:3210,
-    actions:[
-      { icon:'📖', title:'Lecture Notes', sub:'11 modules' },
-      { icon:'🧪', title:'Lab Manual', sub:'10 experiments' },
-      { icon:'📝', title:'Practice Questions', sub:'110 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'20 videos · 5.8 hrs' },
-    ]
-  },
-  {
-    id:'env', icon:'🌿', code:'ST-104',
-    name:'Environmental Science',
-    desc:'Interdisciplinary study of the environment, sustainability, and ecological impact of technology.',
-    tags:['Elective','Theory'], tagTypes:['warn',''],
-    topics:['Ecosystem Dynamics','Air & Water Pollution','Climate Change','Biodiversity','Waste Management','Environmental Laws','Sustainable Development'],
-    credits:2, duration:'28 hrs', enrolled:1760,
-    actions:[
-      { icon:'📖', title:'Study Material', sub:'9 units' },
-      { icon:'📊', title:'Case Studies', sub:'15 real-world cases' },
-      { icon:'📝', title:'Practice Questions', sub:'75 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'14 videos · 4 hrs' },
-    ]
-  },
-  {
-    id:'mfg', icon:'⚙️', code:'ST-105',
-    name:'Manufacturing Sciences',
-    desc:'Principles of production, machining, and manufacturing processes in engineering industries.',
-    tags:['Core','Lab Included'], tagTypes:['','ok'],
-    topics:['Casting & Forming','Machining Processes','Welding Technology','CNC & Automation','Metrology & Quality','Material Science','Production Planning'],
-    credits:4, duration:'48 hrs', enrolled:2580,
-    actions:[
-      { icon:'📖', title:'Lecture Notes', sub:'13 modules' },
-      { icon:'🧪', title:'Workshop Practice', sub:'12 sessions' },
-      { icon:'📝', title:'Practice Questions', sub:'100 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'24 videos · 7 hrs' },
-    ]
-  },
-  {
-    id:'math1', icon:'∑', code:'ST-106',
-    name:'Mathematics — I',
-    desc:'Differential calculus, matrices, and sequences foundational to engineering problem solving.',
-    tags:['Core','High Weightage'], tagTypes:['','warn'],
-    topics:['Differential Calculus','Matrices & Determinants','Sequences & Series','Partial Derivatives','Maxima & Minima','Taylor\'s Theorem','Multiple Integrals'],
-    credits:4, duration:'52 hrs', enrolled:4200,
-    actions:[
-      { icon:'📖', title:'Theory & Proofs', sub:'16 chapters' },
-      { icon:'🔢', title:'Solved Examples', sub:'200+ worked solutions' },
-      { icon:'📝', title:'Practice Questions', sub:'180 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'28 videos · 8 hrs' },
-    ]
-  },
-  {
-    id:'math2', icon:'∫', code:'ST-107',
-    name:'Mathematics — II',
-    desc:'Integral calculus, differential equations, and transforms essential for advanced engineering.',
-    tags:['Core','High Weightage'], tagTypes:['','warn'],
-    topics:['Definite & Indefinite Integrals','Differential Equations','Laplace Transforms','Fourier Series','Vector Calculus','Complex Numbers','Numerical Methods'],
-    credits:4, duration:'52 hrs', enrolled:4100,
-    actions:[
-      { icon:'📖', title:'Theory & Proofs', sub:'15 chapters' },
-      { icon:'🔢', title:'Solved Examples', sub:'220+ worked solutions' },
-      { icon:'📝', title:'Practice Questions', sub:'175 questions' },
-      { icon:'🎬', title:'Video Lectures', sub:'30 videos · 8.5 hrs' },
-    ]
-  },
+const ST_SUBJECTS = [
+  { id:'beee',icon:'⚡',code:'ST-101',group:'st',name:'Basic Electrical & Electronics Engineering',desc:'Fundamentals of circuits, components, and electronic systems for engineering applications.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:["Electric Circuits & Ohm's Law","Kirchhoff's Laws","AC & DC Analysis","Semiconductor Devices","Operational Amplifiers","Digital Logic Gates","Transformers & Motors"],credits:4,duration:'48 hrs',enrolled:3820,actions:[{icon:'📖',title:'Lecture Notes',sub:'14 PDFs available'},{icon:'🧪',title:'Lab Experiments',sub:'8 practicals'},{icon:'📝',title:'Practice Questions',sub:'120 questions'},{icon:'🎬',title:'Video Lectures',sub:'22 videos · 6.5 hrs'}] },
+  { id:'bio',icon:'🧬',code:'ST-102',group:'st',name:'Biology',desc:'Study of life sciences covering cell biology, genetics, ecology, and living systems.',tags:['Core','Theory'],tagTypes:['',''],topics:['Cell Structure & Function','Genetics & Heredity','Plant Physiology','Human Anatomy','Ecology & Environment','Evolution','Biotechnology Basics'],credits:3,duration:'36 hrs',enrolled:2940,actions:[{icon:'📖',title:'Textbook Chapters',sub:'12 chapters'},{icon:'🖼️',title:'Diagrams & Charts',sub:'80+ illustrations'},{icon:'📝',title:'Practice Questions',sub:'90 questions'},{icon:'🎬',title:'Video Lectures',sub:'18 videos · 5 hrs'}] },
+  { id:'echem',icon:'⚗️',code:'ST-103',group:'st',name:'Engineering Chemistry',desc:'Applied chemistry principles relevant to industrial processes, materials, and corrosion.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:['Atomic Structure & Bonding','Thermodynamics','Electrochemistry','Corrosion & Prevention','Polymers','Water Treatment','Fuels & Combustion'],credits:4,duration:'44 hrs',enrolled:3210,actions:[{icon:'📖',title:'Lecture Notes',sub:'11 modules'},{icon:'🧪',title:'Lab Manual',sub:'10 experiments'},{icon:'📝',title:'Practice Questions',sub:'110 questions'},{icon:'🎬',title:'Video Lectures',sub:'20 videos · 5.8 hrs'}] },
+  { id:'env',icon:'🌿',code:'ST-104',group:'st',name:'Environmental Science',desc:'Interdisciplinary study of the environment, sustainability, and ecological impact of technology.',tags:['Elective','Theory'],tagTypes:['warn',''],topics:['Ecosystem Dynamics','Air & Water Pollution','Climate Change','Biodiversity','Waste Management','Environmental Laws','Sustainable Development'],credits:2,duration:'28 hrs',enrolled:1760,actions:[{icon:'📖',title:'Study Material',sub:'9 units'},{icon:'📊',title:'Case Studies',sub:'15 real-world cases'},{icon:'📝',title:'Practice Questions',sub:'75 questions'},{icon:'🎬',title:'Video Lectures',sub:'14 videos · 4 hrs'}] },
+  { id:'mfg',icon:'⚙️',code:'ST-105',group:'st',name:'Manufacturing Sciences',desc:'Principles of production, machining, and manufacturing processes in engineering industries.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:['Casting & Forming','Machining Processes','Welding Technology','CNC & Automation','Metrology & Quality','Material Science','Production Planning'],credits:4,duration:'48 hrs',enrolled:2580,actions:[{icon:'📖',title:'Lecture Notes',sub:'13 modules'},{icon:'🧪',title:'Workshop Practice',sub:'12 sessions'},{icon:'📝',title:'Practice Questions',sub:'100 questions'},{icon:'🎬',title:'Video Lectures',sub:'24 videos · 7 hrs'}] },
+  { id:'st-math1',icon:'∑',code:'ST-106',group:'st',name:'Mathematics — I',desc:'Differential calculus, matrices, and sequences foundational to engineering problem solving.',tags:['Core','High Weightage'],tagTypes:['','warn'],topics:['Differential Calculus','Matrices & Determinants','Sequences & Series','Partial Derivatives','Maxima & Minima',"Taylor's Theorem",'Multiple Integrals'],credits:4,duration:'52 hrs',enrolled:4200,actions:[{icon:'📖',title:'Theory & Proofs',sub:'16 chapters'},{icon:'🔢',title:'Solved Examples',sub:'200+ worked solutions'},{icon:'📝',title:'Practice Questions',sub:'180 questions'},{icon:'🎬',title:'Video Lectures',sub:'28 videos · 8 hrs'}] },
+  { id:'st-math2',icon:'∫',code:'ST-107',group:'st',name:'Mathematics — II',desc:'Integral calculus, differential equations, and transforms essential for advanced engineering.',tags:['Core','High Weightage'],tagTypes:['','warn'],topics:['Definite & Indefinite Integrals','Differential Equations','Laplace Transforms','Fourier Series','Vector Calculus','Complex Numbers','Numerical Methods'],credits:4,duration:'52 hrs',enrolled:4100,actions:[{icon:'📖',title:'Theory & Proofs',sub:'15 chapters'},{icon:'🔢',title:'Solved Examples',sub:'220+ worked solutions'},{icon:'📝',title:'Practice Questions',sub:'175 questions'},{icon:'🎬',title:'Video Lectures',sub:'30 videos · 8.5 hrs'}] },
 ];
+
+const MT_SUBJECTS = [
+  { id:'comm',icon:'🗣️',code:'MT-101',group:'mt',name:'Communication Skills',desc:'Develops verbal, written, and interpersonal communication skills essential for professional environments.',tags:['Core','Theory'],tagTypes:['',''],topics:['Basics of Communication','Non-verbal Communication','Technical Writing','Presentation Skills','Group Discussion','Email & Report Writing','Interview Skills'],credits:2,duration:'28 hrs',enrolled:2800,actions:[{icon:'📖',title:'Study Material',sub:'10 modules'},{icon:'🎤',title:'Speaking Exercises',sub:'15 activities'},{icon:'📝',title:'Practice Questions',sub:'80 questions'},{icon:'🎬',title:'Video Lectures',sub:'16 videos · 4.5 hrs'}] },
+  { id:'cprog',icon:'💻',code:'MT-102',group:'mt',name:'C Programming',desc:'Foundational programming concepts using the C language, covering syntax, logic, and data structures.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:['Introduction to C','Data Types & Operators','Control Structures','Functions & Recursion','Arrays & Strings','Pointers & Memory','File Handling'],credits:4,duration:'48 hrs',enrolled:3600,actions:[{icon:'📖',title:'Lecture Notes',sub:'14 modules'},{icon:'🖥️',title:'Lab Programs',sub:'20 practicals'},{icon:'📝',title:'Practice Questions',sub:'150 questions'},{icon:'🎬',title:'Video Lectures',sub:'26 videos · 7.5 hrs'}] },
+  { id:'engraph',icon:'📐',code:'MT-103',group:'mt',name:'Engineering Graphics',desc:'Principles of technical drawing, projection, and CAD fundamentals for engineering communication.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:['Drawing Instruments & Standards','Orthographic Projection','Isometric Views','Section Views','Development of Surfaces','AutoCAD Basics','Assembly Drawing'],credits:3,duration:'40 hrs',enrolled:2400,actions:[{icon:'📖',title:'Drawing Sheets',sub:'18 exercises'},{icon:'🖥️',title:'CAD Tutorials',sub:'10 practicals'},{icon:'📝',title:'Practice Drawings',sub:'60 problems'},{icon:'🎬',title:'Video Lectures',sub:'20 videos · 6 hrs'}] },
+  { id:'engmech',icon:'⚖️',code:'MT-104',group:'mt',name:'Engineering Mechanics',desc:'Static and dynamic analysis of forces, equilibrium, and motion in mechanical systems.',tags:['Core','High Weightage'],tagTypes:['','warn'],topics:['Force Systems & Resultants','Equilibrium of Bodies','Friction','Centroid & Moment of Inertia','Kinematics of Particles','Dynamics','Work, Energy & Power'],credits:4,duration:'48 hrs',enrolled:3100,actions:[{icon:'📖',title:'Lecture Notes',sub:'15 modules'},{icon:'🔢',title:'Solved Examples',sub:'180+ worked solutions'},{icon:'📝',title:'Practice Questions',sub:'160 questions'},{icon:'🎬',title:'Video Lectures',sub:'25 videos · 7 hrs'}] },
+  { id:'lifeskill',icon:'🌟',code:'MT-105',group:'mt',name:'Life Skill Management',desc:'Personal development, time management, stress handling, and professional ethics for career readiness.',tags:['Elective','Theory'],tagTypes:['warn',''],topics:['Self Awareness','Goal Setting & Planning','Time Management','Stress Management','Team Building','Leadership Skills','Professional Ethics'],credits:2,duration:'24 hrs',enrolled:1900,actions:[{icon:'📖',title:'Study Material',sub:'8 units'},{icon:'📊',title:'Case Studies',sub:'12 real-world scenarios'},{icon:'📝',title:'Practice Questions',sub:'60 questions'},{icon:'🎬',title:'Video Lectures',sub:'14 videos · 3.5 hrs'}] },
+  { id:'mt-math1',icon:'∑',code:'MT-106',group:'mt',name:'Mathematics — I',desc:'Differential calculus, matrices, and sequences foundational to engineering problem solving.',tags:['Core','High Weightage'],tagTypes:['','warn'],topics:['Differential Calculus','Matrices & Determinants','Sequences & Series','Partial Derivatives','Maxima & Minima',"Taylor's Theorem",'Multiple Integrals'],credits:4,duration:'52 hrs',enrolled:3900,actions:[{icon:'📖',title:'Theory & Proofs',sub:'16 chapters'},{icon:'🔢',title:'Solved Examples',sub:'200+ worked solutions'},{icon:'📝',title:'Practice Questions',sub:'180 questions'},{icon:'🎬',title:'Video Lectures',sub:'28 videos · 8 hrs'}] },
+  { id:'mt-math2',icon:'∫',code:'MT-107',group:'mt',name:'Mathematics — II',desc:'Integral calculus, differential equations, and transforms essential for advanced engineering.',tags:['Core','High Weightage'],tagTypes:['','warn'],topics:['Definite & Indefinite Integrals','Differential Equations','Laplace Transforms','Fourier Series','Vector Calculus','Complex Numbers','Numerical Methods'],credits:4,duration:'52 hrs',enrolled:3800,actions:[{icon:'📖',title:'Theory & Proofs',sub:'15 chapters'},{icon:'🔢',title:'Solved Examples',sub:'220+ worked solutions'},{icon:'📝',title:'Practice Questions',sub:'175 questions'},{icon:'🎬',title:'Video Lectures',sub:'30 videos · 8.5 hrs'}] },
+  { id:'physics',icon:'🔭',code:'MT-108',group:'mt',name:'Physics',desc:'Core physics principles covering mechanics, waves, optics, and modern physics for engineering applications.',tags:['Core','Lab Included'],tagTypes:['','ok'],topics:['Mechanics & Kinematics','Oscillations & Waves','Optics & Light','Thermodynamics','Electrostatics','Modern Physics','Quantum Basics'],credits:4,duration:'48 hrs',enrolled:2900,actions:[{icon:'📖',title:'Lecture Notes',sub:'14 modules'},{icon:'🧪',title:'Lab Experiments',sub:'10 practicals'},{icon:'📝',title:'Practice Questions',sub:'130 questions'},{icon:'🎬',title:'Video Lectures',sub:'24 videos · 6.5 hrs'}] },
+];
+
+/* ─── STATE ─── */
+let currentGroup = 'st';
+let selected = null;
+
+/* ─── SCREEN 1 LOGIC ─── */
+window.selectRole = function(role) {
+  selected = role;
+  document.getElementById('card-st').classList.remove('selected');
+  document.getElementById('card-mt').classList.remove('selected');
+  document.getElementById('card-' + role).classList.add('selected');
+
+  var btn = document.getElementById('proceedBtn');
+  btn.classList.add('active');
+  btn.classList.toggle('mt-mode', role === 'mt');
+
+  var hint = document.getElementById('proceedHint');
+  if (role === 'st') {
+    hint.textContent = '✓ ST group selected — ready to explore!';
+    hint.style.color = 'var(--pri-l)';
+  } else {
+    hint.textContent = '✓ MT group selected — ready to explore!';
+    hint.style.color = 'var(--acc)';
+  }
+};
+
+window.proceed = function() {
+  if (!selected) return;
+  var btn = document.getElementById('proceedBtn');
+  btn.style.transform = 'scale(.96)';
+  setTimeout(function() {
+    btn.style.transform = '';
+    goToSubjects(selected);
+  }, 200);
+};
 
 /* ─── RENDER SUBJECT GRID ─── */
 function renderGrid() {
+  const subjects = currentGroup === 'st' ? ST_SUBJECTS : MT_SUBJECTS;
+  const isMT = currentGroup === 'mt';
+
+  document.getElementById('s2Breadcrumb').textContent =
+    isMT ? 'MT · Choose Subject' : 'ST · Choose Subject';
+
+  const badge = document.getElementById('s2GroupBadge');
+  badge.className = 'group-badge ' + (isMT ? 'mt-badge' : 'st-badge');
+  badge.innerHTML = isMT
+    ? '𖤓 &nbsp; MT · Management &amp; Technology'
+    : '☀︎ &nbsp; ST · Science &amp; Technology';
+
+  document.getElementById('s2SectionLabel').textContent =
+    isMT ? `MT Group — ${MT_SUBJECTS.length} Subjects` : `ST Group — ${ST_SUBJECTS.length} Subjects`;
+
   const grid = document.getElementById('subjectsGrid');
   grid.innerHTML = '';
-  SUBJECTS.forEach((s, i) => {
-    const tagsHTML = s.tags.map((t,ti) => `<span class="tag ${s.tagTypes[ti]}">${t}</span>`).join('');
+  subjects.forEach((s, i) => {
+    const tagsHTML = s.tags.map((t, ti) => `<span class="tag ${s.tagTypes[ti]}">${t}</span>`).join('');
     const div = document.createElement('div');
-    div.className = 'sub-card';
+    div.className = 'sub-card' + (isMT ? ' mt-card' : '');
     div.style.animationDelay = (i * 0.055) + 's';
     div.onclick = () => openSubject(s.id);
     div.innerHTML = `
@@ -751,91 +744,58 @@ function renderGrid() {
       <div class="sub-go">
         <span>Study this subject</span>
         <div class="go-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-      </div>
-    `;
+      </div>`;
     grid.appendChild(div);
   });
 }
 
 /* ─── OPEN SUBJECT DASHBOARD ─── */
 function openSubject(id) {
-  const s = SUBJECTS.find(x => x.id === id);
+  const s = [...ST_SUBJECTS, ...MT_SUBJECTS].find(x => x.id === id);
+  const isMT = s.group === 'mt';
+  const groupLabel = isMT ? 'MT Group' : 'ST Group';
 
-  /* hero */
   document.getElementById('s3Hero').innerHTML = `
     <div class="s3-subject-header">
-      <div class="s3-big-icon">${s.icon}</div>
+      <div class="s3-big-icon${isMT ? ' mt-icon' : ''}">${s.icon}</div>
       <div class="s3-title-block">
-        <div class="s3-code">${s.code} · ST Group</div>
+        <div class="s3-code${isMT ? ' mt-code' : ''}">${s.code} · ${groupLabel}</div>
         <div class="s3-title">${s.name}</div>
       </div>
     </div>
-    <div class="s3-subtitle">${s.desc} Dive into curated notes, video lectures, and practice questions designed for first-year engineering students.</div>
-  `;
+    <div class="s3-subtitle">${s.desc} Dive into curated notes, video lectures, and practice questions designed for first-year engineering students.</div>`;
 
-  /* stats */
   document.getElementById('s3Stats').innerHTML = `
-    <div class="stat-card">
-      <div class="stat-label">Credits</div>
-      <div class="stat-value">${s.credits}</div>
-      <div class="stat-hint">Credit hours</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Duration</div>
-      <div class="stat-value">${s.duration}</div>
-      <div class="stat-hint">Total lecture time</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Topics</div>
-      <div class="stat-value">${s.topics.length}</div>
-      <div class="stat-hint">Core units</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Enrolled</div>
-      <div class="stat-value">${s.enrolled.toLocaleString()}</div>
-      <div class="stat-hint">Active learners</div>
-    </div>
-  `;
+    <div class="stat-card"><div class="stat-label">Credits</div><div class="stat-value">${s.credits}</div><div class="stat-hint">Credit hours</div></div>
+    <div class="stat-card"><div class="stat-label">Duration</div><div class="stat-value">${s.duration}</div><div class="stat-hint">Total lecture time</div></div>
+    <div class="stat-card"><div class="stat-label">Topics</div><div class="stat-value">${s.topics.length}</div><div class="stat-hint">Core units</div></div>
+    <div class="stat-card"><div class="stat-label">Enrolled</div><div class="stat-value">${s.enrolled.toLocaleString()}</div><div class="stat-hint">Active learners</div></div>`;
 
-  /* content panels */
-  const topicsHTML = s.topics.map((t,i) => `
+  const topicsHTML = s.topics.map((t, i) => `
     <div class="topic-item">
       <div class="topic-num">${String(i+1).padStart(2,'0')}</div>
       <div class="topic-text">${t}</div>
       <span class="topic-status ${i < 2 ? 'ts-new' : 'ts-lock'}">${i < 2 ? 'New' : '🔒'}</span>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   const actionsHTML = s.actions.map(a => `
     <div class="action-btn">
       <div class="action-icon">${a.icon}</div>
-      <div class="action-label">
-        <div class="action-title">${a.title}</div>
-        <div class="action-sub">${a.sub}</div>
-      </div>
+      <div class="action-label"><div class="action-title">${a.title}</div><div class="action-sub">${a.sub}</div></div>
       <div class="action-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
-    </div>
-  `).join('');
+    </div>`).join('');
 
   document.getElementById('s3Content').innerHTML = `
     <div class="content-panel">
-      <div class="panel-head">
-        <div class="panel-title">Syllabus Topics</div>
-        <div class="panel-badge">${s.topics.length} Units</div>
-      </div>
+      <div class="panel-head"><div class="panel-title">Syllabus Topics</div><div class="panel-badge">${s.topics.length} Units</div></div>
       ${topicsHTML}
     </div>
     <div class="content-panel">
-      <div class="panel-head">
-        <div class="panel-title">Study Resources</div>
-        <div class="panel-badge">4 Types</div>
-      </div>
+      <div class="panel-head"><div class="panel-title">Study Resources</div><div class="panel-badge">4 Types</div></div>
       ${actionsHTML}
-    </div>
-  `;
+    </div>`;
 
   document.getElementById('s3StartBtn').onclick = () => alert(`Starting ${s.name}!\n\n(Connect your LMS here.)`);
-
   goTo('s3', 's2');
 }
 
@@ -852,7 +812,11 @@ function goTo(show, hide) {
   }, 420);
 }
 
-function goToSubjects() { goTo('s2','s1'); }
+function goToSubjects(group) {
+  currentGroup = group;
+  renderGrid();
+  goTo('s2', 's1');
+}
 
 /* ─── INIT ─── */
 renderGrid();
