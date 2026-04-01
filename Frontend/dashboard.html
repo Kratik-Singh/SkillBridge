@@ -892,45 +892,77 @@ async function loadXP(){
 
     const xp = data.xp || 0;
     const streak = data.streak || 0;
+
     const maxXP = 5000;
 
-    document.getElementById("xpValue").innerText = xp + " / " + maxXP;
-    document.getElementById("streak").innerText = streak + " Days";
+    document.getElementById("xpValue").innerText =
+      xp + " / " + maxXP;
 
-    const percent = Math.min((xp/maxXP)*100,100);
+    document.getElementById("streak").innerText =
+      streak + " Days";
 
-    document.getElementById("xpBar").style.width = percent + "%";
+    const percent =
+      Math.min((xp/maxXP)*100,100);
+
+    document.getElementById("xpBar").style.width =
+      percent + "%";
 
   }catch(err){
+
     console.log("XP error:",err);
+
   }
 
 }
 
 
-/* Visit XP */
+/* ---------- DAILY VISIT XP (SAFE) ---------- */
 
 async function sendVisitXP(){
 
-  await fetch(`${BACKEND_URL}/api/xp/visit`,{
-    method:"POST",
-    headers:{
-      Authorization:"Bearer "+token
-    }
-  });
+  try{
 
-  loadXP();
+    // Prevent multiple visits same day
+    const todayKey =
+      "visit_" +
+      new Date().toDateString();
+
+    if(localStorage.getItem(todayKey)){
+      return;
+    }
+
+    await fetch(`${BACKEND_URL}/api/xp/visit`,{
+      method:"POST",
+      headers:{
+        Authorization:"Bearer "+token
+      }
+    });
+
+    localStorage.setItem(todayKey,"done");
+
+    loadXP();
+
+  }catch(err){
+
+    console.log("Visit XP error:",err);
+
+  }
 
 }
 
 
-/* Active XP per minute */
+/* ---------- ACTIVE XP (EVERY 60 SEC) ---------- */
 
 function startActiveTracking(){
 
   setInterval(async ()=>{
 
-    if(document.visibilityState === "visible"){
+    try{
+
+      // Only track when tab visible
+      if(document.visibilityState !== "visible"){
+        return;
+      }
 
       await fetch(`${BACKEND_URL}/api/xp/active`,{
         method:"POST",
@@ -939,7 +971,14 @@ function startActiveTracking(){
         }
       });
 
-      loadXP();
+      // Refresh UI every 3 minutes instead
+      if(Date.now() % (3*60000) < 60000){
+        loadXP();
+      }
+
+    }catch(err){
+
+      console.log("Active XP error:",err);
 
     }
 

@@ -4,70 +4,130 @@ const router = express.Router();
 const User = require("../models/user");
 const auth = require("../middleware/authMiddleware");
 
-/* -------- VISIT STREAK -------- */
+/* ---------- Helper Functions ---------- */
 
-router.post("/visit", auth, async (req,res)=>{
+// Check if two dates are same day
+function isSameDay(d1, d2) {
+  return (
+    d1.getFullYear() === d2.getFullYear() &&
+    d1.getMonth() === d2.getMonth() &&
+    d1.getDate() === d2.getDate()
+  );
+}
 
-  try{
+// Get day difference
+function getDayDiff(d1, d2) {
+  return Math.floor(
+    (d1 - d2) / (1000 * 60 * 60 * 24)
+  );
+}
+
+/* ---------- DAILY VISIT (SAFE) ---------- */
+
+router.post("/visit", auth, async (req, res) => {
+
+  try {
 
     const user = await User.findById(req.user.id);
 
     const today = new Date();
-    const last = user.lastVisit;
+    const lastVisit = user.lastVisit;
 
-    if(!last){
+    // 🚫 Already visited today
+    if (lastVisit && isSameDay(today, lastVisit)) {
+
+      return res.json({
+        message: "Already visited today",
+        streak: user.streak || 0,
+        xp: user.xp || 0,
+        reward: 0
+      });
+
+    }
+
+    // First visit ever
+    if (!lastVisit) {
 
       user.streak = 1;
 
-    }else{
+    } else {
 
-      const diff = Math.floor((today - last) / (1000*60*60*24));
+      const diff = getDayDiff(today, lastVisit);
 
-      if(diff === 1){
+      if (diff === 1) {
+
+        // Continue streak
         user.streak += 1;
-      }
 
-      if(diff > 1){
+      } else if (diff > 1) {
+
+        // Missed day → reset
         user.streak = 1;
+
       }
 
     }
 
     user.lastVisit = today;
 
-    /* XP reward based on streak */
+    /* XP reward logic */
 
     let reward = 10;
 
-    if(user.streak >= 75) reward = 200;
-    else if(user.streak >= 50) reward = 120;
-    else if(user.streak >= 25) reward = 70;
-    else if(user.streak >= 5) reward = 30;
+    if (user.streak >= 75) reward = 200;
+    else if (user.streak >= 50) reward = 120;
+    else if (user.streak >= 25) reward = 70;
+    else if (user.streak >= 5) reward = 30;
 
     user.xp += reward;
 
     await user.save();
 
     res.json({
-      streak:user.streak,
-      xp:user.xp,
+      message: "Daily reward claimed",
+      streak: user.streak,
+      xp: user.xp,
       reward
     });
 
-  }catch(err){
-    res.status(500).json({error:err.message});
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
 
 });
 
 
-/* -------- ACTIVE TIME XP -------- */
+/* ---------- ACTIVE TIME XP (ANTI-SPAM) ---------- */
 
-router.post("/active", auth, async (req,res)=>{
+router.post("/active", auth, async (req, res) => {
 
-  try{
+  try {
 
     const user = await User.findById(req.user.id);
+
+    const now = new Date();
+
+    // Prevent rapid XP farming
+    if (user.lastActiveXP) {
+
+      const diffSeconds =
+        (now - user.lastActiveXP) / 1000;
+
+      // Allow only every 60 seconds
+      if (diffSeconds < 60) {
+
+        return res.json({
+          message: "XP cooldown active",
+          xp: user.xp
+        });
+
+      }
+
+    }
 
     user.totalMinutes += 1;
 
@@ -75,24 +135,31 @@ router.post("/active", auth, async (req,res)=>{
 
     user.xp += xpEarned;
 
+    user.lastActiveXP = now;
+
     await user.save();
 
     res.json({
-      xp:user.xp
+      message: "Active XP added",
+      xp: user.xp
     });
 
-  }catch(err){
-    res.status(500).json({error:err.message});
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
 
 });
 
 
-/* -------- GET CURRENT XP -------- */
+/* ---------- GET USER XP ---------- */
 
-router.get("/me", auth, async (req,res)=>{
+router.get("/me", auth, async (req, res) => {
 
-  try{
+  try {
 
     const user = await User.findById(req.user.id);
 
@@ -102,25 +169,30 @@ router.get("/me", auth, async (req,res)=>{
       totalMinutes: user.totalMinutes || 0
     });
 
-  }catch(err){
-    res.status(500).json({error:err.message});
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
 
 });
 
-/* -------- LEADERBOARD -------- */
 
-router.get("/leaderboard", auth, async (req,res)=>{
+/* ---------- LEADERBOARD ---------- */
 
-  try{
+router.get("/leaderboard", auth, async (req, res) => {
 
-    // Get top 10 users sorted by XP
+  try {
+
+    // Top 10 users
     const users = await User.find()
       .sort({ xp: -1 })
       .limit(10)
       .select("name xp profilePicture");
 
-    // Get current user rank
+    // Find current rank
     const allUsers = await User.find()
       .sort({ xp: -1 })
       .select("_id");
@@ -135,11 +207,14 @@ router.get("/leaderboard", auth, async (req,res)=>{
       myRank: rank
     });
 
-  }catch(err){
-    res.status(500).json({error:err.message});
+  } catch (err) {
+
+    res.status(500).json({
+      error: err.message
+    });
+
   }
 
 });
-
 
 module.exports = router;

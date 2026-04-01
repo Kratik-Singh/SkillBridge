@@ -40,24 +40,28 @@ const userSchema = new mongoose.Schema({
     default: "student"
   },
 
-  xp: {
-  type: Number,
-  default: 0
-  },
-
-  streak: {
-  type: Number,
-  default: 0
-  },
-
   lastVisit: {
   type: Date
-  },
+},
 
-  totalMinutes: {
+lastActiveXP: {
+  type: Date
+},
+
+xp: {
   type: Number,
   default: 0
-  }
+},
+
+streak: {
+  type: Number,
+  default: 0
+},
+
+totalMinutes: {
+  type: Number,
+  default: 0
+}
 
 }, { timestamps: true });
 
