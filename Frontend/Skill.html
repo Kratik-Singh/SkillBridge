@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge — Resources</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --base: #04060f;
+  --pri: #7B6FF0;
+  --pri-d: #5a4fd4;
+  --pri-l: #a99bf7;
+  --acc: #00e5ff;
+  --acc2: #ff6fd8;
+  --yt: #FF0000;
+  --yt-d: #cc0000;
+  --ok: #3ecf6e;
+  --warn: #ffb547;
+  --t1: #eef0f8;
+  --t2: #8b95b5;
+  --t3: #3d4560;
+  --card-bg: rgba(255,255,255,.042);
+  --card-border: rgba(255,255,255,.09);
+}
+
+*,*::before,*::after { margin:0; padding:0; box-sizing:border-box; }
+html { height:100%; overflow:hidden; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--base);
+  color: var(--t1);
+  height: 100%;
+  overflow: hidden;
+}
+
+/* ─── BACKGROUND ─── */
+.bg { position:fixed; inset:0; z-index:0; pointer-events:none; overflow:hidden; }
+.aurora {
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 70% 55% at 75% -5%, rgba(91,79,220,.45) 0%, transparent 55%),
+    radial-gradient(ellipse 55% 45% at -5% 85%, rgba(0,200,230,.22) 0%, transparent 52%),
+    radial-gradient(ellipse 45% 40% at 50% 105%, rgba(255,111,216,.14) 0%, transparent 55%);
+  animation: aurora-shift 20s ease-in-out infinite alternate;
+}
+@keyframes aurora-shift {
+  0%   { filter: hue-rotate(0deg) brightness(1); }
+  50%  { filter: hue-rotate(12deg) brightness(1.06); }
+  100% { filter: hue-rotate(-8deg) brightness(.96); }
+}
+.bgrid {
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(123,111,240,.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(123,111,240,.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.orb { position:absolute; border-radius:50%; filter:blur(90px); animation:odrift ease-in-out infinite; }
+.o1 { width:600px;height:600px;background:radial-gradient(circle,rgba(91,79,220,.35),transparent 68%);top:-250px;right:-150px;animation-duration:22s; }
+.o2 { width:500px;height:500px;background:radial-gradient(circle,rgba(0,210,240,.2),transparent 68%);bottom:-180px;left:-150px;animation-duration:18s;animation-delay:-7s; }
+.o3 { width:350px;height:350px;background:radial-gradient(circle,rgba(255,111,216,.14),transparent 68%);top:40%;left:20%;animation-duration:26s;animation-delay:-13s; }
+@keyframes odrift {
+  0%,100% { transform:translate(0,0) scale(1); }
+  33%     { transform:translate(40px,-50px) scale(1.05); }
+  66%     { transform:translate(-30px,35px) scale(.95); }
+}
+
+/* ─── SCREEN SYSTEM ─── */
+.screen {
+  position:fixed; inset:0; z-index:10;
+  overflow-y:auto; overflow-x:hidden;
+  display:flex; flex-direction:column; align-items:center;
+  opacity:0; pointer-events:none;
+  transition: opacity .42s cubic-bezier(.4,0,.2,1), transform .42s cubic-bezier(.4,0,.2,1);
+  transform: translateY(26px);
+}
+.screen.active { opacity:1; pointer-events:all; transform:translateY(0); }
+.screen.exit-up { opacity:0; transform:translateY(-26px); pointer-events:none; }
+
+/* ─── SHARED TOPBAR ─── */
+.topbar {
+  width:100%; max-width:900px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:1.8rem 2rem 0;
+  flex-shrink:0;
+}
+.logo-row { display:flex; align-items:center; gap:.65rem; }
+.licon {
+  width:38px;height:38px;
+  background:linear-gradient(135deg,var(--pri),var(--acc));
+  border-radius:10px; display:flex;align-items:center;justify-content:center;
+  font-size:1rem;
+  animation:icon-pulse 4s ease-in-out infinite;
+}
+@keyframes icon-pulse {
+  0%,100% { box-shadow:0 4px 18px rgba(123,111,240,.5); }
+  50%     { box-shadow:0 4px 28px rgba(0,229,255,.6); }
+}
+.logo-text {
+  font-size:1.35rem; font-weight:900; letter-spacing:-.03em;
+  background:linear-gradient(135deg,#c4bbff,var(--acc));
+  -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+}
+.back-btn {
+  display:flex; align-items:center; gap:.45rem;
+  padding:.45rem .95rem; border-radius:10px;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.09);
+  font-size:.75rem; font-weight:600; color:var(--t2);
+  cursor:pointer; transition:all .25s;
+  font-family:'Outfit',sans-serif; outline:none;
+}
+.back-btn:hover { background:rgba(123,111,240,.12); border-color:rgba(123,111,240,.3); color:var(--pri-l); }
+.back-btn svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+/* ─── SHARED ─── */
+.shim {
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.025) 50%,transparent 70%);
+  background-size:200% 100%; animation:shim 3.5s ease-in-out infinite;
+}
+@keyframes shim { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+@keyframes fadein { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+@keyframes popIn { from{opacity:0;transform:scale(.85) translateY(20px)} to{opacity:1;transform:scale(1) translateY(0)} }
+
+/* step pill */
+.step-pill {
+  display:inline-flex; align-items:center; gap:.4rem;
+  background:rgba(123,111,240,.12); border:1px solid rgba(123,111,240,.25);
+  border-radius:20px; padding:.28rem .8rem;
+  font-size:.62rem; font-weight:700; color:var(--pri-l);
+  letter-spacing:.08em; text-transform:uppercase; width:fit-content;
+}
+.step-dot { width:6px;height:6px;border-radius:50%;background:var(--pri);animation:pulse-dot 2s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* breadcrumb */
+.breadcrumb {
+  display:flex; align-items:center; gap:.45rem;
+  font-size:.67rem; color:var(--t3); font-family:'JetBrains Mono',monospace;
+}
+.bc-sep { color:var(--t3); }
+.bc-active { color:var(--pri-l); }
+
+/* ══════════════════════════════════════
+   SCREEN 1 — CHOOSE TRACK (DSA / WEB)
+══════════════════════════════════════ */
+#s1 { justify-content:center; }
+
+.s1-inner {
+  position:relative; z-index:10;
+  display:flex; flex-direction:column; align-items:center;
+  gap:2.4rem; width:100%; max-width:900px;
+  padding:2rem;
+}
+
+.s1-logo { display:flex;flex-direction:column;align-items:center;gap:.6rem;animation:fadein .5s both; }
+.s1-logo-row { display:flex;align-items:center;gap:.7rem; }
+.s1-licon {
+  width:44px;height:44px;
+  background:linear-gradient(135deg,var(--pri),var(--acc));
+  border-radius:13px; display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem; box-shadow:0 4px 22px rgba(123,111,240,.55);
+  animation:icon-pulse 4s ease-in-out infinite;
+}
+.s1-logo-text {
+  font-size:1.6rem; font-weight:900; letter-spacing:-.03em;
+  background:linear-gradient(135deg,#c4bbff,var(--acc));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s1-logo-sub { font-size:.76rem; color:var(--t2); }
+
+.s1-heading { text-align:center; animation:fadein .5s .1s both; }
+.s1-heading h1 {
+  font-size:2.3rem; font-weight:900; letter-spacing:-.04em; line-height:1.1;
+  background:linear-gradient(135deg,var(--t1) 40%,var(--pri-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s1-heading p { margin-top:.5rem; font-size:.84rem; color:var(--t2); }
+
+/* the two big track cards */
+.track-row { display:flex;gap:1.4rem;align-items:stretch;animation:fadein .5s .2s both; }
+
+.track-card {
+  position:relative; width:310px;
+  border-radius:24px; padding:2.2rem 1.8rem 1.8rem;
+  background:var(--card-bg); border:1.5px solid var(--card-border);
+  cursor:pointer; overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,1,.36,1), box-shadow .35s, border-color .35s;
+  display:flex; flex-direction:column; gap:1.3rem;
+  backdrop-filter:blur(14px);
+}
+.track-card::before {
+  content:''; position:absolute; inset:0; opacity:0;
+  transition:opacity .35s; pointer-events:none;
+}
+
+/* DSA = purple accent */
+.track-card.dsa::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(123,111,240,.3) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(169,155,247,.08) 0%, transparent 55%);
+}
+.track-card.dsa:hover {
+  border-color:rgba(123,111,240,.55);
+  box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 55px rgba(123,111,240,.22),inset 0 1px 0 rgba(123,111,240,.2);
+  transform:translateY(-7px) scale(1.015);
+}
+.track-card.dsa:hover::before { opacity:1; }
+
+/* WEB = cyan accent */
+.track-card.web::before {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0,229,255,.24) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 100% 100%, rgba(255,111,216,.08) 0%, transparent 55%);
+}
+.track-card.web:hover {
+  border-color:rgba(0,229,255,.5);
+  box-shadow:0 24px 64px rgba(0,0,0,.5),0 0 55px rgba(0,229,255,.18),inset 0 1px 0 rgba(0,229,255,.15);
+  transform:translateY(-7px) scale(1.015);
+}
+.track-card.web:hover::before { opacity:1; }
+
+/* track icon */
+.track-icon-wrap {
+  width:72px; height:72px; border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:2rem; position:relative;
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+}
+.track-card:hover .track-icon-wrap { transform:scale(1.1) rotate(-4deg); }
+.dsa .track-icon-wrap { background:linear-gradient(135deg,rgba(123,111,240,.28),rgba(123,111,240,.06));border:1px solid rgba(123,111,240,.32);box-shadow:0 8px 30px rgba(123,111,240,.24); }
+.web .track-icon-wrap { background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(0,229,255,.04));border:1px solid rgba(0,229,255,.28);box-shadow:0 8px 30px rgba(0,229,255,.18); }
+.icon-ring { position:absolute;inset:-7px;border-radius:24px;opacity:0;transition:opacity .3s;animation:ring-spin 6s linear infinite; }
+.track-card:hover .icon-ring { opacity:1; }
+.dsa .icon-ring { border:1.5px dashed rgba(123,111,240,.35); }
+.web .icon-ring { border:1.5px dashed rgba(0,229,255,.3); }
+@keyframes ring-spin { to{transform:rotate(360deg);} }
+
+.track-abbr { font-size:2.8rem;font-weight:900;letter-spacing:-.06em;line-height:1;margin-bottom:.3rem; }
+.dsa .track-abbr { background:linear-gradient(135deg,#c4bbff,var(--pri-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.web .track-abbr { background:linear-gradient(135deg,var(--acc),#80f3ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.track-title { font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.4rem; }
+.track-desc { font-size:.77rem;color:var(--t2);line-height:1.6; }
+
+.track-meta { display:flex;flex-direction:column;gap:.38rem;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06); }
+.meta-item { display:flex;align-items:center;gap:.5rem;font-size:.74rem;color:var(--t2); }
+.meta-dot { width:5px;height:5px;border-radius:50%;flex-shrink:0; }
+.dsa .meta-dot { background:var(--pri-l); }
+.web .meta-dot { background:var(--acc); }
+
+.track-cta {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.7rem .95rem; border-radius:12px;
+  font-size:.82rem; font-weight:700;
+  transition:filter .3s;
+}
+.dsa .track-cta { background:linear-gradient(135deg,rgba(123,111,240,.25),rgba(91,79,220,.1));border:1px solid rgba(123,111,240,.3);color:var(--pri-l); }
+.web .track-cta { background:linear-gradient(135deg,rgba(0,229,255,.16),rgba(0,180,210,.06));border:1px solid rgba(0,229,255,.28);color:var(--acc); }
+.track-card:hover .track-cta { filter:brightness(1.28); }
+.cta-arr { width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;transition:transform .3s; }
+.dsa .cta-arr { background:rgba(123,111,240,.22); }
+.web .cta-arr { background:rgba(0,229,255,.16); }
+.track-card:hover .cta-arr { transform:translateX(5px); }
+.cta-arr svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+/* OR divider */
+.or-divider { display:flex;flex-direction:column;align-items:center;gap:.45rem;color:var(--t3);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;align-self:center; }
+.or-line { width:1px;height:55px;background:linear-gradient(180deg,transparent,var(--t3),transparent); }
+
+/* footer */
+.s1-footer {
+  position:fixed; bottom:1.2rem; right:2rem;
+  display:flex; align-items:center; gap:1.4rem;
+  z-index:20; animation:fadein .5s .45s both;
+}
+.fi { display:flex;align-items:center;gap:.38rem;font-size:.65rem;color:var(--t3); }
+.fi svg { width:11px;height:11px;stroke:var(--t3);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round; }
+.fs { width:3px;height:3px;border-radius:50%;background:var(--t3);opacity:.4; }
+
+/* ══════════════════════════════════════
+   SCREEN 2 — DSA PLAYLISTS  (A & B)
+══════════════════════════════════════ */
+#s2 { justify-content:flex-start; }
+.s2-inner {
+  width:100%; max-width:900px;
+  padding:1.8rem 2rem 4rem;
+  display:flex; flex-direction:column; gap:2rem;
+}
+
+.s2-hero { display:flex;flex-direction:column;gap:.9rem;animation:fadein .45s .05s both; }
+.s2-hero h1 {
+  font-size:1.95rem; font-weight:900; letter-spacing:-.04em; line-height:1.1;
+  background:linear-gradient(135deg,var(--t1) 40%,var(--pri-l));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s2-hero p { font-size:.81rem;color:var(--t2);line-height:1.6;max-width:480px; }
+.s2-badge {
+  display:inline-flex; align-items:center; gap:.5rem;
+  padding:.45rem 1rem; border-radius:11px;
+  background:rgba(123,111,240,.1); border:1px solid rgba(123,111,240,.2);
+  font-size:.73rem; font-weight:700; color:var(--pri-l); width:fit-content;
+}
+
+.playlist-row { display:flex;gap:1.2rem;align-items:stretch;animation:fadein .45s .1s both;flex-wrap:wrap; }
+
+/* ── playlist card ── */
+.pl-card {
+  position:relative; flex:1; min-width:260px; max-width:380px;
+  border-radius:22px; padding:2rem 1.8rem 1.7rem;
+  background:var(--card-bg); border:1.5px solid var(--card-border);
+  cursor:pointer; overflow:hidden;
+  transition:transform .32s cubic-bezier(.22,1,.36,1),box-shadow .32s,border-color .32s;
+  display:flex; flex-direction:column; gap:1.2rem;
+  backdrop-filter:blur(14px);
+  text-decoration:none; color:inherit;
+}
+.pl-card::before {
+  content:''; position:absolute;inset:0;opacity:0;
+  transition:opacity .32s;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,0,0,.16) 0%,transparent 65%);
+}
+.pl-card:hover {
+  border-color:rgba(255,80,80,.5);
+  box-shadow:0 22px 60px rgba(0,0,0,.5),0 0 50px rgba(255,0,0,.15),inset 0 1px 0 rgba(255,80,80,.15);
+  transform:translateY(-6px) scale(1.014);
+}
+.pl-card:hover::before { opacity:1; }
+
+.pl-yt-icon {
+  width:72px; height:72px; border-radius:18px;
+  display:flex; align-items:center; justify-content:center;
+  background:linear-gradient(135deg,rgba(255,0,0,.22),rgba(180,0,0,.08));
+  border:1px solid rgba(255,80,80,.3);
+  box-shadow:0 8px 28px rgba(255,0,0,.18);
+  transition:transform .3s cubic-bezier(.22,1,.36,1);
+  flex-shrink:0;
+}
+.pl-card:hover .pl-yt-icon { transform:scale(1.1) rotate(-4deg); }
+
+/* youtube play button SVG */
+.yt-svg { width:36px;height:36px; }
+
+.pl-label {
+  font-size:.6rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase;
+  color:#ff6666; font-family:'JetBrains Mono',monospace;
+}
+.pl-name { font-size:2.6rem;font-weight:900;letter-spacing:-.06em;line-height:1;margin-bottom:.25rem;background:linear-gradient(135deg,#ff9999,#ff4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text; }
+.pl-title { font-size:1rem;font-weight:700;color:var(--t1);margin-bottom:.35rem; }
+.pl-desc { font-size:.76rem;color:var(--t2);line-height:1.6; }
+
+.pl-stats { display:flex;gap:.6rem;flex-wrap:wrap;padding-top:.85rem;border-top:1px solid rgba(255,255,255,.06); }
+.pl-stat { display:flex;align-items:center;gap:.35rem;font-size:.71rem;color:var(--t2); }
+.pl-stat-dot { width:4px;height:4px;border-radius:50%;background:#ff6666;flex-shrink:0; }
+
+.pl-cta {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.65rem .9rem; border-radius:11px;
+  font-size:.8rem; font-weight:700; color:#ff8888;
+  background:linear-gradient(135deg,rgba(255,0,0,.18),rgba(180,0,0,.08));
+  border:1px solid rgba(255,80,80,.25);
+  transition:filter .28s;
+}
+.pl-card:hover .pl-cta { filter:brightness(1.3); }
+.pl-cta-arr { width:26px;height:26px;border-radius:7px;background:rgba(255,0,0,.18);display:flex;align-items:center;justify-content:center;transition:transform .28s; }
+.pl-card:hover .pl-cta-arr { transform:translateX(4px); }
+.pl-cta-arr svg { width:12px;height:12px;stroke:#ff8888;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+/* ══════════════════════════════════════
+   SCREEN 3 — WEB DEVELOPMENT PLAYLIST
+══════════════════════════════════════ */
+#s3 { justify-content:center; }
+.s3-inner {
+  width:100%; max-width:900px;
+  padding:2rem;
+  display:flex;flex-direction:column;align-items:center;gap:2.2rem;
+}
+
+.s3-hero { text-align:center;display:flex;flex-direction:column;align-items:center;gap:.7rem;animation:fadein .45s .05s both; }
+.s3-hero h1 {
+  font-size:2rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;
+  background:linear-gradient(135deg,var(--t1) 45%,#80f3ff);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.s3-hero p { font-size:.82rem;color:var(--t2);line-height:1.6;max-width:440px; }
+.s3-badge {
+  display:inline-flex;align-items:center;gap:.5rem;
+  padding:.45rem 1rem;border-radius:11px;
+  background:rgba(0,229,255,.08);border:1px solid rgba(0,229,255,.2);
+  font-size:.73rem;font-weight:700;color:var(--acc);
+}
+
+/* single centered playlist card */
+.s3-playlist-wrap { animation:popIn .5s .12s both; }
+
+.s3-pl-card {
+  position:relative; width:400px;
+  border-radius:26px; padding:2.4rem 2.2rem 2rem;
+  background:var(--card-bg); border:1.5px solid var(--card-border);
+  cursor:pointer; overflow:hidden;
+  transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s,border-color .35s;
+  display:flex;flex-direction:column;align-items:center;gap:1.4rem;
+  backdrop-filter:blur(18px);
+  text-decoration:none; color:inherit;
+  text-align:center;
+}
+.s3-pl-card::before {
+  content:'';position:absolute;inset:0;opacity:0;
+  transition:opacity .35s;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% -10%,rgba(255,0,0,.18) 0%,transparent 65%),
+             radial-gradient(ellipse 50% 50% at 50% 110%,rgba(0,229,255,.1) 0%,transparent 65%);
+}
+.s3-pl-card:hover {
+  border-color:rgba(255,80,80,.55);
+  box-shadow:0 28px 70px rgba(0,0,0,.55),0 0 60px rgba(255,0,0,.18),inset 0 1px 0 rgba(255,80,80,.18);
+  transform:translateY(-8px) scale(1.016);
+}
+.s3-pl-card:hover::before { opacity:1; }
+
+/* big youtube icon in center */
+.s3-yt-icon {
+  width:90px;height:90px;border-radius:22px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,rgba(255,0,0,.25),rgba(180,0,0,.08));
+  border:1px solid rgba(255,80,80,.35);
+  box-shadow:0 12px 40px rgba(255,0,0,.25);
+  transition:transform .32s cubic-bezier(.22,1,.36,1);
+}
+.s3-pl-card:hover .s3-yt-icon { transform:scale(1.12) rotate(-5deg); }
+
+.s3-pl-label { font-size:.62rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:#ff6666;font-family:'JetBrains Mono',monospace; }
+.s3-pl-title { font-size:1.3rem;font-weight:800;color:var(--t1);line-height:1.2;letter-spacing:-.02em; }
+.s3-pl-desc { font-size:.78rem;color:var(--t2);line-height:1.65;max-width:300px; }
+
+.s3-pl-stats { display:flex;gap:.8rem;justify-content:center;flex-wrap:wrap;padding-top:.9rem;border-top:1px solid rgba(255,255,255,.06);width:100%; }
+.s3-pl-stat { display:flex;align-items:center;gap:.38rem;font-size:.71rem;color:var(--t2); }
+.s3-pl-stat-dot { width:4px;height:4px;border-radius:50%;background:#ff6666;flex-shrink:0; }
+
+.s3-pl-cta {
+  width:100%; display:flex;align-items:center;justify-content:center;gap:.6rem;
+  padding:.75rem 1.4rem;border-radius:12px;
+  font-size:.84rem;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#e60000,#a80000);
+  border:none;
+  box-shadow:0 8px 28px rgba(230,0,0,.38);
+  transition:all .3s cubic-bezier(.22,1,.36,1);
+  pointer-events:none; /* card itself is the link */
+}
+.s3-pl-card:hover .s3-pl-cta { box-shadow:0 14px 40px rgba(230,0,0,.55);filter:brightness(1.1); }
+.s3-pl-cta svg { width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
+/* open link hint */
+.open-hint { font-size:.69rem;color:var(--t3);font-family:'JetBrains Mono',monospace;animation:fadein .45s .3s both; }
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="aurora"></div>
+  <div class="bgrid"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+
+<!-- ══ SCREEN 1 : TRACK SELECTION ══ -->
+<div class="screen active" id="s1">
+  <div class="s1-inner">
+
+    <div class="s1-logo">
+      <div class="s1-logo-row">
+        <div class="s1-licon">⚡</div>
+        <div class="s1-logo-text">SkillBridge</div>
+      </div>
+      <div class="s1-logo-sub">Bridge your skill gaps · Grow without limits</div>
+    </div>
+
+    <div class="s1-heading">
+      <div class="step-pill" style="margin:0 auto .8rem;"><div class="step-dot"></div>Choose Your Learning Track</div>
+      <h1>What do you want to master?</h1>
+      <p>Pick a track and dive straight into curated playlists and resources.</p>
+    </div>
+
+    <div class="track-row">
+
+      <!-- DSA -->
+      <div class="track-card dsa" onclick="goTo('s2','s1')">
+        <div class="shim"></div>
+        <div class="track-icon-wrap">
+          <div class="icon-ring"></div>
+          🧠
+        </div>
+        <div>
+          <div class="track-abbr">DSA</div>
+          <div class="track-title">Data Structures & Algorithms</div>
+          <div class="track-desc">Master arrays, trees, graphs, sorting, searching, and dynamic programming with two hand-picked playlists.</div>
+        </div>
+        <div class="track-meta">
+          <div class="meta-item"><div class="meta-dot"></div><span>2 curated YouTube playlists</span></div>
+          <div class="meta-item"><div class="meta-dot"></div><span>Beginner to advanced coverage</span></div>
+          <div class="meta-item"><div class="meta-dot"></div><span>Interview-focused content</span></div>
+        </div>
+        <div class="track-cta">
+          <span>Explore DSA</span>
+          <div class="cta-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </div>
+
+      <div class="or-divider">
+        <div class="or-line"></div>
+        OR
+        <div class="or-line"></div>
+      </div>
+
+      <!-- WEB -->
+      <div class="track-card web" onclick="goTo('s3','s1')">
+        <div class="shim"></div>
+        <div class="track-icon-wrap">
+          <div class="icon-ring"></div>
+          🌐
+        </div>
+        <div>
+          <div class="track-abbr">WEB</div>
+          <div class="track-title">Web Development</div>
+          <div class="track-desc">From HTML & CSS to JavaScript, React, and backend — one comprehensive playlist to take you from zero to full-stack.</div>
+        </div>
+        <div class="track-meta">
+          <div class="meta-item"><div class="meta-dot"></div><span>1 complete YouTube playlist</span></div>
+          <div class="meta-item"><div class="meta-dot"></div><span>Full-stack fundamentals</span></div>
+          <div class="meta-item"><div class="meta-dot"></div><span>Project-based learning</span></div>
+        </div>
+        <div class="track-cta">
+          <span>Explore Web Dev</span>
+          <div class="cta-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="s1-footer">
+    <div class="fi">
+      <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="currentColor" stroke="none"/></svg>
+      YouTube playlists
+    </div>
+    <div class="fs"></div>
+    <div class="fi">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      Free resources only
+    </div>
+    <div class="fs"></div>
+    <div class="fi">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      12,400+ learners
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 2 : DSA PLAYLISTS ══ -->
+<div class="screen" id="s2">
+  <div class="topbar">
+    <div class="logo-row">
+      <div class="licon">⚡</div>
+      <div class="logo-text">SkillBridge</div>
+    </div>
+    <button class="back-btn" onclick="goTo('s1','s2')">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Change Track
+    </button>
+  </div>
+
+  <div class="s2-inner">
+
+    <div class="s2-hero">
+      <div class="breadcrumb">
+        <span>SkillBridge</span>
+        <span class="bc-sep">›</span>
+        <span>Resources</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-active">DSA · Choose Playlist</span>
+      </div>
+      <div class="step-pill"><div class="step-dot"></div>DSA Track — Pick a Playlist</div>
+      <h1>Choose Your DSA Playlist</h1>
+      <p>Two carefully selected YouTube playlists to help you crack DSA — pick the style that suits you best and start learning.</p>
+      <div class="s2-badge">🧠 &nbsp; Data Structures &amp; Algorithms</div>
+    </div>
+
+    <div class="playlist-row">
+
+      <!-- Playlist A -->
+      <!-- 🔗 REPLACE href below with actual Playlist A URL -->
+      <a class="pl-card" href="https://www.youtube.com/playlist?list=PLxgZQoSe9cg0df_GxVjz3DD_Gck5tMXAx" target="_blank" rel="noopener">
+        <div class="shim"></div>
+        <div class="pl-yt-icon">
+          <svg class="yt-svg" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#FF0000"/>
+            <path d="M27 34l18-10-18-10v20z" fill="#fff"/>
+          </svg>
+        </div>
+        <div>
+          <div class="pl-label">Playlist A</div>
+          <div class="pl-name">A</div>
+          <div class="pl-title">DSA Playlist — Series A</div>
+          <div class="pl-desc">A structured, topic-by-topic walkthrough of every major data structure and algorithm from scratch.</div>
+        </div>
+        <div class="pl-stats">
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>Full DSA coverage</span></div>
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>Beginner friendly</span></div>
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>Hindi + English</span></div>
+        </div>
+        <div class="pl-cta">
+          <span>Open Playlist A on YouTube</span>
+          <div class="pl-cta-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+
+      <!-- Playlist B -->
+      <!-- 🔗 REPLACE href below with actual Playlist B URL -->
+      <a class="pl-card" href="https://www.youtube.com/playlist?list=PLgUwDviBIf0oF6QL8m22w1hIDC1vJ_BHz" target="_blank" rel="noopener">
+        <div class="shim"></div>
+        <div class="pl-yt-icon">
+          <svg class="yt-svg" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#FF0000"/>
+            <path d="M27 34l18-10-18-10v20z" fill="#fff"/>
+          </svg>
+        </div>
+        <div>
+          <div class="pl-label">Playlist B</div>
+          <div class="pl-name">B</div>
+          <div class="pl-title">DSA Playlist — Series B</div>
+          <div class="pl-desc">An interview-first approach to DSA, focusing on patterns, problem-solving techniques and LeetCode strategies.</div>
+        </div>
+        <div class="pl-stats">
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>Interview focused</span></div>
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>LeetCode patterns</span></div>
+          <div class="pl-stat"><div class="pl-stat-dot"></div><span>Advanced problems</span></div>
+        </div>
+        <div class="pl-cta">
+          <span>Open Playlist B on YouTube</span>
+          <div class="pl-cta-arr"><svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></div>
+        </div>
+      </a>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN 3 : WEB DEVELOPMENT PLAYLIST ══ -->
+<div class="screen" id="s3">
+  <div class="topbar">
+    <div class="logo-row">
+      <div class="licon">⚡</div>
+      <div class="logo-text">SkillBridge</div>
+    </div>
+    <button class="back-btn" onclick="goTo('s1','s3')">
+      <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+      Change Track
+    </button>
+  </div>
+
+  <div class="s3-inner">
+
+    <div class="s3-hero">
+      <div class="breadcrumb" style="justify-content:center;">
+        <span>SkillBridge</span>
+        <span class="bc-sep">›</span>
+        <span>Resources</span>
+        <span class="bc-sep">›</span>
+        <span class="bc-active" style="color:var(--acc)">Web Dev · Playlist</span>
+      </div>
+      <div class="step-pill" style="background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.22);color:var(--acc);">
+        <div class="step-dot" style="background:var(--acc);"></div>
+        Web Development Track
+      </div>
+      <h1>Web Development Playlist</h1>
+      <p>One complete, structured playlist — everything you need to go from zero to full-stack web developer.</p>
+      <div class="s3-badge">🌐 &nbsp; Web Development · Full Course</div>
+    </div>
+
+    <!-- 🔗 REPLACE href below with actual Web Dev playlist URL -->
+    <div class="s3-playlist-wrap">
+      <a class="s3-pl-card" href="https://www.youtube.com/playlist?list=PLfqMhTWNBTe0b2nM6JHVCnAkhQRGiZMSJ" target="_blank" rel="noopener">
+        <div class="shim"></div>
+
+        <div class="s3-yt-icon">
+          <svg width="50" height="35" viewBox="0 0 68 48" xmlns="http://www.w3.org/2000/svg">
+            <path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55C3.97 2.33 2.27 4.81 1.48 7.74.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="#FF0000"/>
+            <path d="M27 34l18-10-18-10v20z" fill="#fff"/>
+          </svg>
+        </div>
+
+        <div class="s3-pl-label">Full Course Playlist</div>
+        <div class="s3-pl-title">The Complete Web Development Bootcamp</div>
+        <div class="s3-pl-desc">HTML, CSS, JavaScript, React, Node.js and more — everything in one structured playlist from beginner to job-ready.</div>
+
+        <div class="s3-pl-stats">
+          <div class="s3-pl-stat"><div class="s3-pl-stat-dot"></div><span>HTML &amp; CSS</span></div>
+          <div class="s3-pl-stat"><div class="s3-pl-stat-dot"></div><span>JavaScript</span></div>
+          <div class="s3-pl-stat"><div class="s3-pl-stat-dot"></div><span>React &amp; Node</span></div>
+          <div class="s3-pl-stat"><div class="s3-pl-stat-dot"></div><span>Full-stack projects</span></div>
+        </div>
+
+        <div class="s3-pl-cta">
+          <svg viewBox="0 0 24 24"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" fill="white" stroke="none"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="red" stroke="none"/></svg>
+          Open on YouTube
+          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </div>
+      </a>
+    </div>
+
+    <div class="open-hint">↑ Click the card to open the playlist on YouTube</div>
+
+  </div>
+</div>
+
+<script>
+function goTo(show, hide) {
+  const hideEl = document.getElementById(hide);
+  const showEl = document.getElementById(show);
+  hideEl.classList.add('exit-up');
+  hideEl.classList.remove('active');
+  setTimeout(() => {
+    hideEl.classList.remove('exit-up');
+    showEl.classList.add('active');
+    showEl.scrollTop = 0;
+  }, 400);
+}
+</script>
+</body>
+</html>
