@@ -217,4 +217,41 @@ router.get("/leaderboard", auth, async (req, res) => {
 
 });
 
+/* ---------- WEEKLY ACTIVITY ---------- */
+
+router.get("/weekly", auth, async (req,res)=>{
+
+  try{
+
+    const user =
+      await User.findById(req.user.id);
+
+    const totalHours =
+      Math.floor((user.totalMinutes || 0)/60);
+
+    // fake split for now
+    const weekly = [
+      1,
+      2,
+      3,
+      2,
+      4,
+      5,
+      totalHours % 6
+    ];
+
+    res.json({
+      hours: weekly
+    });
+
+  }catch(err){
+
+    res.status(500).json({
+      error: err.message
+    });
+
+  }
+
+});
+
 module.exports = router;

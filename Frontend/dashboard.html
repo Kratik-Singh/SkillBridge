@@ -333,7 +333,12 @@ animation:xpshine 2.5s ease-in-out infinite;
 .lb-badge.you{background:rgba(123,111,240,.2);color:var(--pri-l);}
 
 /* ─── BOTTOM ROW ─── */
-.bottom-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;align-items:start;}
+.bottom-row{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:.9rem;
+align-items:start;
+}
 
 /* Course cards */
 .course-list{display:flex;flex-direction:column;gap:.55rem;}
@@ -567,7 +572,7 @@ animation:xpshine 2.5s ease-in-out infinite;
           <div class="stat-icon green"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
           <div class="stat-arrow"><svg viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
         </div>
-        <div class="stat-num">142h</div>
+        <div class="stat-num" id="learningHours">0h</div>
         <div class="stat-label">Total Learning Time</div>
         <div class="stat-change up">
           <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
@@ -647,50 +652,6 @@ animation:xpshine 2.5s ease-in-out infinite;
     <!-- BOTTOM ROW -->
     <div class="bottom-row">
 
-      <!-- Active Courses -->
-      <div class="chart-card" style="animation-delay:.66s">
-        <div class="card-hdr">
-          <div>
-            <div class="card-title">Active Courses</div>
-            <div class="card-sub">Continue where you left off</div>
-          </div>
-        </div>
-        <div class="course-list">
-          <div class="course-item">
-            <div class="course-ico" style="background:rgba(123,111,240,.15)">⚛️</div>
-            <div class="course-info">
-              <div class="course-name">Advanced React Patterns</div>
-              <div class="course-meta">Module 7 of 12 · 3h 20m left</div>
-            </div>
-            <div class="course-prog wip">67%</div>
-          </div>
-          <div class="course-item">
-            <div class="course-ico" style="background:rgba(0,229,255,.12)">🎨</div>
-            <div class="course-info">
-              <div class="course-name">Figma for Developers</div>
-              <div class="course-meta">Module 4 of 8 · 1h 45m left</div>
-            </div>
-            <div class="course-prog wip">50%</div>
-          </div>
-          <div class="course-item">
-            <div class="course-ico" style="background:rgba(62,207,110,.12)">🐍</div>
-            <div class="course-info">
-              <div class="course-name">Python for Data Science</div>
-              <div class="course-meta">Module 2 of 10 · 8h left</div>
-            </div>
-            <div class="course-prog new">20%</div>
-          </div>
-          <div class="course-item">
-            <div class="course-ico" style="background:rgba(255,92,122,.12)">☁️</div>
-            <div class="course-info">
-              <div class="course-name">AWS Cloud Practitioner</div>
-              <div class="course-meta">Completed · Cert ready</div>
-            </div>
-            <div class="course-prog done">100%</div>
-          </div>
-        </div>
-      </div>
-
       <!-- Activity Feed -->
       <div class="chart-card" style="animation-delay:.74s">
         <div class="card-hdr">
@@ -741,58 +702,6 @@ animation:xpshine 2.5s ease-in-out infinite;
               <div class="act-msg">Earned <strong>🏅 Fast Learner</strong> badge</div>
               <div class="act-time">3 days ago</div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Upcoming + Badges -->
-      <div style="display:flex;flex-direction:column;gap:.9rem;">
-        <div class="chart-card" style="animation-delay:.82s">
-          <div class="card-hdr">
-            <div>
-              <div class="card-title">Upcoming</div>
-              <div class="card-sub">Events & deadlines</div>
-            </div>
-          </div>
-          <div class="upcoming-list">
-            <div class="up-item">
-              <div class="up-date"><div class="up-day">08</div><div class="up-mon">Mar</div></div>
-              <div class="up-info">
-                <div class="up-title">React Final Exam</div>
-                <div class="up-desc">Module 8–12 coverage · Online</div>
-                <span class="up-tag exam">Exam</span>
-              </div>
-            </div>
-            <div class="up-item">
-              <div class="up-date"><div class="up-day">10</div><div class="up-mon">Mar</div></div>
-              <div class="up-info">
-                <div class="up-title">Figma Workshop</div>
-                <div class="up-desc">With mentor Kavya R. · 2PM–4PM</div>
-                <span class="up-tag workshop">Workshop</span>
-              </div>
-            </div>
-            <div class="up-item">
-              <div class="up-date"><div class="up-day">14</div><div class="up-mon">Mar</div></div>
-              <div class="up-info">
-                <div class="up-title">Project Submission</div>
-                <div class="up-desc">Portfolio v2 · Capstone</div>
-                <span class="up-tag deadline">Deadline</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="chart-card" style="animation-delay:.9s">
-          <div class="card-hdr">
-            <div class="card-title">Badges Earned</div>
-          </div>
-          <div class="badge-grid">
-            <div class="badge-item"><div class="badge-ico">🔥</div><div class="badge-name">Streak Badge</div></div>
-            <div class="badge-item"><div class="badge-ico">⚡</div><div class="badge-name">Fast Learner</div></div>
-            <div class="badge-item"><div class="badge-ico">🎯</div><div class="badge-name">Top Score</div></div>
-            <div class="badge-item"><div class="badge-ico">☁️</div><div class="badge-name">AWS Certified</div></div>
-            <div class="badge-item locked"><div class="badge-ico">🏆</div><div class="badge-name">Champion</div></div>
-            <div class="badge-item locked"><div class="badge-ico">💎</div><div class="badge-name">Diamond</div></div>
           </div>
         </div>
       </div>
@@ -884,6 +793,14 @@ async function loadXP(){
 
     const xp = data.xp || 0;
     const streak = data.streak || 0;
+
+    const totalHours =
+    Math.floor((data.totalMinutes || 0)/60);
+
+    document.getElementById(
+    "learningHours"
+    ).innerText =
+    totalHours + "h";
 
     const maxXP = 5000;
 
@@ -1075,6 +992,90 @@ async function loadLeaderboard(){
 
 }
 
+async function loadWeeklyActivity(){
+
+  try{
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/xp/weekly`,
+      {
+        headers:{
+          Authorization:"Bearer "+token
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    const hrs = data.hours;
+
+    const days = ['S','M','T','W','T','F','S'];
+
+    const max = Math.max(...hrs,1);
+
+    const chart =
+      document.getElementById("barChart");
+
+    chart.innerHTML = "";
+
+    days.forEach((d,i)=>{
+
+      const wrap =
+        document.createElement("div");
+
+      wrap.className = "bar-wrap";
+
+      const outer =
+        document.createElement("div");
+
+      outer.className = "bar-outer";
+
+      outer.style.height = "90px";
+
+      const inner =
+        document.createElement("div");
+
+      inner.className = "bar-inner";
+
+      const h =
+        Math.round((hrs[i]/max)*90);
+
+      inner.style.height = h + "px";
+
+      const pct =
+        document.createElement("div");
+
+      pct.className = "bar-pct";
+
+      pct.textContent =
+        hrs[i] + "h";
+
+      inner.appendChild(pct);
+
+      outer.appendChild(inner);
+
+      const lbl =
+        document.createElement("div");
+
+      lbl.className = "bar-lbl";
+
+      lbl.textContent = d;
+
+      wrap.appendChild(outer);
+
+      wrap.appendChild(lbl);
+
+      chart.appendChild(wrap);
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+}
 
 /* Initialize */
 
@@ -1082,52 +1083,8 @@ loadXP();
 sendVisitXP();
 startActiveTracking();
 loadLeaderboard();
+loadWeeklyActivity();
 
-
-/* ---------------- CHART ---------------- */
-
-(function(){
-
-  var days = ['S','M','T','W','T','F','S'];
-  var hrs  = [1.5, 3.2, 4.8, 2.1, 5.5, 3.9, 0.8];
-  var max = Math.max(...hrs);
-
-  var chart = document.getElementById('barChart');
-
-  days.forEach(function(d,i){
-
-    var wrap = document.createElement('div');
-    wrap.className = 'bar-wrap';
-
-    var outer = document.createElement('div');
-    outer.className = 'bar-outer';
-    outer.style.height = '90px';
-
-    var inner = document.createElement('div');
-    inner.className = 'bar-inner';
-
-    var h = Math.round((hrs[i]/max)*90);
-    inner.style.height = h+'px';
-
-    var pct = document.createElement('div');
-    pct.className = 'bar-pct';
-    pct.textContent = hrs[i]+'h';
-
-    inner.appendChild(pct);
-    outer.appendChild(inner);
-
-    var lbl = document.createElement('div');
-    lbl.className = 'bar-lbl';
-    lbl.textContent = d;
-
-    wrap.appendChild(outer);
-    wrap.appendChild(lbl);
-
-    chart.appendChild(wrap);
-
-  });
-
-})();
 </script>
 </body>
 </html>
