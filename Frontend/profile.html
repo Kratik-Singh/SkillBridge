@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge — Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --base:#04060f;--pri:#7B6FF0;--pri-d:#5a4fd4;--pri-l:#a99bf7;
+  --acc:#00e5ff;--acc2:#ff6fd8;--ok:#3ecf6e;--warn:#ffb547;--danger:#ff5c5c;
+  --t1:#eef0f8;--t2:#8b95b5;--t3:#3d4560;
+  --card-bg:rgba(255,255,255,.042);--card-border:rgba(255,255,255,.09);
+  --glass:rgba(255,255,255,.055);--glass-b:rgba(255,255,255,.11);
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{height:100%;overflow:hidden;}
+body{font-family:'Outfit',sans-serif;background:var(--base);color:var(--t1);height:100%;overflow:hidden;}
+
+/* ── BG ── */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.aurora{position:absolute;inset:0;background:
+  radial-gradient(ellipse 70% 55% at 75% -5%,rgba(91,79,220,.45) 0%,transparent 55%),
+  radial-gradient(ellipse 55% 45% at -5% 85%,rgba(0,200,230,.22) 0%,transparent 52%),
+  radial-gradient(ellipse 45% 40% at 50% 105%,rgba(255,111,216,.14) 0%,transparent 55%);
+  animation:aurora-shift 20s ease-in-out infinite alternate;}
+@keyframes aurora-shift{0%{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(12deg) brightness(1.06)}100%{filter:hue-rotate(-8deg) brightness(.96)}}
+.bgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(123,111,240,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(123,111,240,.04) 1px,transparent 1px);background-size:48px 48px;}
+.orb{position:absolute;border-radius:50%;filter:blur(90px);animation:odrift ease-in-out infinite;}
+.o1{width:600px;height:600px;background:radial-gradient(circle,rgba(91,79,220,.32),transparent 68%);top:-250px;right:-150px;animation-duration:22s;}
+.o2{width:500px;height:500px;background:radial-gradient(circle,rgba(0,210,240,.18),transparent 68%);bottom:-180px;left:-150px;animation-duration:18s;animation-delay:-7s;}
+.o3{width:350px;height:350px;background:radial-gradient(circle,rgba(255,111,216,.12),transparent 68%);top:40%;left:20%;animation-duration:26s;animation-delay:-13s;}
+@keyframes odrift{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(40px,-50px) scale(1.05)}66%{transform:translate(-30px,35px) scale(.95)}}
+
+/* ── APP SHELL ── */
+.app{position:fixed;inset:0;z-index:10;display:grid;grid-template-rows:auto 1fr;overflow:hidden;}
+
+/* ── TOPBAR ── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.3rem 2rem;border-bottom:1px solid rgba(255,255,255,.06);backdrop-filter:blur(20px);background:rgba(4,6,15,.5);flex-shrink:0;}
+.logo-row{display:flex;align-items:center;gap:.65rem;}
+.licon{width:36px;height:36px;background:linear-gradient(135deg,var(--pri),var(--acc));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:.95rem;animation:icon-pulse 4s ease-in-out infinite;flex-shrink:0;}
+@keyframes icon-pulse{0%,100%{box-shadow:0 4px 18px rgba(123,111,240,.5)}50%{box-shadow:0 4px 28px rgba(0,229,255,.6)}}
+.logo-text{font-size:1.25rem;font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,#c4bbff,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:.67rem;color:var(--t3);font-family:'JetBrains Mono',monospace;margin-top:.1rem;}
+.breadcrumb{display:flex;align-items:center;gap:.45rem;font-size:.67rem;color:var(--t3);font-family:'JetBrains Mono',monospace;}
+.bc-sep{color:var(--t3);}
+.bc-active{color:var(--pri-l);}
+
+/* ── BODY GRID ── */
+.body-grid{display:grid;grid-template-columns:280px 1fr;overflow:hidden;height:100%;}
+
+/* ── LEFT SIDEBAR ── */
+.sidebar{border-right:1px solid rgba(255,255,255,.06);display:flex;flex-direction:column;background:rgba(4,6,15,.3);overflow-y:auto;overflow-x:hidden;}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px;}
+
+/* avatar section */
+.avatar-section{padding:2rem 1.5rem 1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.avatar-wrap{position:relative;cursor:pointer;}
+.avatar-ring{width:96px;height:96px;border-radius:50%;padding:2.5px;background:linear-gradient(135deg,var(--pri),var(--acc),var(--acc2));animation:ring-spin 6s linear infinite;}
+@keyframes ring-spin{to{filter:hue-rotate(360deg);}}
+.avatar-inner{width:100%;height:100%;border-radius:50%;background:var(--base);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.avatar-img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.avatar-initials{font-size:2rem;font-weight:900;background:linear-gradient(135deg,var(--pri-l),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-.04em;}
+.avatar-edit-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.55);display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity .25s;gap:.25rem;}
+.avatar-wrap:hover .avatar-edit-overlay{opacity:1;}
+.edit-icon{font-size:1.3rem;}
+.edit-hint{font-size:.55rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.8);}
+.avatar-name{font-size:1.1rem;font-weight:800;letter-spacing:-.02em;text-align:center;}
+.avatar-role{font-size:.72rem;color:var(--t2);text-align:center;}
+.avatar-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.28rem .75rem;border-radius:20px;background:rgba(123,111,240,.12);border:1px solid rgba(123,111,240,.25);font-size:.62rem;font-weight:700;color:var(--pri-l);letter-spacing:.08em;text-transform:uppercase;}
+.badge-dot{width:5px;height:5px;border-radius:50%;background:var(--ok);animation:pulse-dot 2s ease-in-out infinite;}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* sidebar nav */
+.nav-section{padding:.8rem .9rem;flex:1;}
+.nav-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--t3);font-family:'JetBrains Mono',monospace;padding:.5rem .6rem .35rem;}
+.nav-item{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:12px;cursor:pointer;transition:all .22s;font-size:.82rem;font-weight:600;color:var(--t2);margin-bottom:.18rem;border:1px solid transparent;}
+.nav-item:hover{color:var(--t1);background:var(--card-bg);}
+.nav-item.active{color:var(--pri-l);background:rgba(123,111,240,.12);border-color:rgba(123,111,240,.22);}
+.nav-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;transition:transform .22s;}
+.nav-item:hover .nav-icon{transform:scale(1.1);}
+.nav-item.active .nav-icon{background:rgba(123,111,240,.2);}
+
+/* sidebar danger zone */
+.danger-zone{padding:.8rem .9rem 1.2rem;border-top:1px solid rgba(255,255,255,.06);}
+.dz-label{font-size:.58rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--danger);font-family:'JetBrains Mono',monospace;padding:.5rem .6rem .35rem;opacity:.7;}
+.dz-btn{display:flex;align-items:center;gap:.7rem;padding:.6rem .8rem;border-radius:12px;cursor:pointer;font-size:.82rem;font-weight:600;color:rgba(255,92,92,.65);transition:all .22s;border:1px solid transparent;}
+.dz-btn:hover{color:#ff8888;background:rgba(255,92,92,.1);border-color:rgba(255,92,92,.2);}
+.dz-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;}
+
+/* ── RIGHT CONTENT ── */
+.content{overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;}
+.content::-webkit-scrollbar{width:4px;}
+.content::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:99px;}
+
+/* panels */
+.panel{display:none;flex-direction:column;gap:1.8rem;padding:1.8rem 2rem 3rem;animation:fadein .35s both;}
+.panel.active{display:flex;}
+@keyframes fadein{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+.panel-hero{display:flex;flex-direction:column;gap:.5rem;}
+.panel-step{display:inline-flex;align-items:center;gap:.4rem;background:rgba(123,111,240,.12);border:1px solid rgba(123,111,240,.25);border-radius:20px;padding:.28rem .8rem;font-size:.62rem;font-weight:700;color:var(--pri-l);letter-spacing:.08em;text-transform:uppercase;width:fit-content;}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--pri);animation:pulse-dot 2s ease-in-out infinite;}
+.panel-title{font-size:1.6rem;font-weight:900;letter-spacing:-.04em;line-height:1.1;background:linear-gradient(135deg,var(--t1) 40%,var(--pri-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.panel-sub{font-size:.8rem;color:var(--t2);line-height:1.6;max-width:480px;}
+
+/* section card */
+.section-card{border-radius:22px;padding:1.6rem 1.8rem;background:var(--card-bg);border:1.5px solid var(--card-border);display:flex;flex-direction:column;gap:1.3rem;position:relative;overflow:hidden;transition:border-color .3s;}
+.section-card:hover{border-color:rgba(123,111,240,.22);}
+.shim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 30%,rgba(255,255,255,.022) 50%,transparent 70%);background-size:200% 100%;animation:shim 3.5s ease-in-out infinite;}
+@keyframes shim{0%{background-position:200% 0}100%{background-position:-200% 0}}
+.section-head{display:flex;align-items:center;gap:.75rem;}
+.section-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+.si-purple{background:rgba(123,111,240,.18);border:1px solid rgba(123,111,240,.28);}
+.si-cyan{background:rgba(0,229,255,.14);border:1px solid rgba(0,229,255,.24);}
+.si-pink{background:rgba(255,111,216,.14);border:1px solid rgba(255,111,216,.24);}
+.si-green{background:rgba(62,207,110,.14);border:1px solid rgba(62,207,110,.24);}
+.si-red{background:rgba(255,92,92,.14);border:1px solid rgba(255,92,92,.24);}
+.section-head-text{}
+.section-title{font-size:.95rem;font-weight:800;color:var(--t1);letter-spacing:-.02em;}
+.section-desc{font-size:.72rem;color:var(--t2);margin-top:.15rem;}
+
+/* form fields */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:.85rem;}
+.field-grid.single{grid-template-columns:1fr;}
+.field{display:flex;flex-direction:column;gap:.4rem;}
+.field-label{font-size:.68rem;font-weight:700;color:var(--t2);letter-spacing:.06em;text-transform:uppercase;font-family:'JetBrains Mono',monospace;}
+.field-input{background:rgba(255,255,255,.05);border:1.5px solid var(--card-border);border-radius:12px;padding:.6rem .9rem;font-size:.84rem;color:var(--t1);font-family:'Outfit',sans-serif;outline:none;transition:border-color .22s,box-shadow .22s,background .22s;}
+.field-input::placeholder{color:var(--t3);}
+.field-input:focus{border-color:rgba(123,111,240,.55);box-shadow:0 0 0 3px rgba(123,111,240,.1);background:rgba(255,255,255,.07);}
+.field-input:disabled{opacity:.4;cursor:not-allowed;}
+select.field-input{cursor:pointer;}
+select.field-input option{background:#0d1027;}
+
+/* password strength */
+.pwd-wrap{position:relative;}
+.pwd-toggle{position:absolute;right:.8rem;top:50%;transform:translateY(-50%);cursor:pointer;font-size:1rem;opacity:.5;transition:opacity .2s;user-select:none;}
+.pwd-toggle:hover{opacity:.9;}
+.strength-row{display:flex;gap:.35rem;margin-top:.4rem;}
+.strength-bar{flex:1;height:3px;border-radius:99px;background:rgba(255,255,255,.08);transition:background .35s;}
+.strength-label{font-size:.65rem;color:var(--t2);margin-top:.3rem;font-family:'JetBrains Mono',monospace;}
+
+/* avatar upload big */
+.avatar-upload-big{display:flex;align-items:center;gap:1.4rem;}
+.ava-preview-wrap{position:relative;cursor:pointer;}
+.ava-preview-ring{width:80px;height:80px;border-radius:50%;padding:2px;background:linear-gradient(135deg,var(--pri),var(--acc));animation:ring-spin 6s linear infinite;}
+.ava-preview-inner{width:100%;height:100%;border-radius:50%;background:var(--base);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ava-preview-img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
+.ava-preview-initials{font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,var(--pri-l),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.ava-edit-overlay{position:absolute;inset:0;border-radius:50%;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .22s;font-size:.85rem;}
+.ava-preview-wrap:hover .ava-edit-overlay{opacity:1;}
+.upload-info{flex:1;}
+.upload-title{font-size:.88rem;font-weight:700;color:var(--t1);margin-bottom:.3rem;}
+.upload-hint{font-size:.72rem;color:var(--t2);line-height:1.55;margin-bottom:.7rem;}
+.upload-btns{display:flex;gap:.55rem;}
+.upload-btn{padding:.42rem .9rem;border-radius:10px;font-size:.76rem;font-weight:700;cursor:pointer;transition:all .22s;font-family:'Outfit',sans-serif;}
+.upload-btn.primary{background:linear-gradient(135deg,var(--pri),var(--pri-d));border:none;color:#fff;box-shadow:0 4px 16px rgba(123,111,240,.3);}
+.upload-btn.primary:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(123,111,240,.45);}
+.upload-btn.ghost{background:var(--card-bg);border:1px solid var(--card-border);color:var(--t2);}
+.upload-btn.ghost:hover{border-color:rgba(255,92,92,.35);color:#ff8888;}
+#file-input{display:none;}
+
+/* color avatar picker */
+.color-picker-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem;}
+.color-dot{width:28px;height:28px;border-radius:50%;cursor:pointer;transition:transform .2s,box-shadow .2s;border:2px solid transparent;}
+.color-dot:hover{transform:scale(1.2);}
+.color-dot.selected{border-color:#fff;transform:scale(1.15);box-shadow:0 4px 14px rgba(0,0,0,.5);}
+
+/* save / action btns */
+.action-row{display:flex;align-items:center;gap:.75rem;padding-top:.4rem;}
+.save-btn{padding:.6rem 1.4rem;border-radius:12px;background:linear-gradient(135deg,var(--pri),var(--pri-d));border:none;color:#fff;font-size:.82rem;font-weight:800;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .25s;display:flex;align-items:center;gap:.45rem;}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(123,111,240,.45);}
+.save-btn:active{transform:scale(.97);}
+.cancel-btn{padding:.6rem 1.1rem;border-radius:12px;background:var(--card-bg);border:1px solid var(--card-border);color:var(--t2);font-size:.82rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .22s;}
+.cancel-btn:hover{border-color:rgba(255,255,255,.18);color:var(--t1);}
+.saved-check{display:none;align-items:center;gap:.35rem;font-size:.78rem;font-weight:700;color:var(--ok);}
+.saved-check.show{display:flex;}
+
+/* notification toggles */
+.toggle-list{display:flex;flex-direction:column;gap:.7rem;}
+.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:.7rem .9rem;border-radius:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.055);transition:border-color .22s;}
+.toggle-row:hover{border-color:rgba(123,111,240,.25);}
+.toggle-info{}
+.toggle-name{font-size:.83rem;font-weight:700;color:var(--t1);margin-bottom:.15rem;}
+.toggle-hint{font-size:.7rem;color:var(--t2);}
+.toggle-switch{width:44px;height:24px;border-radius:99px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.1);cursor:pointer;position:relative;transition:all .28s;flex-shrink:0;}
+.toggle-switch.on{background:linear-gradient(135deg,var(--ok),#2bb85c);border-color:var(--ok);box-shadow:0 4px 14px rgba(62,207,110,.3);}
+.toggle-thumb{position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;left:3px;transition:transform .28s cubic-bezier(.22,1,.36,1);box-shadow:0 2px 6px rgba(0,0,0,.35);}
+.toggle-switch.on .toggle-thumb{transform:translateX(20px);}
+
+/* stats badges */
+.stats-chips{display:flex;gap:.6rem;flex-wrap:wrap;}
+.stat-chip{padding:.4rem .85rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--card-border);display:flex;flex-direction:column;align-items:center;gap:.15rem;min-width:70px;}
+.chip-val{font-size:1.1rem;font-weight:900;letter-spacing:-.04em;background:linear-gradient(135deg,var(--pri-l),var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.chip-lbl{font-size:.6rem;color:var(--t3);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.08em;}
+
+/* danger section */
+.danger-card{border-radius:22px;padding:1.4rem 1.8rem;background:rgba(255,92,92,.04);border:1.5px solid rgba(255,92,92,.15);display:flex;flex-direction:column;gap:1rem;}
+.danger-item{display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+.danger-info .danger-title{font-size:.88rem;font-weight:700;color:#ff8888;margin-bottom:.2rem;}
+.danger-info .danger-hint{font-size:.72rem;color:rgba(255,150,150,.55);line-height:1.5;}
+.danger-action-btn{padding:.5rem 1rem;border-radius:10px;background:rgba(255,92,92,.12);border:1px solid rgba(255,92,92,.28);color:#ff8888;font-size:.77rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;white-space:nowrap;transition:all .22s;flex-shrink:0;}
+.danger-action-btn:hover{background:rgba(255,92,92,.22);box-shadow:0 6px 18px rgba(255,92,92,.2);}
+.danger-divider{height:1px;background:rgba(255,92,92,.1);}
+
+/* toast */
+.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(20,22,42,.96);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:.65rem 1.3rem;font-size:.8rem;color:var(--t1);font-weight:600;backdrop-filter:blur(20px);opacity:0;transition:all .3s cubic-bezier(.22,1,.36,1);z-index:1000;white-space:nowrap;display:flex;align-items:center;gap:.5rem;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* modal overlay */
+.modal-overlay{position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;}
+.modal-overlay.open{display:flex;}
+.modal{width:420px;border-radius:24px;padding:2rem;background:rgba(8,10,28,.96);border:1.5px solid rgba(255,92,92,.25);box-shadow:0 32px 80px rgba(0,0,0,.6),0 0 60px rgba(255,92,92,.1);animation:pop-in .3s cubic-bezier(.22,1,.36,1);}
+@keyframes pop-in{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.modal-title{font-size:1.1rem;font-weight:900;color:#ff8888;margin-bottom:.5rem;letter-spacing:-.02em;}
+.modal-body{font-size:.8rem;color:var(--t2);line-height:1.65;margin-bottom:1.4rem;}
+.modal-actions{display:flex;gap:.6rem;justify-content:flex-end;}
+.modal-cancel{padding:.55rem 1.1rem;border-radius:10px;background:var(--card-bg);border:1px solid var(--card-border);color:var(--t2);font-size:.8rem;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.modal-cancel:hover{color:var(--t1);}
+.modal-confirm{padding:.55rem 1.1rem;border-radius:10px;background:rgba(255,92,92,.2);border:1px solid rgba(255,92,92,.35);color:#ff8888;font-size:.8rem;font-weight:700;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+.modal-confirm:hover{background:rgba(255,92,92,.3);}
+</style>
+</head>
+<body>
+
+<div class="bg">
+  <div class="aurora"></div>
+  <div class="bgrid"></div>
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+
+<div class="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="logo-row">
+      <div class="licon">⚡</div>
+      <div>
+        <div class="logo-text">SkillBridge</div>
+        <div class="logo-sub">Profile &amp; Settings</div>
+      </div>
+    </div>
+    <div class="breadcrumb">
+      <span>SkillBridge</span>
+      <span class="bc-sep">›</span>
+      <span>Account</span>
+      <span class="bc-sep">›</span>
+      <span class="bc-active" id="bc-current">Profile</span>
+    </div>
+  </div>
+
+  <!-- BODY -->
+  <div class="body-grid">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- AVATAR -->
+      <div class="avatar-section">
+        <div class="avatar-wrap" onclick="document.getElementById('file-input').click()">
+          <div class="avatar-ring">
+            <div class="avatar-inner">
+              <img class="avatar-img" id="sidebar-avatar-img" src="" style="display:none" alt="Profile photo"/>
+              <div class="avatar-initials" id="sidebar-initials">AR</div>
+            </div>
+          </div>
+          <div class="avatar-edit-overlay">
+            <div class="edit-icon">📷</div>
+            <div class="edit-hint">Change</div>
+          </div>
+        </div>
+        <div class="avatar-name" id="sidebar-name">Arjun Sharma</div>
+        <div class="avatar-role" id="sidebar-role">B.Tech · Computer Science · 2nd Year</div>
+        <div class="avatar-badge"><div class="badge-dot"></div>Active Student</div>
+      </div>
+
+      <!-- NAV -->
+      <div class="nav-section">
+        <div class="nav-label">Account</div>
+        <div class="nav-item active" onclick="showPanel('profile',this)">
+          <div class="nav-icon">👤</div>
+          <span>Profile Info</span>
+        </div>
+        <div class="nav-item" onclick="showPanel('avatar',this)">
+          <div class="nav-icon">🖼️</div>
+          <span>Profile Picture</span>
+        </div>
+        <div class="nav-item" onclick="showPanel('security',this)">
+          <div class="nav-icon">🔒</div>
+          <span>Password &amp; Security</span>
+        </div>
+        <div class="nav-label" style="margin-top:.6rem;">Preferences</div>
+        <div class="nav-item" onclick="showPanel('notifications',this)">
+          <div class="nav-icon">🔔</div>
+          <span>Notifications</span>
+        </div>
+        <div class="nav-item" onclick="showPanel('academic',this)">
+          <div class="nav-icon">🎓</div>
+          <span>Academic Details</span>
+        </div>
+      </div>
+
+      <!-- DANGER -->
+      <div class="danger-zone">
+        <div class="dz-label">Danger Zone</div>
+        <div class="dz-btn" onclick="showPanel('danger',this)">
+          <div class="dz-icon">⚠️</div>
+          <span>Account Actions</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ═══ PANEL: PROFILE ═══ -->
+      <div class="panel active" id="panel-profile">
+        <div class="panel-hero">
+          <div class="panel-step"><div class="step-dot"></div>Profile Info</div>
+          <div class="panel-title">Personal Information</div>
+          <div class="panel-sub">Update your name, username, email and other personal details visible to your peers and instructors.</div>
+        </div>
+
+        <!-- quick stats -->
+        <div class="stats-chips">
+          <div class="stat-chip"><div class="chip-val">28</div><div class="chip-lbl">Tasks Done</div></div>
+          <div class="stat-chip"><div class="chip-val">14</div><div class="chip-lbl">Day Streak</div></div>
+          <div class="stat-chip"><div class="chip-val">3</div><div class="chip-lbl">Subjects</div></div>
+          <div class="stat-chip"><div class="chip-val">92%</div><div class="chip-lbl">Completion</div></div>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-purple">👤</div>
+            <div class="section-head-text">
+              <div class="section-title">Basic Info</div>
+              <div class="section-desc">Your full name and public-facing username</div>
+            </div>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label">First Name</label>
+              <input class="field-input" id="fname" type="text" value="Arjun" placeholder="First name"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Last Name</label>
+              <input class="field-input" id="lname" type="text" value="Sharma" placeholder="Last name"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Username</label>
+              <input class="field-input" id="username" type="text" value="arjun_s28" placeholder="@username"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Display Name</label>
+              <input class="field-input" id="displayname" type="text" value="Arjun Sharma" placeholder="How others see you"/>
+            </div>
+          </div>
+          <div class="field-grid single">
+            <div class="field">
+              <label class="field-label">Bio</label>
+              <textarea class="field-input" id="bio" rows="3" placeholder="Tell us a little about yourself…" style="resize:vertical;line-height:1.6;">B.Tech CSE student | Problem solver | Competitive programmer 🚀</textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-cyan">📬</div>
+            <div class="section-head-text">
+              <div class="section-title">Contact Details</div>
+              <div class="section-desc">Email and phone for communications</div>
+            </div>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label">Email Address</label>
+              <input class="field-input" id="email" type="email" value="arjun.sharma@university.edu" placeholder="your@email.com"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Phone Number</label>
+              <input class="field-input" id="phone" type="tel" value="+91 98765 43210" placeholder="+91 XXXXX XXXXX"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Location</label>
+              <input class="field-input" id="location" type="text" value="Jaipur, Rajasthan" placeholder="City, State"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Date of Birth</label>
+              <input class="field-input" id="dob" type="date" value="2003-08-15"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="action-row">
+          <button class="save-btn" onclick="saveSection('profile')">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+          <button class="cancel-btn" onclick="resetSection('profile')">Discard</button>
+          <div class="saved-check" id="saved-profile">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Saved!
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PANEL: AVATAR ═══ -->
+      <div class="panel" id="panel-avatar">
+        <div class="panel-hero">
+          <div class="panel-step" style="background:rgba(0,229,255,.1);border-color:rgba(0,229,255,.22);color:var(--acc);"><div class="step-dot" style="background:var(--acc)"></div>Profile Picture</div>
+          <div class="panel-title" style="background:linear-gradient(135deg,var(--t1) 40%,#80f3ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Profile Picture</div>
+          <div class="panel-sub">Upload a photo or pick an avatar color. Your photo helps your classmates and instructors recognise you.</div>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-cyan">📸</div>
+            <div class="section-head-text">
+              <div class="section-title">Upload Photo</div>
+              <div class="section-desc">JPG, PNG or GIF · Max 5 MB</div>
+            </div>
+          </div>
+          <div class="avatar-upload-big">
+            <div class="ava-preview-wrap" onclick="document.getElementById('file-input').click()">
+              <div class="ava-preview-ring">
+                <div class="ava-preview-inner">
+                  <img class="ava-preview-img" id="preview-img" src="" style="display:none" alt="Preview"/>
+                  <div class="ava-preview-initials" id="preview-initials">AR</div>
+                </div>
+              </div>
+              <div class="ava-edit-overlay">📷</div>
+            </div>
+            <div class="upload-info">
+              <div class="upload-title">Profile Photo</div>
+              <div class="upload-hint">Your photo is visible to your classmates and instructors.<br>Use a clear, recent headshot for best results.</div>
+              <div class="upload-btns">
+                <button class="upload-btn primary" onclick="document.getElementById('file-input').click()">📂 Upload Photo</button>
+                <button class="upload-btn ghost" onclick="removeAvatar()">Remove</button>
+              </div>
+            </div>
+          </div>
+          <input type="file" id="file-input" accept="image/*" onchange="handleFileUpload(event)"/>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-pink">🎨</div>
+            <div class="section-head-text">
+              <div class="section-title">Avatar Color</div>
+              <div class="section-desc">Pick a gradient color for your initials avatar</div>
+            </div>
+          </div>
+          <div style="font-size:.78rem;color:var(--t2);margin-bottom:.2rem;">Choose a color theme for your avatar background</div>
+          <div class="color-picker-row" id="color-picker"></div>
+          <div class="action-row" style="margin-top:.4rem;">
+            <button class="save-btn" onclick="saveSection('avatar')" style="background:linear-gradient(135deg,var(--acc),#0099bb)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+              Save Avatar
+            </button>
+            <div class="saved-check" id="saved-avatar">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Saved!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PANEL: SECURITY ═══ -->
+      <div class="panel" id="panel-security">
+        <div class="panel-hero">
+          <div class="panel-step" style="background:rgba(255,111,216,.1);border-color:rgba(255,111,216,.25);color:var(--acc2);"><div class="step-dot" style="background:var(--acc2)"></div>Security</div>
+          <div class="panel-title" style="background:linear-gradient(135deg,var(--t1) 40%,var(--acc2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Password &amp; Security</div>
+          <div class="panel-sub">Keep your account safe. Use a strong, unique password and enable two-factor authentication.</div>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-pink">🔐</div>
+            <div class="section-head-text">
+              <div class="section-title">Change Password</div>
+              <div class="section-desc">Choose a strong password with 8+ characters</div>
+            </div>
+          </div>
+          <div class="field-grid single">
+            <div class="field">
+              <label class="field-label">Current Password</label>
+              <div class="pwd-wrap">
+                <input class="field-input" id="pwd-current" type="password" placeholder="Enter current password" style="padding-right:2.8rem"/>
+                <div class="pwd-toggle" onclick="togglePwd('pwd-current',this)">👁️</div>
+              </div>
+            </div>
+            <div class="field">
+              <label class="field-label">New Password</label>
+              <div class="pwd-wrap">
+                <input class="field-input" id="pwd-new" type="password" placeholder="At least 8 characters" style="padding-right:2.8rem" oninput="checkStrength(this.value)"/>
+                <div class="pwd-toggle" onclick="togglePwd('pwd-new',this)">👁️</div>
+              </div>
+              <div class="strength-row" id="strength-bars">
+                <div class="strength-bar" id="sb1"></div>
+                <div class="strength-bar" id="sb2"></div>
+                <div class="strength-bar" id="sb3"></div>
+                <div class="strength-bar" id="sb4"></div>
+              </div>
+              <div class="strength-label" id="strength-label">Enter a password</div>
+            </div>
+            <div class="field">
+              <label class="field-label">Confirm New Password</label>
+              <div class="pwd-wrap">
+                <input class="field-input" id="pwd-confirm" type="password" placeholder="Re-enter new password" style="padding-right:2.8rem"/>
+                <div class="pwd-toggle" onclick="togglePwd('pwd-confirm',this)">👁️</div>
+              </div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="save-btn" onclick="changePassword()" style="background:linear-gradient(135deg,var(--acc2),#cc4aaa)">
+              🔒 Update Password
+            </button>
+            <div class="saved-check" id="saved-security" style="color:var(--ok)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Password Updated!
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-green">🛡️</div>
+            <div class="section-head-text">
+              <div class="section-title">Two-Factor Authentication</div>
+              <div class="section-desc">Add an extra layer of security to your account</div>
+            </div>
+          </div>
+          <div class="toggle-list">
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-name">Authenticator App (TOTP)</div>
+                <div class="toggle-hint">Use Google Authenticator or similar apps</div>
+              </div>
+              <div class="toggle-switch" onclick="flipToggle(this)"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info">
+                <div class="toggle-name">SMS Verification</div>
+                <div class="toggle-hint">Get a code via SMS on login</div>
+              </div>
+              <div class="toggle-switch on" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PANEL: NOTIFICATIONS ═══ -->
+      <div class="panel" id="panel-notifications">
+        <div class="panel-hero">
+          <div class="panel-step" style="background:rgba(255,181,71,.1);border-color:rgba(255,181,71,.25);color:var(--warn);"><div class="step-dot" style="background:var(--warn)"></div>Notifications</div>
+          <div class="panel-title" style="background:linear-gradient(135deg,var(--t1) 40%,var(--warn));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Notification Preferences</div>
+          <div class="panel-sub">Choose which updates and reminders you'd like to receive so you never miss a deadline.</div>
+        </div>
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon" style="background:rgba(255,181,71,.14);border:1px solid rgba(255,181,71,.24);">🔔</div>
+            <div class="section-head-text">
+              <div class="section-title">Email Notifications</div>
+              <div class="section-desc">Manage what emails SkillBridge sends you</div>
+            </div>
+          </div>
+          <div class="toggle-list">
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">Task Due Reminders</div><div class="toggle-hint">Get reminded 24h before a task is due</div></div>
+              <div class="toggle-switch on" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">Weekly Progress Report</div><div class="toggle-hint">Summary of your weekly completion stats</div></div>
+              <div class="toggle-switch on" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">New Resource Alerts</div><div class="toggle-hint">When new playlists or resources are added</div></div>
+              <div class="toggle-switch" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">Achievement Unlocked</div><div class="toggle-hint">When you hit milestones and earn badges</div></div>
+              <div class="toggle-switch on" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">Streak Reminders</div><div class="toggle-hint">Don't let your streak break — daily nudge</div></div>
+              <div class="toggle-switch on" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+            <div class="toggle-row">
+              <div class="toggle-info"><div class="toggle-name">Promotional Updates</div><div class="toggle-hint">Tips, features, and SkillBridge news</div></div>
+              <div class="toggle-switch" onclick="flipToggle(this)"><div class="toggle-thumb"></div></div>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="save-btn" onclick="saveSection('notifications')" style="background:linear-gradient(135deg,var(--warn),#cc8a00)">💾 Save Preferences</button>
+            <div class="saved-check" id="saved-notifications" style="color:var(--warn)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Saved!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PANEL: ACADEMIC ═══ -->
+      <div class="panel" id="panel-academic">
+        <div class="panel-hero">
+          <div class="panel-step" style="background:rgba(62,207,110,.1);border-color:rgba(62,207,110,.25);color:var(--ok);"><div class="step-dot" style="background:var(--ok)"></div>Academic</div>
+          <div class="panel-title" style="background:linear-gradient(135deg,var(--t1) 40%,var(--ok));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Academic Details</div>
+          <div class="panel-sub">Your course information helps us recommend the right resources and schedule templates for you.</div>
+        </div>
+        <div class="section-card">
+          <div class="shim"></div>
+          <div class="section-head">
+            <div class="section-icon si-green">🎓</div>
+            <div class="section-head-text">
+              <div class="section-title">Course Information</div>
+              <div class="section-desc">Your current degree and institution details</div>
+            </div>
+          </div>
+          <div class="field-grid">
+            <div class="field">
+              <label class="field-label">Institution</label>
+              <input class="field-input" type="text" value="IIT Rajasthan" placeholder="University / College"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Degree</label>
+              <select class="field-input">
+                <option selected>B.Tech</option>
+                <option>M.Tech</option>
+                <option>B.Sc</option>
+                <option>M.Sc</option>
+                <option>BCA</option>
+                <option>MCA</option>
+                <option>MBA</option>
+                <option>PhD</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Branch / Major</label>
+              <select class="field-input">
+                <option selected>Computer Science</option>
+                <option>Electronics</option>
+                <option>Mechanical</option>
+                <option>Civil</option>
+                <option>Mathematics</option>
+                <option>Physics</option>
+                <option>Data Science</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Current Year</label>
+              <select class="field-input">
+                <option>1st Year</option>
+                <option selected>2nd Year</option>
+                <option>3rd Year</option>
+                <option>4th Year</option>
+                <option>5th Year</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label">Roll Number</label>
+              <input class="field-input" type="text" value="21CS045" placeholder="Your roll number"/>
+            </div>
+            <div class="field">
+              <label class="field-label">Graduation Year</label>
+              <select class="field-input">
+                <option>2025</option>
+                <option selected>2026</option>
+                <option>2027</option>
+                <option>2028</option>
+                <option>2029</option>
+              </select>
+            </div>
+          </div>
+          <div class="action-row">
+            <button class="save-btn" onclick="saveSection('academic')" style="background:linear-gradient(135deg,var(--ok),#1a9940)">💾 Save Academic Info</button>
+            <div class="saved-check" id="saved-academic" style="color:var(--ok)">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Saved!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ PANEL: DANGER ═══ -->
+      <div class="panel" id="panel-danger">
+        <div class="panel-hero">
+          <div class="panel-step" style="background:rgba(255,92,92,.1);border-color:rgba(255,92,92,.25);color:var(--danger);"><div class="step-dot" style="background:var(--danger)"></div>Danger Zone</div>
+          <div class="panel-title" style="background:linear-gradient(135deg,var(--t1) 40%,var(--danger));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Account Actions</div>
+          <div class="panel-sub">These actions are irreversible. Please read carefully before proceeding.</div>
+        </div>
+        <div class="danger-card">
+          <div class="danger-item">
+            <div class="danger-info">
+              <div class="danger-title">Export My Data</div>
+              <div class="danger-hint">Download all your tasks, progress and account data as a JSON file.</div>
+            </div>
+            <button class="danger-action-btn" onclick="exportData()">📦 Export</button>
+          </div>
+          <div class="danger-divider"></div>
+          <div class="danger-item">
+            <div class="danger-info">
+              <div class="danger-title">Deactivate Account</div>
+              <div class="danger-hint">Your account will be hidden temporarily. You can reactivate anytime by logging back in.</div>
+            </div>
+            <button class="danger-action-btn" onclick="openModal('deactivate')">😴 Deactivate</button>
+          </div>
+          <div class="danger-divider"></div>
+          <div class="danger-item">
+            <div class="danger-info">
+              <div class="danger-title">Delete Account Permanently</div>
+              <div class="danger-hint">This will erase all your data, tasks, and progress forever. This cannot be undone.</div>
+            </div>
+            <button class="danger-action-btn" style="background:rgba(255,40,40,.2);border-color:rgba(255,40,40,.4);color:#ff6060;" onclick="openModal('delete')">🗑️ Delete</button>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /body-grid -->
+</div><!-- /app -->
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div class="modal-title" id="modal-title">Confirm Action</div>
+    <div class="modal-body" id="modal-body">Are you sure?</div>
+    <div class="modal-actions">
+      <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+      <button class="modal-confirm" id="modal-confirm-btn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ── DATA ──
+const AVATAR_COLORS = [
+  ['#7B6FF0','#00e5ff'],['#ff6fd8','#a99bf7'],['#3ecf6e','#00e5ff'],
+  ['#ffb547','#ff6fd8'],['#ff5c5c','#ffb547'],['#00e5ff','#3ecf6e'],
+  ['#a99bf7','#ff6fd8'],['#5a4fd4','#00e5ff'],
+];
+let selectedColor = 0;
+let uploadedPhoto = null;
+let profile = JSON.parse(localStorage.getItem('sb-profile') || 'null') || {
+  fname:'Arjun', lname:'Sharma', displayname:'Arjun Sharma',
+  colorIdx:0, hasPhoto:false
+};
+
+// ── INIT ──
+function init() {
+  buildColorPicker();
+  applyProfile();
+}
+
+function applyProfile() {
+  const initials = getInitials(profile.fname, profile.lname);
+  ['sidebar-initials','preview-initials'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.textContent = initials;
+  });
+  document.getElementById('sidebar-name').textContent = profile.displayname || (profile.fname+' '+profile.lname);
+  selectedColor = profile.colorIdx || 0;
+  document.querySelectorAll('.color-dot').forEach((d,i)=>d.classList.toggle('selected',i===selectedColor));
+  updateAvatarColor();
+}
+
+function getInitials(f,l){ return ((f||'?')[0]+(l||'?')[0]).toUpperCase(); }
+
+// ── NAV ──
+const panelTitles = {profile:'Profile',avatar:'Profile Picture',security:'Security',notifications:'Notifications',academic:'Academic',danger:'Account Actions'};
+function showPanel(name, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-item,.dz-btn').forEach(n=>n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  if(el) el.classList.add('active');
+  document.getElementById('bc-current').textContent = panelTitles[name] || name;
+}
+
+// ── AVATAR COLOR ──
+function buildColorPicker() {
+  const wrap = document.getElementById('color-picker');
+  AVATAR_COLORS.forEach((c,i)=>{
+    const d = document.createElement('div');
+    d.className = 'color-dot'+(i===selectedColor?' selected':'');
+    d.style.background = `linear-gradient(135deg,${c[0]},${c[1]})`;
+    d.onclick = ()=>{ selectedColor=i; document.querySelectorAll('.color-dot').forEach((dd,ii)=>dd.classList.toggle('selected',ii===i)); updateAvatarColor(); };
+    wrap.appendChild(d);
+  });
+}
+
+function updateAvatarColor() {
+  const c = AVATAR_COLORS[selectedColor];
+  const grad = `linear-gradient(135deg,${c[0]},${c[1]})`;
+  document.querySelectorAll('.avatar-initials,.ava-preview-initials').forEach(el=>{ el.style.background=grad; el.style.webkitBackgroundClip='text'; el.style.webkitTextFillColor='transparent'; });
+}
+
+// ── FILE UPLOAD ──
+function handleFileUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  if (file.size > 5*1024*1024) { showToast('❌ File too large. Max 5 MB.'); return; }
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const src = ev.target.result;
+    uploadedPhoto = src;
+    ['sidebar-avatar-img','preview-img'].forEach(id=>{
+      const img = document.getElementById(id);
+      img.src = src; img.style.display='block';
+    });
+    ['sidebar-initials','preview-initials'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.style.display='none';
+    });
+    showToast('📸 Photo uploaded! Click Save to apply.');
+  };
+  reader.readAsDataURL(file);
+}
+
+function removeAvatar() {
+  uploadedPhoto = null;
+  ['sidebar-avatar-img','preview-img'].forEach(id=>{ const img=document.getElementById(id); img.src=''; img.style.display='none'; });
+  ['sidebar-initials','preview-initials'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=''; });
+  document.getElementById('file-input').value='';
+  showToast('🗑️ Photo removed');
+}
+
+// ── PASSWORD ──
+function togglePwd(id, btn) {
+  const inp = document.getElementById(id);
+  if (inp.type==='password') { inp.type='text'; btn.textContent='🙈'; }
+  else { inp.type='password'; btn.textContent='👁️'; }
+}
+
+function checkStrength(val) {
+  const bars = ['sb1','sb2','sb3','sb4'];
+  const lbl = document.getElementById('strength-label');
+  let score = 0;
+  if(val.length>=8) score++;
+  if(/[A-Z]/.test(val) && /[a-z]/.test(val)) score++;
+  if(/[0-9]/.test(val)) score++;
+  if(/[^A-Za-z0-9]/.test(val)) score++;
+  const colors = ['','#ff5c5c','#ffb547','#7B6FF0','#3ecf6e'];
+  const labels = ['','Weak','Fair','Strong','Very Strong'];
+  bars.forEach((id,i)=>{
+    document.getElementById(id).style.background = i < score ? colors[score] : 'rgba(255,255,255,.08)';
+  });
+  lbl.textContent = val.length===0 ? 'Enter a password' : labels[score];
+  lbl.style.color = colors[score] || 'var(--t2)';
+}
+
+function changePassword() {
+  const cur = document.getElementById('pwd-current').value;
+  const nw = document.getElementById('pwd-new').value;
+  const conf = document.getElementById('pwd-confirm').value;
+  if (!cur) { showToast('❌ Enter your current password'); return; }
+  if (nw.length < 8) { showToast('❌ Password must be at least 8 characters'); return; }
+  if (nw !== conf) { showToast('❌ Passwords do not match'); return; }
+  ['pwd-current','pwd-new','pwd-confirm'].forEach(id=>document.getElementById(id).value='');
+  checkStrength('');
+  showSaved('security');
+  showToast('🔒 Password updated successfully!');
+}
+
+// ── TOGGLE ──
+function flipToggle(el) {
+  el.classList.toggle('on');
+  if (!el.querySelector('.toggle-thumb')) { const t=document.createElement('div'); t.className='toggle-thumb'; el.appendChild(t); }
+}
+
+// ── SAVE SECTIONS ──
+function saveSection(name) {
+  if (name==='profile') {
+    profile.fname = document.getElementById('fname').value.trim() || profile.fname;
+    profile.lname = document.getElementById('lname').value.trim() || profile.lname;
+    profile.displayname = document.getElementById('displayname').value.trim() || profile.displayname;
+    localStorage.setItem('sb-profile', JSON.stringify(profile));
+    applyProfile();
+  }
+  if (name==='avatar') {
+    profile.colorIdx = selectedColor;
+    localStorage.setItem('sb-profile', JSON.stringify(profile));
+    applyProfile();
+  }
+  showSaved(name);
+  showToast('✅ Changes saved successfully!');
+}
+
+function resetSection() {
+  showToast('↩️ Changes discarded');
+}
+
+function showSaved(name) {
+  const el = document.getElementById('saved-'+name);
+  if (!el) return;
+  el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2500);
+}
+
+// ── MODAL ──
+let modalAction = null;
+function openModal(action) {
+  modalAction = action;
+  const configs = {
+    deactivate:{title:'Deactivate Account?',body:'Your account will be temporarily hidden. You can reactivate it by logging back in. Your data will be preserved.',btn:'Deactivate'},
+    delete:{title:'Delete Account Permanently?',body:'This will permanently erase ALL your data — tasks, progress, streaks, everything. This action CANNOT be undone.\n\nType "DELETE" to confirm.',btn:'Delete Forever'},
+  };
+  const c = configs[action];
+  document.getElementById('modal-title').textContent = c.title;
+  document.getElementById('modal-body').textContent = c.body;
+  document.getElementById('modal-confirm-btn').textContent = c.btn;
+  document.getElementById('modal-overlay').classList.add('open');
+}
+function closeModal(e) {
+  if (e && e.target !== document.getElementById('modal-overlay')) return;
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+document.getElementById('modal-confirm-btn').onclick = () => {
+  closeModal();
+  if (modalAction==='deactivate') showToast('😴 Account deactivated (demo mode)');
+  if (modalAction==='delete') showToast('🗑️ Account deleted (demo mode)');
+};
+
+// ── EXPORT ──
+function exportData() {
+  const data = { profile, tasks: JSON.parse(localStorage.getItem('sb-tasks')||'[]'), exported: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='skillbridge-data.json'; a.click();
+  showToast('📦 Data exported!');
+}
+
+// ── TOAST ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+init();
+</script>
+</body>
+</html>
