@@ -154,7 +154,7 @@ router.get("/google/callback",
 
 /* ---------------- UPDATE PROFILE ---------------- */
 
-router.put("/update-profile", auth, async(req,res)=>{
+router.put("/update-profile", authMiddleware, async(req,res)=>{
 
   try{
 
@@ -185,7 +185,7 @@ router.put("/update-profile", auth, async(req,res)=>{
 
 router.post(
   "/upload-profile-picture",
-  auth,
+  authMiddleware,
   upload.single("profilePicture"),
   async(req,res)=>{
 
@@ -194,8 +194,7 @@ router.post(
       const user =
         await User.findById(req.user.id);
 
-      user.profilePicture =
-        req.file.filename;
+      user.profilePicture = req.file.path;
 
       await user.save();
 
@@ -218,7 +217,7 @@ router.post(
 
 router.put(
   "/change-password",
-  auth,
+  authMiddleware,
   async(req,res)=>{
 
     try{
