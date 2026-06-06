@@ -747,6 +747,16 @@ select.field-input option{background:#0d1027;}
 <div class="toast" id="toast"></div>
 
 <script>
+const BACKEND_URL =
+  "https://skillbridge-production-e1cb.up.railway.app";
+
+const token =
+  localStorage.getItem("token");
+
+if(!token){
+  window.location.href = "login.html";
+}
+
 // ── DATA ──
 const AVATAR_COLORS = [
   ['#7B6FF0','#00e5ff'],['#ff6fd8','#a99bf7'],['#3ecf6e','#00e5ff'],
@@ -755,10 +765,101 @@ const AVATAR_COLORS = [
 ];
 let selectedColor = 0;
 let uploadedPhoto = null;
-let profile = JSON.parse(localStorage.getItem('sb-profile') || 'null') || {
-  fname:'Arjun', lname:'Sharma', displayname:'Arjun Sharma',
-  colorIdx:0, hasPhoto:false
-};
+let profile = {};
+
+async function loadProfile(){
+
+  try{
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/auth/me`,
+      {
+        headers:{
+          Authorization:"Bearer "+token
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    profile = data;
+
+    // Fill inputs
+    document.getElementById("fname").value =
+      data.firstName || "";
+
+    document.getElementById("lname").value =
+      data.lastName || "";
+
+    document.getElementById("username").value =
+      data.username || "";
+
+    document.getElementById("displayname").value =
+      data.name || "";
+
+    document.getElementById("bio").value =
+      data.bio || "";
+
+    document.getElementById("email").value =
+      data.email || "";
+
+    document.getElementById("phone").value =
+      data.phone || "";
+
+    document.getElementById("location").value =
+      data.location || "";
+
+    document.getElementById("dob").value =
+      data.dob || "";
+
+    // Sidebar
+    document.getElementById(
+      "sidebar-name"
+    ).innerText =
+      data.name || "User";
+
+    // Avatar
+    if(data.profilePicture){
+
+      const img =
+        data.profilePicture.startsWith("http")
+        ? data.profilePicture
+        : `${BACKEND_URL}/uploads/${data.profilePicture}`;
+
+      document.getElementById(
+        "sidebar-avatar-img"
+      ).src = img;
+
+      document.getElementById(
+        "preview-img"
+      ).src = img;
+
+      document.getElementById(
+        "sidebar-avatar-img"
+      ).style.display = "block";
+
+      document.getElementById(
+        "preview-img"
+      ).style.display = "block";
+
+      document.getElementById(
+        "sidebar-initials"
+      ).style.display = "none";
+
+      document.getElementById(
+        "preview-initials"
+      ).style.display = "none";
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+    showToast("❌ Failed to load profile");
+
+  }
+
+}
 
 // ── INIT ──
 function init() {
@@ -809,25 +910,49 @@ function updateAvatarColor() {
 }
 
 // ── FILE UPLOAD ──
-function handleFileUpload(e) {
+async function handleFileUpload(e){
+
   const file = e.target.files[0];
-  if (!file) return;
-  if (file.size > 5*1024*1024) { showToast('❌ File too large. Max 5 MB.'); return; }
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const src = ev.target.result;
-    uploadedPhoto = src;
-    ['sidebar-avatar-img','preview-img'].forEach(id=>{
-      const img = document.getElementById(id);
-      img.src = src; img.style.display='block';
-    });
-    ['sidebar-initials','preview-initials'].forEach(id=>{
-      const el = document.getElementById(id);
-      if(el) el.style.display='none';
-    });
-    showToast('📸 Photo uploaded! Click Save to apply.');
-  };
-  reader.readAsDataURL(file);
+
+  if(!file) return;
+
+  try{
+
+    const formData = new FormData();
+
+    formData.append("profilePicture", file);
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/auth/upload-profile-picture`,
+      {
+        method:"POST",
+
+        headers:{
+          Authorization:"Bearer "+token
+        },
+
+        body:formData
+      }
+    );
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.message);
+    }
+
+    showToast("✅ Profile picture updated");
+
+    loadProfile();
+
+  }catch(err){
+
+    console.log(err);
+
+    showToast("❌ Upload failed");
+
+  }
+
 }
 
 function removeAvatar() {
@@ -862,17 +987,68 @@ function checkStrength(val) {
   lbl.style.color = colors[score] || 'var(--t2)';
 }
 
-function changePassword() {
-  const cur = document.getElementById('pwd-current').value;
-  const nw = document.getElementById('pwd-new').value;
-  const conf = document.getElementById('pwd-confirm').value;
-  if (!cur) { showToast('❌ Enter your current password'); return; }
-  if (nw.length < 8) { showToast('❌ Password must be at least 8 characters'); return; }
-  if (nw !== conf) { showToast('❌ Passwords do not match'); return; }
-  ['pwd-current','pwd-new','pwd-confirm'].forEach(id=>document.getElementById(id).value='');
-  checkStrength('');
-  showSaved('security');
-  showToast('🔒 Password updated successfully!');
+async function changePassword(){
+
+  try{
+
+    const currentPassword =
+      document.getElementById(
+        "pwd-current"
+      ).value;
+
+    const newPassword =
+      document.getElementById(
+        "pwd-new"
+      ).value;
+
+    const confirmPassword =
+      document.getElementById(
+        "pwd-confirm"
+      ).value;
+
+    if(newPassword !== confirmPassword){
+
+      showToast("❌ Passwords do not match");
+
+      return;
+
+    }
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/auth/change-password`,
+      {
+        method:"PUT",
+
+        headers:{
+          "Content-Type":"application/json",
+          Authorization:"Bearer "+token
+        },
+
+        body:JSON.stringify({
+          currentPassword,
+          newPassword
+        })
+      }
+    );
+
+    const data = await res.json();
+
+    if(!res.ok){
+      throw new Error(data.message);
+    }
+
+    showSaved("security");
+
+    showToast("🔒 Password updated");
+
+  }catch(err){
+
+    console.log(err);
+
+    showToast("❌ " + err.message);
+
+  }
+
 }
 
 // ── TOGGLE ──
@@ -882,21 +1058,79 @@ function flipToggle(el) {
 }
 
 // ── SAVE SECTIONS ──
-function saveSection(name) {
-  if (name==='profile') {
-    profile.fname = document.getElementById('fname').value.trim() || profile.fname;
-    profile.lname = document.getElementById('lname').value.trim() || profile.lname;
-    profile.displayname = document.getElementById('displayname').value.trim() || profile.displayname;
-    localStorage.setItem('sb-profile', JSON.stringify(profile));
-    applyProfile();
+async function saveSection(name){
+
+  try{
+
+    if(name === "profile"){
+
+      const body = {
+
+        firstName:
+          document.getElementById("fname").value,
+
+        lastName:
+          document.getElementById("lname").value,
+
+        username:
+          document.getElementById("username").value,
+
+        name:
+          document.getElementById("displayname").value,
+
+        bio:
+          document.getElementById("bio").value,
+
+        email:
+          document.getElementById("email").value,
+
+        phone:
+          document.getElementById("phone").value,
+
+        location:
+          document.getElementById("location").value,
+
+        dob:
+          document.getElementById("dob").value
+
+      };
+
+      const res = await fetch(
+        `${BACKEND_URL}/api/auth/update-profile`,
+        {
+          method:"PUT",
+
+          headers:{
+            "Content-Type":"application/json",
+            Authorization:"Bearer "+token
+          },
+
+          body:JSON.stringify(body)
+        }
+      );
+
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data.message);
+      }
+
+      showSaved("profile");
+
+      showToast("✅ Profile updated");
+
+      loadProfile();
+
+    }
+
+  }catch(err){
+
+    console.log(err);
+
+    showToast("❌ " + err.message);
+
   }
-  if (name==='avatar') {
-    profile.colorIdx = selectedColor;
-    localStorage.setItem('sb-profile', JSON.stringify(profile));
-    applyProfile();
-  }
-  showSaved(name);
-  showToast('✅ Changes saved successfully!');
+
 }
 
 function resetSection() {
@@ -950,6 +1184,7 @@ function showToast(msg) {
 }
 
 init();
+loadProfile();
 </script>
 </body>
 </html>

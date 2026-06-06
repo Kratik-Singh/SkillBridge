@@ -151,4 +151,117 @@ router.get("/google/callback",
   }
 );
 
+
+/* ---------------- UPDATE PROFILE ---------------- */
+
+router.put("/update-profile", auth, async(req,res)=>{
+
+  try{
+
+    const user =
+      await User.findById(req.user.id);
+
+    Object.assign(user, req.body);
+
+    await user.save();
+
+    res.json({
+      success:true
+    });
+
+  }catch(err){
+
+    res.status(500).json({
+      message:err.message
+    });
+
+  }
+
+});
+
+
+/* ---------------- UPDATE PROFILE PICTURE ---------------- */
+
+
+router.post(
+  "/upload-profile-picture",
+  auth,
+  upload.single("profilePicture"),
+  async(req,res)=>{
+
+    try{
+
+      const user =
+        await User.findById(req.user.id);
+
+      user.profilePicture =
+        req.file.filename;
+
+      await user.save();
+
+      res.json({
+        success:true
+      });
+
+    }catch(err){
+
+      res.status(500).json({
+        message:err.message
+      });
+
+    }
+
+});
+
+
+/* ---------------- CHANGE PASSWORD ---------------- */
+
+router.put(
+  "/change-password",
+  auth,
+  async(req,res)=>{
+
+    try{
+
+      const {
+        currentPassword,
+        newPassword
+      } = req.body;
+
+      const user =
+        await User.findById(req.user.id);
+
+      const isMatch =
+        await bcrypt.compare(
+          currentPassword,
+          user.password
+        );
+
+      if(!isMatch){
+
+        return res.status(400).json({
+          message:"Wrong current password"
+        });
+
+      }
+
+      user.password =
+        await bcrypt.hash(newPassword,10);
+
+      await user.save();
+
+      res.json({
+        success:true
+      });
+
+    }catch(err){
+
+      res.status(500).json({
+        message:err.message
+      });
+
+    }
+
+});
+
 module.exports = router;
