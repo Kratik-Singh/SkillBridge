@@ -22,6 +22,14 @@ function getDayDiff(d1, d2) {
   );
 }
 
+// Local (server) calendar-day key, e.g. "2026-07-17"
+function dayKey(d) {
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
+}
+
 /* ---------- DAILY VISIT (SAFE) ---------- */
 
 router.post("/visit", auth, async (req, res) => {
@@ -137,6 +145,12 @@ router.post("/active", auth, async (req, res) => {
 
     user.lastActiveXP = now;
 
+    // Record this minute against today's calendar day
+    if (!user.dailyActivity) user.dailyActivity = new Map();
+    const key = dayKey(now);
+    const prev = user.dailyActivity.get(key) || 0;
+    user.dailyActivity.set(key, prev + 1);
+
     await user.save();
 
     res.json({
@@ -226,19 +240,34 @@ router.get("/weekly", auth, async (req,res)=>{
     const user =
       await User.findById(req.user.id);
 
-    const totalHours =
-      Math.floor((user.totalMinutes || 0)/60);
+    const activity = user.dailyActivity || new Map();
 
-    // fake split for now
-    const weekly = [
-      1,
-      2,
-      3,
-      2,
-      4,
-      5,
-      totalHours % 6
-    ];
+    // Build the current week, Sunday (index 0) through Saturday (index 6),
+    // and read the real minutes logged for each day from dailyActivity.
+    const now = new Date();
+
+    const startOfWeek = new Date(now);
+    startOfWeek.setDate(now.getDate() - now.getDay());
+    startOfWeek.setHours(0, 0, 0, 0);
+
+    const weekly = [];
+
+    for (let i = 0; i < 7; i++) {
+
+      const d = new Date(startOfWeek);
+      d.setDate(startOfWeek.getDate() + i);
+
+      const key = dayKey(d);
+
+      const minutes =
+        (typeof activity.get === "function")
+          ? (activity.get(key) || 0)
+          : (activity[key] || 0);
+
+      // Round to 1 decimal place of hours
+      weekly.push(Math.round((minutes / 60) * 10) / 10);
+
+    }
 
     res.json({
       hours: weekly

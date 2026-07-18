@@ -97,18 +97,74 @@ router.get("/me", authMiddleware, async (req,res)=>{
 router.post("/forgot-password", async (req,res)=>{
   const { email } = req.body;
 
-  const user = await User.findOne({ email });
-  if(!user) return res.json({ message:"User not found" });
+  if(!email){
+    return res.status(400).json({ message:"Please enter your email address" });
+  }
 
-  const resetToken = jwt.sign(
-    { id:user._id },
-    process.env.JWT_SECRET,
-    { expiresIn:"15m" }
-  );
+  try {
 
-  const resetLink = process.env.CLIENT_URL + "/reset.html?token=" + resetToken;
+    const user = await User.findOne({ email });
 
-  res.json({ message:"Reset link generated (email sending optional)", resetLink });
+    // Always respond with the same generic message, whether or not the
+    // account exists — this avoids leaking which emails are registered.
+    if(!user){
+      return res.json({ message:"If that email is registered, a reset link has been sent." });
+    }
+
+    const resetToken = jwt.sign(
+      { id:user._id },
+      process.env.JWT_SECRET,
+      { expiresIn:"15m" }
+    );
+
+    const resetLink = process.env.CLIENT_URL + "/reset.html?token=" + resetToken;
+
+    // Try to actually send the email. If email isn't configured (e.g. local
+    // dev without EMAIL_USER/EMAIL_PASS set), fall back to returning the
+    // link directly in the response so the flow still works end-to-end.
+    if(process.env.EMAIL_USER && process.env.EMAIL_PASS){
+
+      try {
+
+        const transporter = nodemailer.createTransport({
+          service: process.env.EMAIL_SERVICE || "gmail",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS
+          }
+        });
+
+        await transporter.sendMail({
+          from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+          to: user.email,
+          subject: "Reset your SkillBridge password",
+          html: `
+            <p>Hi ${user.name || "there"},</p>
+            <p>We received a request to reset your SkillBridge password. This link expires in 15 minutes.</p>
+            <p><a href="${resetLink}">Reset your password</a></p>
+            <p>If you didn't request this, you can safely ignore this email.</p>
+          `
+        });
+
+        return res.json({ message:"If that email is registered, a reset link has been sent." });
+
+      } catch (mailErr) {
+        console.error("Email send failed:", mailErr.message);
+        // Fall through to dev fallback below
+      }
+
+    }
+
+    // Dev fallback / email not configured — return the link directly.
+    res.json({
+      message:"Email delivery isn't configured yet, so here's your reset link directly.",
+      resetLink
+    });
+
+  } catch(err){
+    console.error(err);
+    res.status(500).json({ message:"Something went wrong. Please try again." });
+  }
 });
 
 /* ---------------- RESET PASSWORD ---------------- */

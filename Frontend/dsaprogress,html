@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SkillBridge — DSA Progress</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --base: #04060f;
+  --surf: #0a1128;
+  --pri: #7B6FF0;
+  --pri-d: #5a4fd4;
+  --pri-l: #a99bf7;
+  --acc: #00e5ff;
+  --acc2: #ff6fd8;
+  --ok: #3ecf6e;
+  --warn: #ffb547;
+  --err: #ff5c7a;
+  --t1: #eef0f8;
+  --t2: #8b95b5;
+  --t3: #3d4560;
+}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+html{height:100%;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--base);
+  color:var(--t1);
+  min-height:100%;
+  line-height:1.6;
+}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;background:var(--base);}
+.aurora{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 80% 60% at 80% -10%, rgba(91,79,220,.5) 0%, transparent 55%),
+    radial-gradient(ellipse 60% 50% at -5% 90%, rgba(0,200,230,.28) 0%, transparent 52%);
+  animation:aurora-shift 18s ease-in-out infinite alternate;
+}
+@keyframes aurora-shift{0%{filter:hue-rotate(0deg) brightness(1)}50%{filter:hue-rotate(15deg) brightness(1.08)}100%{filter:hue-rotate(-10deg) brightness(.95)}}
+.bgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(123,111,240,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(123,111,240,.055) 1px,transparent 1px);background-size:56px 56px;}
+
+.wrap{position:relative;z-index:5;max-width:820px;margin:0 auto;padding:2rem 1.5rem 4rem;}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.6rem 0 2rem;flex-wrap:wrap;gap:1rem;}
+.logo-row{display:flex;align-items:center;gap:.65rem;}
+.licon{width:38px;height:38px;background:linear-gradient(135deg,var(--pri),var(--acc));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;box-shadow:0 4px 18px rgba(123,111,240,.5);}
+.logo-text{font-size:1.35rem;font-weight:900;letter-spacing:-.03em;background:linear-gradient(135deg,#c4bbff,var(--acc));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.back-btn{
+  display:flex;align-items:center;gap:.45rem;
+  padding:.5rem 1rem;border-radius:10px;
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  font-size:.78rem;font-weight:600;color:var(--t2);
+  cursor:pointer;transition:all .25s;text-decoration:none;
+}
+.back-btn:hover{background:rgba(123,111,240,.12);border-color:rgba(123,111,240,.3);color:var(--pri-l);}
+.back-btn svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;}
+
+.hero{margin-bottom:1.8rem;}
+.badge{display:inline-flex;align-items:center;gap:.4rem;padding:.4rem .85rem;border-radius:99px;background:rgba(123,111,240,.12);border:1px solid rgba(123,111,240,.25);font-size:.72rem;font-weight:700;color:var(--pri-l);margin-bottom:.8rem;}
+h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem;}
+.sub{color:var(--t2);font-size:.92rem;max-width:560px;}
+
+.overall{
+  margin-top:1.4rem;padding:1rem 1.2rem;border-radius:16px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);
+}
+.overall-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:.55rem;font-size:.82rem;color:var(--t2);}
+.overall-top span.pct{color:var(--pri-l);font-weight:800;font-size:.95rem;}
+.overall-track{height:8px;border-radius:6px;background:rgba(255,255,255,.06);overflow:hidden;}
+.overall-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--pri),var(--acc));width:0%;transition:width .6s cubic-bezier(.22,1,.36,1);}
+
+.topic-list{display:flex;flex-direction:column;gap:.7rem;margin-top:1.6rem;}
+.topic-row{
+  display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:1rem 1.2rem;border-radius:16px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.08);
+  transition:border-color .25s, background .25s;
+}
+.topic-row:hover{background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.13);}
+.topic-name{font-size:.94rem;font-weight:600;color:var(--t1);}
+.status-group{display:flex;gap:.5rem;flex-wrap:wrap;}
+.status-btn{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.45rem .85rem;border-radius:10px;
+  background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);
+  font-size:.76rem;font-weight:600;color:var(--t2);
+  cursor:pointer;transition:all .2s;font-family:'Outfit',sans-serif;
+}
+.status-btn:hover{border-color:rgba(255,255,255,.22);color:var(--t1);}
+.status-btn[data-status="not-started"].active{background:rgba(139,149,181,.18);border-color:rgba(139,149,181,.5);color:var(--t1);}
+.status-btn[data-status="in-progress"].active{background:rgba(255,181,71,.16);border-color:rgba(255,181,71,.55);color:var(--warn);}
+.status-btn[data-status="completed"].active{background:rgba(62,207,110,.16);border-color:rgba(62,207,110,.55);color:var(--ok);}
+
+.save-toast{
+  position:fixed;bottom:1.6rem;left:50%;transform:translateX(-50%) translateY(20px);
+  background:rgba(10,17,40,.95);border:1px solid rgba(62,207,110,.4);color:var(--ok);
+  padding:.65rem 1.2rem;border-radius:12px;font-size:.8rem;font-weight:600;
+  opacity:0;pointer-events:none;transition:all .3s;z-index:50;
+  box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+.save-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+@media(max-width:560px){
+  .topic-row{flex-direction:column;align-items:flex-start;}
+  .status-group{width:100%;}
+  .status-btn{flex:1;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<div class="bg"><div class="aurora"></div><div class="bgrid"></div></div>
+
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="logo-row">
+      <div class="licon">⚡</div>
+      <div class="logo-text">SkillBridge</div>
+    </div>
+    <div style="display:flex;gap:.7rem;">
+      <a class="back-btn" href="Skill.html">
+        <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+        Back to DSA
+      </a>
+      <a class="back-btn" href="dashboard.html">
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+        Dashboard
+      </a>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="badge">🧠 &nbsp;Data Structures &amp; Algorithms</div>
+    <h1>Track Your DSA Progress</h1>
+    <p class="sub">Mark each topic as Not Started, In Progress, or Completed. Your dashboard's Skill Progress bar updates automatically.</p>
+
+    <div class="overall">
+      <div class="overall-top">
+        <span>Overall Progress</span>
+        <span class="pct" id="overallPct">0%</span>
+      </div>
+      <div class="overall-track"><div class="overall-fill" id="overallFill"></div></div>
+    </div>
+  </div>
+
+  <div class="topic-list" id="topicList"><!-- injected by JS --></div>
+
+</div>
+
+<div class="save-toast" id="saveToast">✓ Progress saved</div>
+
+<script>
+const BACKEND_URL = "https://skillbridge-production-e1cb.up.railway.app";
+const TRACK = "dsa";
+
+const token = localStorage.getItem("token");
+if(!token){
+  window.location.href = "login.html";
+}
+
+// Keep this list in sync with TRACK_TOPIC_COUNT.dsa on the backend
+// (Backend/routes/progressRoutes.js)
+const TOPICS = [
+  { id: "arrays-strings",    name: "Arrays & Strings" },
+  { id: "linked-lists",      name: "Linked Lists" },
+  { id: "stacks-queues",     name: "Stacks & Queues" },
+  { id: "recursion",         name: "Recursion & Backtracking" },
+  { id: "trees-bst",         name: "Trees & Binary Search Trees" },
+  { id: "heaps",             name: "Heaps & Priority Queues" },
+  { id: "graphs",            name: "Graphs" },
+  { id: "sorting-searching", name: "Sorting & Searching" },
+  { id: "dp",                name: "Dynamic Programming" },
+  { id: "greedy",            name: "Greedy Algorithms" }
+];
+
+const STATUSES = [
+  { key: "not-started", label: "Not Started", icon: "○" },
+  { key: "in-progress", label: "In Progress", icon: "◐" },
+  { key: "completed",   label: "Completed",   icon: "●" }
+];
+
+let progress = {};
+
+function computeOverallPct(){
+  let score = 0;
+  TOPICS.forEach(t=>{
+    const s = progress[t.id];
+    if(s === "completed") score += 1;
+    else if(s === "in-progress") score += 0.5;
+  });
+  return Math.round((score / TOPICS.length) * 100);
+}
+
+function renderOverall(){
+  const pct = computeOverallPct();
+  document.getElementById("overallPct").textContent = pct + "%";
+  document.getElementById("overallFill").style.width = pct + "%";
+}
+
+function renderTopics(){
+  const list = document.getElementById("topicList");
+  list.innerHTML = "";
+
+  TOPICS.forEach(topic=>{
+    const row = document.createElement("div");
+    row.className = "topic-row";
+
+    const name = document.createElement("div");
+    name.className = "topic-name";
+    name.textContent = topic.name;
+    row.appendChild(name);
+
+    const group = document.createElement("div");
+    group.className = "status-group";
+
+    STATUSES.forEach(st=>{
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "status-btn";
+      btn.dataset.status = st.key;
+      btn.dataset.topic = topic.id;
+      btn.innerHTML = `<span>${st.icon}</span><span>${st.label}</span>`;
+
+      const current = progress[topic.id] || "not-started";
+      if(current === st.key) btn.classList.add("active");
+
+      btn.addEventListener("click", ()=> setStatus(topic.id, st.key, row));
+
+      group.appendChild(btn);
+    });
+
+    row.appendChild(group);
+    list.appendChild(row);
+  });
+}
+
+async function setStatus(topicId, status, row){
+  progress[topicId] = status;
+
+  // Update button active states for this row
+  row.querySelectorAll(".status-btn").forEach(b=>{
+    b.classList.toggle("active", b.dataset.status === status);
+  });
+
+  renderOverall();
+
+  try{
+    const res = await fetch(`${BACKEND_URL}/api/progress/${TRACK}`,{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        Authorization:"Bearer "+token
+      },
+      body: JSON.stringify({ topic: topicId, status })
+    });
+
+    if(!res.ok) throw new Error("Save failed");
+
+    showToast();
+
+  }catch(err){
+    console.log("Progress save error:", err);
+  }
+}
+
+function showToast(){
+  const toast = document.getElementById("saveToast");
+  toast.classList.add("show");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> toast.classList.remove("show"), 1600);
+}
+
+async function loadProgress(){
+  try{
+    const res = await fetch(`${BACKEND_URL}/api/progress/${TRACK}`,{
+      headers:{ Authorization:"Bearer "+token }
+    });
+    const data = await res.json();
+    progress = data.progress || {};
+  }catch(err){
+    console.log("Progress load error:", err);
+    progress = {};
+  }finally{
+    renderTopics();
+    renderOverall();
+  }
+}
+
+loadProgress();
+</script>
+</body>
+</html>

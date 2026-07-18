@@ -607,29 +607,17 @@ align-items:start;
         <div class="card-hdr">
           <div>
             <div class="card-title">Skill Progress</div>
-            <div class="card-sub">Top 5 active skills</div>
+            <div class="card-sub">Your DSA & Web Dev tracks</div>
           </div>
         </div>
         <div class="skill-list">
           <div class="skill-row">
-            <div class="skill-info"><span class="skill-name">React & Frontend</span><span class="skill-pct">84%</span></div>
-            <div class="skill-track"><div class="skill-fill s1" style="width:84%"></div></div>
+            <div class="skill-info"><span class="skill-name">DSA & Algorithms</span><span class="skill-pct" id="dsaSkillPct">0%</span></div>
+            <div class="skill-track"><div class="skill-fill s1" id="dsaSkillFill" style="width:0%"></div></div>
           </div>
           <div class="skill-row">
-            <div class="skill-info"><span class="skill-name">UI/UX Design</span><span class="skill-pct">71%</span></div>
-            <div class="skill-track"><div class="skill-fill s2" style="width:71%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-info"><span class="skill-name">Python & ML</span><span class="skill-pct">63%</span></div>
-            <div class="skill-track"><div class="skill-fill s3" style="width:63%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-info"><span class="skill-name">Cloud & DevOps</span><span class="skill-pct">48%</span></div>
-            <div class="skill-track"><div class="skill-fill s4" style="width:48%"></div></div>
-          </div>
-          <div class="skill-row">
-            <div class="skill-info"><span class="skill-name">DSA & Algorithms</span><span class="skill-pct">79%</span></div>
-            <div class="skill-track"><div class="skill-fill s5" style="width:79%"></div></div>
+            <div class="skill-info"><span class="skill-name">Web Development</span><span class="skill-pct" id="webdevSkillPct">0%</span></div>
+            <div class="skill-track"><div class="skill-fill s5" id="webdevSkillFill" style="width:0%"></div></div>
           </div>
         </div>
       </div>
@@ -1077,6 +1065,40 @@ async function loadWeeklyActivity(){
 
 }
 
+/* ---------------- SKILL PROGRESS (DSA / WEB DEV) ---------------- */
+
+async function loadSkillProgress(){
+
+  try{
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/progress/summary/all`,
+      {
+        headers:{
+          Authorization:"Bearer "+token
+        }
+      }
+    );
+
+    const data = await res.json();
+
+    const dsaPct = data.dsa || 0;
+    const webdevPct = data.webdev || 0;
+
+    document.getElementById("dsaSkillPct").textContent = dsaPct + "%";
+    document.getElementById("dsaSkillFill").style.width = dsaPct + "%";
+
+    document.getElementById("webdevSkillPct").textContent = webdevPct + "%";
+    document.getElementById("webdevSkillFill").style.width = webdevPct + "%";
+
+  }catch(err){
+
+    console.log("Skill progress error:", err);
+
+  }
+
+}
+
 /* Initialize */
 
 loadXP();
@@ -1084,6 +1106,7 @@ sendVisitXP();
 startActiveTracking();
 loadLeaderboard();
 loadWeeklyActivity();
+loadSkillProgress();
 
 </script>
 </body>

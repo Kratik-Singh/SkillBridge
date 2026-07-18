@@ -14,6 +14,7 @@ require("./config/passport");
 const authRoutes = require("./routes/authRoutes");
 const adminRoutes = require("./routes/adminRoutes");
 const xpRoutes = require("./routes/xpRoutes");
+const progressRoutes = require("./routes/progressRoutes");
 
 /* ------------ MIDDLEWARE ------------ */
 
@@ -53,6 +54,7 @@ mongoose.connect(process.env.MONGO_URI)
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/xp", xpRoutes);
+app.use("/api/progress", progressRoutes);
 
 /* ------------ SERVER ------------ */
 

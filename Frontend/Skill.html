@@ -113,6 +113,18 @@ body {
 .back-btn:hover { background:rgba(123,111,240,.12); border-color:rgba(123,111,240,.3); color:var(--pri-l); }
 .back-btn svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
 
+.topbar-left { display:flex; align-items:center; gap:1rem; }
+.track-progress-btn {
+  display:flex; align-items:center; gap:.45rem;
+  padding:.45rem .95rem; border-radius:10px;
+  background:rgba(0,229,255,.1); border:1px solid rgba(0,229,255,.25);
+  font-size:.75rem; font-weight:700; color:var(--acc);
+  cursor:pointer; transition:all .25s;
+  font-family:'Outfit',sans-serif; outline:none; text-decoration:none;
+}
+.track-progress-btn:hover { background:rgba(0,229,255,.18); border-color:rgba(0,229,255,.45); transform:translateY(-1px); }
+.track-progress-btn svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
+
 /* ─── SHARED ─── */
 .shim {
   position:absolute; inset:0; pointer-events:none;
@@ -560,9 +572,15 @@ body {
 <!-- ══ SCREEN 2 : DSA PLAYLISTS ══ -->
 <div class="screen" id="s2">
   <div class="topbar">
-    <div class="logo-row">
-      <div class="licon">⚡</div>
-      <div class="logo-text">SkillBridge</div>
+    <div class="topbar-left">
+      <div class="logo-row">
+        <div class="licon">⚡</div>
+        <div class="logo-text">SkillBridge</div>
+      </div>
+      <a class="track-progress-btn" href="dsa-progress.html">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg>
+        Track Progress
+      </a>
     </div>
     <button class="back-btn" onclick="goTo('s1','s2')">
       <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -649,9 +667,15 @@ body {
 <!-- ══ SCREEN 3 : WEB DEVELOPMENT PLAYLIST ══ -->
 <div class="screen" id="s3">
   <div class="topbar">
-    <div class="logo-row">
-      <div class="licon">⚡</div>
-      <div class="logo-text">SkillBridge</div>
+    <div class="topbar-left">
+      <div class="logo-row">
+        <div class="licon">⚡</div>
+        <div class="logo-text">SkillBridge</div>
+      </div>
+      <a class="track-progress-btn" href="webdev-progress.html">
+        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg>
+        Track Progress
+      </a>
     </div>
     <button class="back-btn" onclick="goTo('s1','s3')">
       <svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>

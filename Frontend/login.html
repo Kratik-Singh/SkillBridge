@@ -474,6 +474,48 @@ input.invalid { border-color:rgba(255,92,122,.5); }
 }
 .ti { display:flex;align-items:center;gap:.3rem;font-size:.68rem;color:var(--t3);font-weight:500; }
 .ti svg { width:13px;height:13px;stroke:var(--ok);fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0; }
+
+/* ═══════════════════════════
+   FORGOT PASSWORD MODAL
+═══════════════════════════ */
+.modal-overlay {
+  position:fixed; inset:0; z-index:100;
+  background:rgba(2,3,10,.72);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  display:none; align-items:center; justify-content:center;
+  padding:1.5rem;
+}
+.modal-overlay.show { display:flex; }
+.modal-card {
+  width:100%; max-width:400px;
+  background: linear-gradient(145deg, rgba(255,255,255,.065) 0%, rgba(10,17,40,.92) 40%, rgba(4,6,15,.96) 100%);
+  backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255,255,255,.13);
+  border-radius: 22px;
+  padding: 1.8rem 1.9rem;
+  position:relative; overflow:hidden;
+  box-shadow: 0 40px 100px -20px rgba(0,0,0,.7), 0 0 80px -10px rgba(91,79,220,.18);
+  animation: cardin .45s cubic-bezier(.22,1,.36,1) both;
+}
+.modal-close {
+  position:absolute; top:.9rem; right:.9rem;
+  width:28px; height:28px; border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08);
+  color:var(--t2); cursor:pointer; transition:all .2s;
+}
+.modal-close:hover { background:rgba(255,92,122,.15); color:var(--err); border-color:rgba(255,92,122,.3); }
+.modal-close svg { width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round; }
+.modal-title { font-size:1.15rem; font-weight:800; margin-bottom:.35rem; }
+.modal-sub { font-size:.82rem; color:var(--t2); margin-bottom:1.2rem; line-height:1.5; }
+.modal-msg {
+  display:none; font-size:.8rem; line-height:1.5;
+  padding:.7rem .85rem; border-radius:10px; margin-top:.9rem;
+}
+.modal-msg.show { display:block; }
+.modal-msg.ok  { background:rgba(62,207,110,.1); border:1px solid rgba(62,207,110,.3); color:#9be8b3; }
+.modal-msg.err { background:rgba(255,92,122,.1); border:1px solid rgba(255,92,122,.3); color:var(--err); }
+.modal-msg a { color:var(--acc); font-weight:700; }
 </style>
 </head>
 <body>
@@ -557,7 +599,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
     <!-- Options -->
     <div class="fopts">
       <label class="rem"><input type="checkbox"> Remember me</label>
-      <a href="#" class="forgot">Forgot password?</a>
+      <a href="#" class="forgot" id="forgotLink">Forgot password?</a>
     </div>
 
     <!-- Sign In -->
@@ -579,9 +621,6 @@ input.invalid { border-color:rgba(255,92,122,.5); }
       <span id="gTxt">Continue with Google</span>
     </button>
 
-    <!--Admin Login button-->
-    <button id="adminLoginBtn">Admin Login</button>
-
     <p class="srow">New here? <a href="signup.html">Create account &rarr;</a></p>
 
     <div class="trust">
@@ -600,6 +639,36 @@ input.invalid { border-color:rgba(255,92,122,.5); }
     </div>
   </form>
 </div>
+</div>
+
+<!-- ── FORGOT PASSWORD MODAL ── -->
+<div class="modal-overlay" id="forgotOverlay">
+  <div class="modal-card">
+    <button type="button" class="modal-close" id="forgotClose" aria-label="Close">
+      <svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+    <div class="modal-title">Reset your password</div>
+    <div class="modal-sub">Enter the email linked to your account and we'll send you a link to reset your password.</div>
+
+    <form id="forgotForm" novalidate>
+      <div class="fg" style="margin-bottom:.4rem;animation:none;">
+        <label for="forgotEmail">Email address</label>
+        <div class="iw">
+          <span class="iico">
+            <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M22 6l-10 7L2 6"/></svg>
+          </span>
+          <input type="text" id="forgotEmail" placeholder="you@example.com" autocomplete="email">
+        </div>
+      </div>
+
+      <button type="submit" class="btnp" id="forgotSubmitBtn" style="margin-top:.9rem;animation:none;">
+        <span class="spin" id="forgotSpin"></span>
+        <span id="forgotBtnTxt">Send Reset Link</span>
+      </button>
+    </form>
+
+    <div class="modal-msg" id="forgotMsg"></div>
+  </div>
 </div>
 
 <script>
@@ -702,17 +771,109 @@ input.invalid { border-color:rgba(255,92,122,.5); }
     }
   });
 
-  
-  /*Admin login*/
-  document.getElementById("adminLoginBtn").addEventListener("click",()=>{
-  window.location.href = "admin-login.html";
-  });
-
-
   /* Google */
   document.getElementById('gBtn').addEventListener('click', function () {
     window.location.href = "https://skillbridge-production-e1cb.up.railway.app/api/auth/google";
 });
+
+  /* ── Forgot Password Modal ── */
+  var API_BASE = "https://skillbridge-production-e1cb.up.railway.app";
+
+  var forgotLink    = document.getElementById('forgotLink');
+  var forgotOverlay = document.getElementById('forgotOverlay');
+  var forgotClose   = document.getElementById('forgotClose');
+  var forgotForm    = document.getElementById('forgotForm');
+  var forgotEmail   = document.getElementById('forgotEmail');
+  var forgotMsg     = document.getElementById('forgotMsg');
+  var forgotBtn     = document.getElementById('forgotSubmitBtn');
+  var forgotSpin    = document.getElementById('forgotSpin');
+  var forgotBtnTxt  = document.getElementById('forgotBtnTxt');
+
+  function openForgotModal(){
+    forgotOverlay.classList.add('show');
+    forgotMsg.className = 'modal-msg';
+    forgotMsg.innerHTML = '';
+    forgotEmail.value = '';
+    setTimeout(function(){ forgotEmail.focus(); }, 50);
+  }
+
+  function closeForgotModal(){
+    forgotOverlay.classList.remove('show');
+  }
+
+  forgotLink.addEventListener('click', function(e){
+    e.preventDefault();
+    openForgotModal();
+  });
+
+  forgotClose.addEventListener('click', closeForgotModal);
+
+  forgotOverlay.addEventListener('click', function(e){
+    if(e.target === forgotOverlay) closeForgotModal();
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape' && forgotOverlay.classList.contains('show')) closeForgotModal();
+  });
+
+  forgotForm.addEventListener('submit', async function(e){
+    e.preventDefault();
+
+    var email = forgotEmail.value.trim();
+
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+      forgotMsg.className = 'modal-msg err show';
+      forgotMsg.textContent = 'Please enter a valid email address.';
+      return;
+    }
+
+    forgotBtn.disabled = true;
+    forgotSpin.style.display = 'inline-block';
+    forgotBtnTxt.textContent = 'Sending...';
+    forgotMsg.className = 'modal-msg';
+    forgotMsg.innerHTML = '';
+
+    try {
+
+      const res = await fetch(API_BASE + "/api/auth/forgot-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
+      });
+
+      const data = await res.json();
+
+      if(!res.ok){
+        throw new Error(data.message || "Something went wrong. Please try again.");
+      }
+
+      forgotMsg.className = 'modal-msg ok show';
+
+      // If the backend couldn't send an email (e.g. not configured yet),
+      // it falls back to returning the link directly — surface that link.
+      if(data.resetLink){
+        forgotMsg.innerHTML = (data.message || "Here's your reset link:") +
+          '<br><a href="' + data.resetLink + '">' + data.resetLink + '</a>';
+      } else {
+        forgotMsg.textContent = data.message || "If that email is registered, a reset link has been sent.";
+      }
+
+      forgotForm.reset();
+
+    } catch(err){
+
+      forgotMsg.className = 'modal-msg err show';
+      forgotMsg.textContent = err.message;
+
+    } finally {
+
+      forgotBtn.disabled = false;
+      forgotSpin.style.display = 'none';
+      forgotBtnTxt.textContent = 'Send Reset Link';
+
+    }
+
+  });
 })();
 </script>
 </body>
