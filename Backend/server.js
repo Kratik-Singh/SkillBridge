@@ -23,7 +23,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 
 const path = require("path");
 
@@ -43,11 +43,19 @@ app.use(passport.session());
 
 /* ------------ DATABASE ------------ */
 
-console.log("MONGO_URI VALUE ->", process.env.MONGO_URI);
+if (process.env.NODE_ENV !== "production") {
+    console.log("Connecting to MongoDB...");
+}
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB Connected"))
-  .catch(err => console.log("❌ DB Error:", err));
+mongoose
+    .connect(process.env.MONGO_URI)
+    .then(() => {
+        console.log("✅ MongoDB Connected");
+    })
+    .catch((err) => {
+        console.error("MongoDB Connection Error:", err);
+        process.exit(1);
+    });
 
 /* ------------ ROUTES ------------ */
 

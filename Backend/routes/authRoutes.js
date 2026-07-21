@@ -27,6 +27,15 @@ router.post("/signup", upload.single("profilePicture"), async (req,res)=>{
       return res.status(400).json({ message: "User already exists" });
     }
 
+    if(password.length < 8){
+
+    return res.status(400).json({
+        message:
+        "Password must contain at least 8 characters"
+    });
+
+    }
+
     // 2️⃣ Hash password
     const hashedPassword = await bcrypt.hash(password,10);
 
@@ -69,7 +78,16 @@ router.post("/login", async (req,res)=>{
     const user = await User.findOne({ scholarNumber });
     if(!user) return res.status(400).json({message:"Invalid credentials"});
 
-    const valid = await bcrypt.compare(password,user.password);
+    if (!user.password) {
+    return res.status(400).json({
+        message: "This account uses Google Sign-In."
+    });
+    }
+
+    const valid = await bcrypt.compare(
+    password,
+    user.password
+    );
     if(!valid) return res.status(400).json({message:"Invalid password"});
 
     const token = jwt.sign(
@@ -217,7 +235,21 @@ router.put("/update-profile", authMiddleware, async(req,res)=>{
     const user =
       await User.findById(req.user.id);
 
-    Object.assign(user, req.body);
+    const allowedFields = [
+    "name",
+    "semester",
+    "email"
+];
+
+    allowedFields.forEach(field => {
+
+      if(req.body[field] !== undefined){
+
+        user[field] = req.body[field];
+
+      }
+
+    });
 
     await user.save();
 

@@ -19,8 +19,11 @@ if(!token){
   window.location.href="login.html";
 }
 
-fetch("http://localhost:5000/api/admin/users",{
-  headers:{ authorization: token }
+const BACKEND_URL = "https://skillbridge-production-e1cb.up.railway.app";
+
+fetch(`${BACKEND_URL}/api/admin/users`,{
+  headers:{
+    Authorization: "Bearer " + token}
 })
 .then(res=>res.json())
 .then(data=>{

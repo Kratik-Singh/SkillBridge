@@ -10,12 +10,16 @@ const userSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
-  },
+    unique: true,
+    lowercase: true,
+    trim: true
+ },
 
   scholarNumber: {
     type: String,
-    unique: true
+    unique: true,
+    sparse: true,
+    trim: true
   },
 
   password: {
@@ -26,13 +30,17 @@ const userSchema = new mongoose.Schema({
     type: String
   },
 
-  semester: {
-    type: String
-  },
+ semester: {
+    type: Number,
+    min: 1,
+    max: 8,
+    required: true
+ },
 
   profilePicture: {
-    type: String
-  },
+    type: String,
+    default: ""
+ },
 
   role: {
     type: String,
@@ -87,5 +95,11 @@ webdevProgress: {
 }
 
 }, { timestamps: true });
+
+userSchema.index({ xp: -1 });
+
+userSchema.index({ email: 1 });
+
+userSchema.index({ scholarNumber: 1 });
 
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);

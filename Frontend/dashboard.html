@@ -745,8 +745,16 @@ fetch(`${BACKEND_URL}/api/auth/me`,{
   }
   else if(data.profilePicture){
 
+    if(data.profilePicture.startsWith("http")){
+
+    avatar.src = data.profilePicture;
+
+}else{
+
     avatar.src =
     `${BACKEND_URL}/uploads/${data.profilePicture}`;
+
+}
 
   }
   else{
@@ -928,8 +936,16 @@ async function loadLeaderboard(){
       // If uploaded image
       else if(user.profilePicture){
 
-        avatar =
-        `${BACKEND_URL}/uploads/${user.profilePicture}`;
+        if(data.profilePicture.startsWith("http")){
+
+    avatar.src = data.profilePicture;
+
+}else{
+
+    avatar.src =
+    `${BACKEND_URL}/uploads/${data.profilePicture}`;
+
+}
 
       }
       // Default avatar
