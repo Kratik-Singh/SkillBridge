@@ -19,7 +19,9 @@ if(!token){
   window.location.href="login.html";
 }
 
-const BACKEND_URL = "https://skillbridge-production-e1cb.up.railway.app";
+const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+  ? "http://localhost:5000"
+  : "https://skillbridge-production-e1cb.up.railway.app";
 
 fetch(`${BACKEND_URL}/api/admin/users`,{
   headers:{

@@ -98,8 +98,4 @@ webdevProgress: {
 
 userSchema.index({ xp: -1 });
 
-userSchema.index({ email: 1 });
-
-userSchema.index({ scholarNumber: 1 });
-
 module.exports = mongoose.models.User || mongoose.model("User", userSchema);

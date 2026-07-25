@@ -747,8 +747,9 @@ select.field-input option{background:#0d1027;}
 <div class="toast" id="toast"></div>
 
 <script>
-const BACKEND_URL =
-  "https://skillbridge-production-e1cb.up.railway.app";
+const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+  ? "http://localhost:5000"
+  : "https://skillbridge-production-e1cb.up.railway.app";
 
 const token =
   localStorage.getItem("token");

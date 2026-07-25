@@ -724,6 +724,10 @@ input.invalid { border-color:rgba(255,92,122,.5); }
     pwdInp.className=pwdInp.value?(ok?'valid':'invalid'):'';
   });
 
+  const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+    ? "http://localhost:5000"
+    : "https://skillbridge-production-e1cb.up.railway.app";
+
   /* Submit */
   document.getElementById("frm").addEventListener("submit", async function(e){
     e.preventDefault();
@@ -733,7 +737,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
 
     try {
 
-      const res = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/login", {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -751,7 +755,7 @@ input.invalid { border-color:rgba(255,92,122,.5); }
       localStorage.setItem("token", data.token);
 
       // Get user role
-      const userRes = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/me",{
+      const userRes = await fetch(`${BACKEND_URL}/api/auth/me`,{
         headers:{
           Authorization: "Bearer " + data.token
         }
@@ -773,11 +777,12 @@ input.invalid { border-color:rgba(255,92,122,.5); }
 
   /* Google */
   document.getElementById('gBtn').addEventListener('click', function () {
-    window.location.href = "https://skillbridge-production-e1cb.up.railway.app/api/auth/google";
-});
+    const returnTo = window.location.href.replace(/login\.html.*/, 'dashboard.html');
+    window.location.href = `https://skillbridge-production-e1cb.up.railway.app/api/auth/google?redirect=${encodeURIComponent(returnTo)}`;
+  });
 
   /* ── Forgot Password Modal ── */
-  var API_BASE = "https://skillbridge-production-e1cb.up.railway.app";
+  var API_BASE = BACKEND_URL;
 
   var forgotLink    = document.getElementById('forgotLink');
   var forgotOverlay = document.getElementById('forgotOverlay');

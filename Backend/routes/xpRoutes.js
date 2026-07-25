@@ -242,35 +242,38 @@ router.get("/weekly", auth, async (req,res)=>{
 
     const activity = user.dailyActivity || new Map();
 
-    // Build the current week, Sunday (index 0) through Saturday (index 6),
-    // and read the real minutes logged for each day from dailyActivity.
     const now = new Date();
-
     const startOfWeek = new Date(now);
     startOfWeek.setDate(now.getDate() - now.getDay());
     startOfWeek.setHours(0, 0, 0, 0);
 
-    const weekly = [];
+    const weeklyHours = [];
+    const weeklyMinutes = [];
+    const dates = [];
+
+    const dayLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     for (let i = 0; i < 7; i++) {
-
       const d = new Date(startOfWeek);
       d.setDate(startOfWeek.getDate() + i);
 
       const key = dayKey(d);
+      dates.push(key);
 
       const minutes =
         (typeof activity.get === "function")
           ? (activity.get(key) || 0)
           : (activity[key] || 0);
 
-      // Round to 1 decimal place of hours
-      weekly.push(Math.round((minutes / 60) * 10) / 10);
-
+      weeklyMinutes.push(minutes);
+      weeklyHours.push(Math.round((minutes / 60) * 10) / 10);
     }
 
     res.json({
-      hours: weekly
+      hours: weeklyHours,
+      minutes: weeklyMinutes,
+      dates: dates,
+      days: dayLabels
     });
 
   }catch(err){

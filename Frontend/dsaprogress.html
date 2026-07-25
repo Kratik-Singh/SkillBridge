@@ -153,7 +153,9 @@ h1{font-size:1.9rem;font-weight:800;letter-spacing:-.02em;margin-bottom:.4rem;}
 <div class="save-toast" id="saveToast">✓ Progress saved</div>
 
 <script>
-const BACKEND_URL = "https://skillbridge-production-e1cb.up.railway.app";
+const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+  ? "http://localhost:5000"
+  : "https://skillbridge-production-e1cb.up.railway.app";
 const TRACK = "dsa";
 
 const token = localStorage.getItem("token");

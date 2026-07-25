@@ -14,12 +14,16 @@
   <p id="msg"></p>
 
 <script>
+const BACKEND_URL = (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1" || window.location.protocol === "file:")
+  ? "http://localhost:5000"
+  : "https://skillbridge-production-e1cb.up.railway.app";
+
 document.getElementById("forgotForm").addEventListener("submit", async (e)=>{
   e.preventDefault();
 
   const email = document.getElementById("email").value;
 
-  const res = await fetch("https://skillbridge-production-e1cb.up.railway.app/api/auth/forgot-password",{
+  const res = await fetch(`${BACKEND_URL}/api/auth/forgot-password`,{
     method:"POST",
     headers:{ "Content-Type":"application/json" },
     body: JSON.stringify({ email })

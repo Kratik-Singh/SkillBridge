@@ -208,9 +208,11 @@ router.post("/reset-password", async (req,res)=>{
 
 /* ---------------- GOOGLE LOGIN ---------------- */
 
-router.get("/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
+router.get("/google", (req, res, next) => {
+  const returnTo = req.query.redirect || process.env.CLIENT_URL || "http://localhost:5000/dashboard.html";
+  const state = Buffer.from(JSON.stringify({ returnTo })).toString("base64");
+  passport.authenticate("google", { scope: ["profile", "email"], state })(req, res, next);
+});
 
 router.get("/google/callback",
   passport.authenticate("google", { session: false }),
@@ -221,7 +223,20 @@ router.get("/google/callback",
       { expiresIn: "7d" }
     );
 
-    res.redirect(process.env.CLIENT_URL + "/dashboard.html?token=" + token);
+    let returnTo = process.env.CLIENT_URL || "http://localhost:5000/dashboard.html";
+    if (req.query.state) {
+      try {
+        const decodedState = JSON.parse(Buffer.from(req.query.state, "base64").toString("utf-8"));
+        if (decodedState.returnTo) {
+          returnTo = decodedState.returnTo;
+        }
+      } catch (e) {
+        console.error("State parse error:", e);
+      }
+    }
+
+    const separator = returnTo.includes("?") ? "&" : "?";
+    res.redirect(`${returnTo}${separator}token=${token}`);
   }
 );
 
