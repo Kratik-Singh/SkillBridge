@@ -250,6 +250,18 @@ async function setStatus(topicId, status, row){
   renderOverall();
 
   try{
+    const topicObj = TOPICS.find(t => t.id === topicId);
+    const topicName = topicObj ? topicObj.name : topicId;
+    let activities = JSON.parse(localStorage.getItem("sb_user_activities") || "[]");
+    activities.unshift({
+      id: Date.now(),
+      text: `Updated <strong>Web Dev: ${topicName}</strong> status to <strong>${status}</strong>`,
+      color: status === "completed" ? "emerald" : status === "in-progress" ? "cyan" : "pink",
+      timestamp: Date.now()
+    });
+    if (activities.length > 20) activities = activities.slice(0, 20);
+    localStorage.setItem("sb_user_activities", JSON.stringify(activities));
+
     const res = await fetch(`${BACKEND_URL}/api/progress/${TRACK}`,{
       method:"POST",
       headers:{

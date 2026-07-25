@@ -342,6 +342,129 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
 .act-text strong { color: var(--cyan); font-weight: 700; }
 .act-time { font-size: 0.68rem; color: var(--t3); font-family: 'JetBrains Mono', monospace; margin-top: 0.2rem; }
 
+/* ═══════════ INTERACTIVE 3D CUBE WIDGET ═══════════ */
+.cube-widget-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 160px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 18px;
+  padding: 0.85rem 1rem;
+  backdrop-filter: blur(16px);
+  user-select: none;
+  cursor: grab;
+  transition: all 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.cube-widget-card:active {
+  cursor: grabbing;
+}
+.cube-widget-card:hover {
+  border-color: var(--border-glow);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.4), var(--glow-pri);
+}
+.cube-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--t2);
+  z-index: 2;
+}
+.cube-badge-title {
+  color: var(--pri-light);
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.cube-hint {
+  font-size: 0.62rem;
+  color: var(--cyan);
+  font-family: 'JetBrains Mono', monospace;
+  opacity: 0.8;
+}
+.cube-stage {
+  width: 100%;
+  height: 85px;
+  perspective: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0.2rem 0;
+}
+.cube-3d {
+  width: 66px;
+  height: 66px;
+  position: relative;
+  transform-style: preserve-3d;
+  transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+  animation: cube-float 7s ease-in-out infinite alternate;
+}
+@keyframes cube-float {
+  0% { transform: translateY(0px) rotateX(-15deg) rotateY(15deg); }
+  50% { transform: translateY(-4px) rotateX(-20deg) rotateY(195deg); }
+  100% { transform: translateY(0px) rotateX(-10deg) rotateY(375deg); }
+}
+.cube-3d.manual-transform {
+  animation: none !important;
+}
+
+.cube-face {
+  position: absolute;
+  width: 66px;
+  height: 66px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.1), 0 0 15px rgba(0, 0, 0, 0.5);
+  padding: 4px;
+}
+.cube-face.front  { transform: rotateY(0deg) translateZ(33px); background: linear-gradient(135deg, rgba(124, 92, 252, 0.85), rgba(0, 240, 255, 0.75)); border-color: rgba(0, 240, 255, 0.6); }
+.cube-face.back   { transform: rotateY(180deg) translateZ(33px); background: linear-gradient(135deg, rgba(124, 92, 252, 0.85), rgba(86, 52, 209, 0.9)); border-color: rgba(165, 139, 255, 0.6); }
+.cube-face.right  { transform: rotateY(90deg) translateZ(33px); background: linear-gradient(135deg, rgba(255, 70, 185, 0.85), rgba(124, 92, 252, 0.8)); border-color: rgba(255, 70, 185, 0.6); }
+.cube-face.left   { transform: rotateY(-90deg) translateZ(33px); background: linear-gradient(135deg, rgba(245, 158, 11, 0.85), rgba(255, 77, 109, 0.85)); border-color: rgba(245, 158, 11, 0.6); }
+.cube-face.top    { transform: rotateX(90deg) translateZ(33px); background: linear-gradient(135deg, rgba(16, 185, 129, 0.85), rgba(0, 240, 255, 0.8)); border-color: rgba(16, 185, 129, 0.6); }
+.cube-face.bottom { transform: rotateX(-90deg) translateZ(33px); background: linear-gradient(135deg, rgba(0, 240, 255, 0.85), rgba(124, 92, 252, 0.85)); border-color: rgba(0, 240, 255, 0.6); }
+
+.face-icon { font-size: 1.1rem; line-height: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
+.face-label { font-size: 0.58rem; font-weight: 800; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.5); text-transform: uppercase; letter-spacing: 0.05em; margin-top: 2px; }
+.face-sub { font-size: 0.5rem; color: rgba(255,255,255,0.85); font-weight: 600; }
+.face-val { font-size: 0.72rem; font-weight: 900; color: #fff; font-family: 'JetBrains Mono', monospace; text-shadow: 0 1px 4px rgba(0,0,0,0.6); margin-top: 1px; }
+
+.cube-controls {
+  display: flex;
+  gap: 0.35rem;
+  z-index: 2;
+}
+.cube-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.cube-dot:hover, .cube-dot.active {
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  transform: scale(1.3);
+}
+
 /* RESPONSIVE BREAKPOINTS */
 @media (max-width: 1200px) {
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
@@ -435,15 +558,6 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
       </div>
 
       <div class="topbar-actions">
-        <button class="search-btn">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Quick search...
-          <span class="kbd-badge">⌘K</span>
-        </button>
-        <div class="icon-trigger" title="Notifications">
-          <svg viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-          <div class="dot-badge"></div>
-        </div>
         <div class="icon-trigger" title="Logout" onclick="logout()">
           <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </div>
@@ -455,17 +569,53 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
 
       <!-- STAT CARDS -->
       <section class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-top">
-            <div class="stat-icon-wrap purple">
-              <svg viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+        <!-- INTERACTIVE 3D SKILL CUBE WIDGET (REPLACING ENROLLED COURSES) -->
+        <div class="cube-widget-card" id="cubeWidgetCard">
+          <div class="cube-header">
+            <span class="cube-badge-title">⚡ Interactive Skill Cube</span>
+            <span class="cube-hint">Drag / Click to Spin</span>
+          </div>
+          <div class="cube-stage">
+            <div class="cube-3d" id="interactiveCube">
+              <div class="cube-face front">
+                <div class="face-icon">⚡</div>
+                <div class="face-label">SkillBridge</div>
+                <div class="face-sub">Ultra Learning</div>
+              </div>
+              <div class="cube-face back">
+                <div class="face-icon">🧠</div>
+                <div class="face-label">DSA Track</div>
+                <div class="face-val" id="cubeDsaVal">0%</div>
+              </div>
+              <div class="cube-face right">
+                <div class="face-icon">💻</div>
+                <div class="face-label">Web Dev</div>
+                <div class="face-val" id="cubeWebVal">0%</div>
+              </div>
+              <div class="cube-face left">
+                <div class="face-icon">🔥</div>
+                <div class="face-label">Streak</div>
+                <div class="face-val" id="cubeStreakVal">0 Days</div>
+              </div>
+              <div class="cube-face top">
+                <div class="face-icon">🏆</div>
+                <div class="face-label">Class Rank</div>
+                <div class="face-val" id="cubeRankVal">#1</div>
+              </div>
+              <div class="cube-face bottom">
+                <div class="face-icon">⚡</div>
+                <div class="face-label">Level XP</div>
+                <div class="face-val" id="cubeXpVal">0 XP</div>
+              </div>
             </div>
           </div>
-          <div class="stat-value">14</div>
-          <div class="stat-title">Courses Enrolled</div>
-          <div class="stat-foot">
-            <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            +3 this semester
+          <div class="cube-controls">
+            <button class="cube-dot active" title="Front" onclick="rotateCubeTo('front', this)"></button>
+            <button class="cube-dot" title="DSA" onclick="rotateCubeTo('back', this)"></button>
+            <button class="cube-dot" title="Web Dev" onclick="rotateCubeTo('right', this)"></button>
+            <button class="cube-dot" title="Streak" onclick="rotateCubeTo('left', this)"></button>
+            <button class="cube-dot" title="Rank" onclick="rotateCubeTo('top', this)"></button>
+            <button class="cube-dot" title="XP" onclick="rotateCubeTo('bottom', this)"></button>
           </div>
         </div>
 
@@ -489,11 +639,11 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
               <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
             </div>
           </div>
-          <div class="stat-value">#12</div>
+          <div class="stat-value" id="classRankValue">#1</div>
           <div class="stat-title">Class Rank</div>
-          <div class="stat-foot">
+          <div class="stat-foot" id="classRankFoot">
             <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            Up 4 positions
+            Batch standing
           </div>
         </div>
 
@@ -607,35 +757,8 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
               <span class="card-subtitle">Your learning milestones & activity</span>
             </div>
           </div>
-          <div class="act-timeline">
-            <div class="act-row">
-              <div class="act-indicator emerald"></div>
-              <div class="act-details">
-                <div class="act-text">Completed <strong>Dynamic Programming Track</strong> module 🎉</div>
-                <div class="act-time">Just now</div>
-              </div>
-            </div>
-            <div class="act-row">
-              <div class="act-indicator cyan"></div>
-              <div class="act-details">
-                <div class="act-text">Active learning session recorded — <strong>Time spent logged</strong></div>
-                <div class="act-time">15 mins ago</div>
-              </div>
-            </div>
-            <div class="act-row">
-              <div class="act-indicator purple"></div>
-              <div class="act-details">
-                <div class="act-text">Submitted <strong>React Masterclass assignment</strong></div>
-                <div class="act-time">3 hours ago</div>
-              </div>
-            </div>
-            <div class="act-row">
-              <div class="act-indicator pink"></div>
-              <div class="act-details">
-                <div class="act-text">Scored <strong>94/100</strong> on DSA Mock Assessment</div>
-                <div class="act-time">Yesterday</div>
-              </div>
-            </div>
+          <div class="act-timeline" id="recentActivityFeed">
+            <!-- Dynamically populated activities -->
           </div>
         </div>
 
@@ -707,6 +830,150 @@ document.getElementById("currentDateStr").innerText = new Date().toLocaleDateStr
   weekday: 'long', day: 'numeric', month: 'short', year: 'numeric'
 });
 
+/* ---------------- 0. RECENT ACTIVITY FEED SYSTEM ---------------- */
+function recordUserActivity(text, color = "emerald") {
+  try {
+    let activities = JSON.parse(localStorage.getItem("sb_user_activities") || "[]");
+    if (activities.length > 0 && activities[0].text === text) return;
+    
+    activities.unshift({
+      id: Date.now(),
+      text: text,
+      color: color,
+      timestamp: Date.now()
+    });
+    if (activities.length > 20) activities = activities.slice(0, 20);
+    localStorage.setItem("sb_user_activities", JSON.stringify(activities));
+  } catch(e) {
+    console.log("Activity recording error:", e);
+  }
+}
+
+function formatTimeAgo(timestamp) {
+  const diffMs = Date.now() - timestamp;
+  const diffSecs = Math.floor(diffMs / 1000);
+  const diffMins = Math.floor(diffSecs / 60);
+  const diffHours = Math.floor(diffMins / 60);
+  const diffDays = Math.floor(diffHours / 24);
+
+  if (diffSecs < 60) return "Just now";
+  if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+  if (diffDays === 1) return "Yesterday";
+  return `${diffDays} days ago`;
+}
+
+function renderRecentActivities() {
+  const feedElem = document.getElementById("recentActivityFeed");
+  if (!feedElem) return;
+
+  let activities = [];
+  try {
+    activities = JSON.parse(localStorage.getItem("sb_user_activities") || "[]");
+  } catch(e) {}
+  
+  if (!activities || activities.length === 0) {
+    const now = Date.now();
+    activities = [
+      { id: now, text: "Active learning session recorded — <strong>Time spent logged</strong>", color: "cyan", timestamp: now - 5 * 60 * 1000 },
+      { id: now - 1, text: "Claimed daily visit bonus <strong>+10 XP</strong>", color: "purple", timestamp: now - 35 * 60 * 1000 },
+      { id: now - 2, text: "Updated <strong>Web Development Track</strong> progress", color: "pink", timestamp: now - 3 * 3600 * 1000 },
+      { id: now - 3, text: "Achieved new milestone on <strong>DSA Algorithms</strong>", color: "emerald", timestamp: now - 24 * 3600 * 1000 }
+    ];
+    localStorage.setItem("sb_user_activities", JSON.stringify(activities));
+  }
+
+  feedElem.innerHTML = activities.slice(0, 6).map(act => `
+    <div class="act-row">
+      <div class="act-indicator ${act.color || 'cyan'}"></div>
+      <div class="act-details">
+        <div class="act-text">${act.text}</div>
+        <div class="act-time">${formatTimeAgo(act.timestamp)}</div>
+      </div>
+    </div>
+  `).join("");
+}
+
+/* ---------------- 0.1 INTERACTIVE 3D CUBE CONTROLLER ---------------- */
+let cubeRotX = -15;
+let cubeRotY = 15;
+let isDraggingCube = false;
+let startX = 0, startY = 0;
+
+function init3DCube() {
+  const cubeCard = document.getElementById("cubeWidgetCard");
+  const cubeEl = document.getElementById("interactiveCube");
+  if (!cubeCard || !cubeEl) return;
+
+  cubeCard.addEventListener("mousedown", (e) => {
+    isDraggingCube = true;
+    startX = e.clientX;
+    startY = e.clientY;
+    cubeEl.classList.add("manual-transform");
+  });
+
+  window.addEventListener("mousemove", (e) => {
+    if (!isDraggingCube) return;
+    const deltaX = e.clientX - startX;
+    const deltaY = e.clientY - startY;
+    cubeRotY += deltaX * 0.8;
+    cubeRotX -= deltaY * 0.8;
+    startX = e.clientX;
+    startY = e.clientY;
+    cubeEl.style.transform = `rotateX(${cubeRotX}deg) rotateY(${cubeRotY}deg)`;
+  });
+
+  window.addEventListener("mouseup", () => {
+    isDraggingCube = false;
+  });
+
+  cubeCard.addEventListener("touchstart", (e) => {
+    if (e.touches.length === 1) {
+      isDraggingCube = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      cubeEl.classList.add("manual-transform");
+    }
+  });
+
+  window.addEventListener("touchmove", (e) => {
+    if (!isDraggingCube || e.touches.length !== 1) return;
+    const deltaX = e.touches[0].clientX - startX;
+    const deltaY = e.touches[0].clientY - startY;
+    cubeRotY += deltaX * 0.8;
+    cubeRotX -= deltaY * 0.8;
+    startX = e.touches[0].clientX;
+    startY = e.touches[0].clientY;
+    cubeEl.style.transform = `rotateX(${cubeRotX}deg) rotateY(${cubeRotY}deg)`;
+  });
+
+  window.addEventListener("touchend", () => {
+    isDraggingCube = false;
+  });
+}
+
+function rotateCubeTo(face, btn) {
+  const cubeEl = document.getElementById("interactiveCube");
+  if (!cubeEl) return;
+  cubeEl.classList.add("manual-transform");
+  document.querySelectorAll(".cube-dot").forEach(d => d.classList.remove("active"));
+  if (btn) btn.classList.add("active");
+
+  const faceRotations = {
+    front:  { x: 0, y: 0 },
+    back:   { x: 0, y: 180 },
+    right:  { x: 0, y: -90 },
+    left:   { x: 0, y: 90 },
+    top:    { x: -90, y: 0 },
+    bottom: { x: 90, y: 0 }
+  };
+
+  const rot = faceRotations[face] || { x: 0, y: 0 };
+  cubeRotX = rot.x;
+  cubeRotY = rot.y;
+  cubeEl.style.transform = `rotateX(${cubeRotX}deg) rotateY(${cubeRotY}deg)`;
+}
+
 /* ---------------- 1. REAL-TIME ACTIVE TIME TRACKING SYSTEM ---------------- */
 function getTodayDateKey(d = new Date()) {
   const y = d.getFullYear();
@@ -746,6 +1013,8 @@ setInterval(async () => {
         method: "POST",
         headers: { Authorization: "Bearer " + token }
       });
+      recordUserActivity("Active learning session recorded — <strong>Time spent logged</strong>", "cyan");
+      renderRecentActivities();
       loadXP();
     } catch (err) {
       console.log("Backend active time sync (fallback mode local active):", err);
@@ -824,6 +1093,12 @@ async function loadXP() {
     if (document.getElementById("maxStreakValue")) {
       document.getElementById("maxStreakValue").innerText = `${maxStreak} Days`;
     }
+    if (document.getElementById("cubeStreakVal")) {
+      document.getElementById("cubeStreakVal").innerText = `${streak} Days`;
+    }
+    if (document.getElementById("cubeXpVal")) {
+      document.getElementById("cubeXpVal").innerText = `${xp} XP`;
+    }
     const pct = Math.min((xp / maxXP) * 100, 100);
     document.getElementById("xpBar").style.width = `${pct}%`;
   } catch (err) {
@@ -840,6 +1115,8 @@ async function sendVisitXP() {
       headers: { Authorization: "Bearer " + token }
     });
     localStorage.setItem(todayKey, "done");
+    recordUserActivity("Claimed daily visit bonus <strong>+10 XP</strong>", "purple");
+    renderRecentActivities();
     loadXP();
   } catch (err) {
     console.log("Visit XP error:", err);
@@ -999,6 +1276,21 @@ async function loadLeaderboard() {
     const list = document.getElementById("leaderboardList");
     list.innerHTML = "";
 
+    const myRank = data.myRank || 1;
+    if (document.getElementById("classRankValue")) {
+      document.getElementById("classRankValue").innerText = `#${myRank}`;
+    }
+    if (document.getElementById("cubeRankVal")) {
+      document.getElementById("cubeRankVal").innerText = `#${myRank}`;
+    }
+    if (document.getElementById("classRankFoot")) {
+      const total = data.leaderboard ? data.leaderboard.length : 1;
+      document.getElementById("classRankFoot").innerHTML = `
+        <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        Rank ${myRank} of ${total} students
+      `;
+    }
+
     (data.leaderboard || []).forEach((user, index) => {
       const rank = index + 1;
       let rankClass = rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "bronze" : "";
@@ -1007,19 +1299,24 @@ async function loadLeaderboard() {
         : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=7C5CFC&color=fff`;
 
       const item = document.createElement("div");
-      item.className = `lb-item ${rank === data.myRank ? 'me' : ''}`;
+      item.className = `lb-item ${rank === myRank ? 'me' : ''}`;
       item.innerHTML = `
         <div class="lb-rank-num ${rankClass}">#${rank}</div>
         <img src="${avatar}" class="lb-user-av" alt="${user.name}">
         <div class="lb-user-info">
-          <div class="lb-user-name">${user.name} ${rank === data.myRank ? '⚡ (You)' : ''}</div>
+          <div class="lb-user-name">${user.name} ${rank === myRank ? '⚡ (You)' : ''}</div>
           <div class="lb-user-xp">${user.xp} XP</div>
         </div>
       `;
       list.appendChild(item);
     });
   } catch (err) {
-    // Fallback display if server offline
+    if (document.getElementById("classRankValue")) {
+      document.getElementById("classRankValue").innerText = "#1";
+    }
+    if (document.getElementById("cubeRankVal")) {
+      document.getElementById("cubeRankVal").innerText = "#1";
+    }
     document.getElementById("leaderboardList").innerHTML = `
       <div class="lb-item me">
         <div class="lb-rank-num gold">#1</div>
@@ -1046,15 +1343,23 @@ async function loadSkillProgress() {
     document.getElementById("dsaSkillFill").style.width = dsaPct + "%";
     document.getElementById("webdevSkillPct").textContent = webdevPct + "%";
     document.getElementById("webdevSkillFill").style.width = webdevPct + "%";
+
+    if (document.getElementById("cubeDsaVal")) document.getElementById("cubeDsaVal").innerText = dsaPct + "%";
+    if (document.getElementById("cubeWebVal")) document.getElementById("cubeWebVal").innerText = webdevPct + "%";
   } catch (err) {
     document.getElementById("dsaSkillPct").textContent = "45%";
     document.getElementById("dsaSkillFill").style.width = "45%";
     document.getElementById("webdevSkillPct").textContent = "68%";
     document.getElementById("webdevSkillFill").style.width = "68%";
+
+    if (document.getElementById("cubeDsaVal")) document.getElementById("cubeDsaVal").innerText = "45%";
+    if (document.getElementById("cubeWebVal")) document.getElementById("cubeWebVal").innerText = "68%";
   }
 }
 
 /* INITIALIZE ALL SYSTEMS */
+init3DCube();
+renderRecentActivities();
 loadXP();
 sendVisitXP();
 loadLeaderboard();
