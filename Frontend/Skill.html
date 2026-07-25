@@ -125,6 +125,31 @@ body {
 .track-progress-btn:hover { background:rgba(0,229,255,.18); border-color:rgba(0,229,255,.45); transform:translateY(-1px); }
 .track-progress-btn svg { width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round; }
 
+.hero-progress-btn {
+  display:inline-flex; align-items:center; gap:.55rem;
+  padding:.65rem 1.35rem; border-radius:12px;
+  background:linear-gradient(135deg,rgba(0,229,255,.2),rgba(0,180,210,.08));
+  border:1px solid rgba(0,229,255,.35);
+  font-size:.82rem; font-weight:800; color:var(--acc);
+  cursor:pointer; transition:all .3s cubic-bezier(.22,1,.36,1);
+  text-decoration:none; box-shadow:0 4px 20px rgba(0,229,255,.15);
+}
+.hero-progress-btn:hover {
+  background:linear-gradient(135deg,rgba(0,229,255,.32),rgba(0,180,210,.16));
+  border-color:rgba(0,229,255,.6); transform:translateY(-2px);
+  box-shadow:0 8px 30px rgba(0,229,255,.28);
+}
+.hero-progress-btn.dsa-hero-btn {
+  background:linear-gradient(135deg,rgba(123,111,240,.22),rgba(91,79,220,.08));
+  border-color:rgba(123,111,240,.35); color:var(--pri-l);
+  box-shadow:0 4px 20px rgba(123,111,240,.15);
+}
+.hero-progress-btn.dsa-hero-btn:hover {
+  background:linear-gradient(135deg,rgba(123,111,240,.35),rgba(91,79,220,.18));
+  border-color:rgba(123,111,240,.6);
+  box-shadow:0 8px 30px rgba(123,111,240,.28);
+}
+
 /* ─── SHARED ─── */
 .shim {
   position:absolute; inset:0; pointer-events:none;
@@ -601,7 +626,13 @@ body {
       <div class="step-pill"><div class="step-dot"></div>DSA Track — Pick a Playlist</div>
       <h1>Choose Your DSA Playlist</h1>
       <p>Two carefully selected YouTube playlists to help you crack DSA — pick the style that suits you best and start learning.</p>
-      <div class="s2-badge">🧠 &nbsp; Data Structures &amp; Algorithms</div>
+      <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;">
+        <div class="s2-badge">🧠 &nbsp; Data Structures &amp; Algorithms</div>
+        <a class="hero-progress-btn dsa-hero-btn" href="dsaprogress.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg>
+          Track DSA Progress →
+        </a>
+      </div>
     </div>
 
     <div class="playlist-row">
@@ -699,7 +730,13 @@ body {
       </div>
       <h1>Web Development Playlist</h1>
       <p>One complete, structured playlist — everything you need to go from zero to full-stack web developer.</p>
-      <div class="s3-badge">🌐 &nbsp; Web Development · Full Course</div>
+      <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;justify-content:center;">
+        <div class="s3-badge">🌐 &nbsp; Web Development · Full Course</div>
+        <a class="hero-progress-btn" href="webdevprogress.html">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M18.7 8l-5.1 5.1-2.8-2.8L7 14"/></svg>
+          Track Web Dev Progress →
+        </a>
+      </div>
     </div>
 
     <!-- 🔗 REPLACE href below with actual Web Dev playlist URL -->

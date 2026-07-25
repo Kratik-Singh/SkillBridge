@@ -66,6 +66,11 @@ streak: {
   default: 0
 },
 
+maxStreak: {
+  type: Number,
+  default: 0
+},
+
 totalMinutes: {
   type: Number,
   default: 0

@@ -472,14 +472,14 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
         <div class="stat-card">
           <div class="stat-top">
             <div class="stat-icon-wrap cyan">
-              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+              <svg viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
             </div>
           </div>
-          <div class="stat-value">8</div>
-          <div class="stat-title">Certificates Earned</div>
+          <div class="stat-value" id="maxStreakValue">0 Days</div>
+          <div class="stat-title">Max Streak</div>
           <div class="stat-foot">
             <svg viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            +2 this month
+            Personal best record
           </div>
         </div>
 
@@ -556,7 +556,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
             <div class="skill-item">
               <div class="skill-head">
                 <span>DSA & Algorithms</span>
-                <span class="skill-pct-tag" id="dsaSkillPct">0%</span>
+                <div style="display:flex;align-items:center;gap:.5rem;">
+                  <span class="skill-pct-tag" id="dsaSkillPct">0%</span>
+                  <a href="dsaprogress.html" style="font-size:.72rem;color:var(--pri-l);text-decoration:none;font-weight:700;background:rgba(123,111,240,.12);padding:2px 8px;border-radius:6px;border:1px solid rgba(123,111,240,.25);">Track →</a>
+                </div>
               </div>
               <div class="skill-track-bg">
                 <div class="skill-track-fill fill-dsa" id="dsaSkillFill" style="width: 0%"></div>
@@ -566,7 +569,10 @@ html, body { height: 100%; overflow: hidden; background: var(--bg-dark); color: 
             <div class="skill-item">
               <div class="skill-head">
                 <span>Web Development</span>
-                <span class="skill-pct-tag" id="webdevSkillPct">0%</span>
+                <div style="display:flex;align-items:center;gap:.5rem;">
+                  <span class="skill-pct-tag" id="webdevSkillPct">0%</span>
+                  <a href="webdevprogress.html" style="font-size:.72rem;color:var(--acc);text-decoration:none;font-weight:700;background:rgba(0,229,255,.1);padding:2px 8px;border-radius:6px;border:1px solid rgba(0,229,255,.22);">Track →</a>
+                </div>
               </div>
               <div class="skill-track-bg">
                 <div class="skill-track-fill fill-web" id="webdevSkillFill" style="width: 0%"></div>
@@ -810,10 +816,14 @@ async function loadXP() {
     const data = await res.json();
     const xp = data.xp || 0;
     const streak = data.streak || 0;
+    const maxStreak = data.maxStreak || streak || 0;
     const maxXP = 5000;
 
     document.getElementById("xpValue").innerText = `${xp} / ${maxXP}`;
     document.getElementById("streak").innerText = `${streak} Days`;
+    if (document.getElementById("maxStreakValue")) {
+      document.getElementById("maxStreakValue").innerText = `${maxStreak} Days`;
+    }
     const pct = Math.min((xp / maxXP) * 100, 100);
     document.getElementById("xpBar").style.width = `${pct}%`;
   } catch (err) {

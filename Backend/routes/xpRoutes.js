@@ -76,6 +76,10 @@ router.post("/visit", auth, async (req, res) => {
 
     }
 
+    if (!user.maxStreak || user.streak > user.maxStreak) {
+      user.maxStreak = user.streak;
+    }
+
     user.lastVisit = today;
 
     /* XP reward logic */
@@ -180,6 +184,7 @@ router.get("/me", auth, async (req, res) => {
     res.json({
       xp: user.xp || 0,
       streak: user.streak || 0,
+      maxStreak: user.maxStreak || user.streak || 0,
       totalMinutes: user.totalMinutes || 0
     });
 
